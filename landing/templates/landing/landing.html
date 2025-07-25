@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fraud Detector - Landing Page</title>
+    <!-- TailwindCSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .bg-slideshow {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -1;
+            overflow: hidden;
+        }
+        .bg-slide {
+            position: absolute;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+        .bg-slide.active {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+    <div class="bg-slideshow">
+        <img src="/static/landing/car2.jpg" class="bg-slide active" id="slide1" alt="Car crash 1">
+        <img src="/static/landing/car-crash.jpg" class="bg-slide" id="slide2" alt="Car crash 2">
+        <img src="/static/landing/car3.jpg" class="bg-slide" id="slide3" alt="Car crash 3">
+        <img src="/static/landing/car4.jpg" class="bg-slide" id="slide4" alt="Car crash 4">
+        <img src="/static/landing/car5.jpg" class="bg-slide" id="slide4" alt="Car crash 5">
+        <img src="/static/landing/car6.jpg" class="bg-slide" id="slide4" alt="Car crash 5">
+    </div>
+    <header class="bg-black bg-opacity-30 shadow relative z-10">
+        <div class="container mx-auto px-4 py-6 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-pink-200">Fraud Detector</h1>
+            <nav>
+                <a href="#about" class="text-white hover:text-blue-200 mx-2">About</a>
+            
+                <a href="{% url 'dashboard' %}" class="text-white hover:text-blue-200 mx-2 font-semibold">Dashboard</a>
+            </nav>
+        </div>
+    </header>
+    <main class="flex-grow flex flex-col items-center justify-center relative z-10">
+        {% block content %}
+        <section class="text-center bg-black bg-opacity-30 rounded-lg p-8 shadow-lg">
+            <h2 class="text-3xl font-extrabold text-blue-200 mb-4">Detect Fraud Instantly</h2>
+            <p class="text-lg text-white mb-8">Protect your business with our advanced model-based fraud detection technology.</p>
+            <a href="{% url 'get_started' %}" class="bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold shadow hover:bg-blue-800 transition mr-4">Get Started</a>
+        </section>
+        {% endblock %}
+    </main>
+    <footer class="bg-black bg-opacity-30 shadow mt-8 relative z-10">
+        <div class="container mx-auto px-4 py-4 text-center text-white">
+            &copy; 2025 Fraud Detector. All rights reserved.
+        </div>
+    </footer>
+    <script>
+        const slides = document.querySelectorAll('.bg-slide');
+        let current = 0;
+        setInterval(() => {
+            slides[current].classList.remove('active');
+            current = (current + 1) % slides.length;
+            slides[current].classList.add('active');
+        }, 3000);
+    </script>
+</body>
+</html> 

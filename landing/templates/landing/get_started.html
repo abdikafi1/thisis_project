@@ -1,0 +1,21 @@
+{% extends 'landing/landing.html' %}
+{% block content %}
+<div class="flex flex-col items-center justify-center min-h-[60vh] bg-gradient-to-br from-blue-50 to-purple-50 py-12">
+    <div class="w-full max-w-2xl rounded-3xl shadow-2xl p-10 flex flex-col items-center" style="background: rgba(255,255,255,0.01);">
+        <h2 class="text-4xl font-extrabold text-blue-700 mb-2 text-center drop-shadow">Get Started</h2>
+        <p class="text-lg text-gray-600 mb-8 text-center">Choose what you want to do:</p>
+        <div class="flex flex-col md:flex-row gap-8 w-full justify-center">
+            <a href="{% url 'dashboard' %}" class="flex-1 flex flex-col items-center justify-center bg-gradient-to-r from-blue-200 to-purple-200 hover:from-blue-300 hover:to-purple-300 text-blue-900 rounded-2xl shadow-xl px-10 py-12 text-2xl font-bold transition transform hover:scale-105">
+                <span class="text-5xl mb-4">🔮</span>
+                Make a Prediction
+                <span class="text-base font-normal mt-2">Start a new fraud check</span>
+            </a>
+            <a href="{% url 'prediction_history' %}" class="flex-1 flex flex-col items-center justify-center bg-gradient-to-r from-gray-200 to-gray-300 hover:from-gray-300 hover:to-gray-400 text-gray-900 rounded-2xl shadow-xl px-10 py-12 text-2xl font-bold transition transform hover:scale-105">
+                <span class="text-5xl mb-4">📜</span>
+                View Prediction History
+                <span class="text-base font-normal mt-2">See all past results</span>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %} 

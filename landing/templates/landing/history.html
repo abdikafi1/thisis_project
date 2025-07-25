@@ -1,0 +1,43 @@
+{% extends 'landing/landing.html' %}
+{% block content %}
+<div class="flex flex-col items-center justify-center min-h-[60vh] bg-gradient-to-br from-blue-100 to-purple-50 py-12">
+    <div class="w-full max-w-4xl bg-white/70 rounded-3xl shadow-2xl p-10 border border-blue-50">
+        <div class="flex flex-col md:flex-row gap-4 mb-8 items-center justify-between">
+            <a href="/" class="inline-block bg-gradient-to-r from-green-200 to-blue-200 hover:from-green-300 hover:to-blue-300 text-blue-900 px-6 py-2 rounded-xl font-bold shadow transition transform hover:scale-105">🏠 Go to Home</a>
+            <a href="{% url 'get_started' %}" class="inline-block bg-gradient-to-r from-blue-300 to-purple-300 hover:from-blue-400 hover:to-purple-400 text-blue-900 px-6 py-2 rounded-xl font-bold shadow transition transform hover:scale-105">← Back to Get Started</a>
+        </div>
+        <h2 class="text-4xl font-extrabold text-blue-700 mb-2 text-center drop-shadow">Prediction History</h2>
+        <p class="text-lg text-gray-600 mb-8 text-center">See all your past fraud predictions below.</p>
+        {% if history %}
+            <div class="overflow-x-auto">
+                <table class="w-full table-auto border-collapse rounded-xl overflow-hidden shadow">
+                    <thead>
+                        <tr class="bg-blue-50">
+                            <th class="border px-2 py-2">#</th>
+                            <th class="border px-2 py-2">Date</th>
+                            <th class="border px-2 py-2">Result</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in history %}
+                        <tr class="hover:bg-blue-100">
+                            <td class="border px-2 py-2 text-center">{{ forloop.counter }}</td>
+                            <td class="border px-2 py-2 text-xs text-center">{{ item.created_at|date:"Y-m-d H:i" }}</td>
+                            <td class="border px-2 py-2 text-center">
+                                {% if item.result == 'Fraud' %}
+                                    <span class="inline-flex items-center justify-center w-28 h-8 bg-red-100 text-red-700 rounded text-xs font-bold">&#9888; Fraud</span>
+                                {% else %}
+                                    <span class="inline-flex items-center justify-center w-28 h-8 bg-green-100 text-green-700 rounded text-xs font-bold">&#128663; Not Fraud</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="text-center text-gray-500">No predictions yet.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %} 
