@@ -38,19 +38,34 @@
     <header class="bg-black bg-opacity-30 shadow relative z-10">
         <div class="container mx-auto px-4 py-6 flex justify-between items-center">
             <h1 class="text-2xl font-bold text-pink-200">Fraud Detector</h1>
-            <nav>
-                <a href="#about" class="text-white hover:text-blue-200 mx-2">About</a>
-            
-                <a href="{% url 'dashboard' %}" class="text-white hover:text-blue-200 mx-2 font-semibold">Dashboard</a>
+            <nav class="flex items-center space-x-4">
+                <a href="#about" class="text-white hover:text-blue-200">About</a>
+                
+                {% if user.is_authenticated %}
+                    <span class="text-white text-sm">Welcome, {{ user.username }}!</span>
+                    <a href="{% url 'dashboard' %}" class="text-white hover:text-blue-200 font-semibold">Dashboard</a>
+                    <a href="{% url 'logout' %}" class="text-white hover:text-red-200 font-semibold">Logout</a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="text-white hover:text-blue-200 font-semibold">Login</a>
+                    <a href="{% url 'signup' %}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Sign Up</a>
+                {% endif %}
             </nav>
         </div>
     </header>
     <main class="flex-grow flex flex-col items-center justify-center relative z-10">
         {% block content %}
         <section class="text-center bg-black bg-opacity-30 rounded-lg p-8 shadow-lg">
-            <h2 class="text-3xl font-extrabold text-blue-200 mb-4">Detect Fraud Instantly</h2>
-            <p class="text-lg text-white mb-8">Protect your business with our advanced model-based fraud detection technology.</p>
-            <a href="{% url 'get_started' %}" class="bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold shadow hover:bg-blue-800 transition mr-4">Get Started</a>
+            {% if user.is_authenticated %}
+                <h2 class="text-3xl font-extrabold text-blue-200 mb-4">Welcome Back, {{ user.username }}!</h2>
+                <p class="text-lg text-white mb-8">Ready to detect fraud? Access your dashboard to get started.</p>
+                <a href="{% url 'dashboard' %}" class="bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold shadow hover:bg-blue-800 transition mr-4">Go to Dashboard</a>
+                <a href="{% url 'get_started' %}" class="bg-green-700 text-white px-6 py-3 rounded-lg font-semibold shadow hover:bg-green-800 transition">New Prediction</a>
+            {% else %}
+                <h2 class="text-3xl font-extrabold text-blue-200 mb-4">Detect Fraud Instantly</h2>
+                <p class="text-lg text-white mb-8">Protect your business with our advanced model-based fraud detection technology.</p>
+                <a href="{% url 'signup' %}" class="bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold shadow hover:bg-blue-800 transition mr-4">Get Started</a>
+                <a href="{% url 'login' %}" class="bg-green-700 text-white px-6 py-3 rounded-lg font-semibold shadow hover:bg-green-800 transition">Sign In</a>
+            {% endif %}
         </section>
         {% endblock %}
     </main>
