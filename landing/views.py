@@ -255,28 +255,16 @@ def get_ml_model_insights():
         print(f"Error in ML insights: {e}")
         return {
             'feature_importance': {'Days_Policy_Accident': 0.18, 'DriverRating': 0.16},
+            'risk_factors': {
+                'very_high': ['1 to 7 days policy to accident', 'Driver rating 4', 'No police report'],
+                'high': ['Multiple past claims', 'No witness present', 'Policy holder at fault'],
+                'medium': ['Rural accident area', 'High deductible', 'Older vehicle'],
+                'low': ['Long policy history', 'Driver rating 1-2', 'Police report filed']
+            },
             'model_version': '2.1.3',
-            'last_trained': '2024-01-15'
+            'last_trained': '2024-01-15',
+            'training_data_size': 4925
         }
-    non_fraud_df = df[df['FraudFound_P'] == 0]
-    
-    for feature in key_features:
-        if feature in df.columns:
-            # Fraud patterns
-            fraud_counts = fraud_df[feature].value_counts().head(3)
-            fraud_patterns[feature] = {
-                'high_risk_values': fraud_counts.to_dict(),
-                'fraud_percentage': (len(fraud_df[fraud_df[feature].isin(fraud_counts.index)]) / len(fraud_df)) * 100
-            }
-            
-            # Non-fraud patterns
-            non_fraud_counts = non_fraud_df[feature].value_counts().head(3)
-            non_fraud_patterns[feature] = {
-                'safe_values': non_fraud_counts.to_dict(),
-                'non_fraud_percentage': (len(non_fraud_df[non_fraud_df[feature].isin(non_fraud_counts.index)]) / len(non_fraud_df)) * 100
-            }
-    
-    return fraud_patterns, non_fraud_patterns
 
 def get_feature_impact(input_data):
     """Show how each feature impacts the prediction"""
