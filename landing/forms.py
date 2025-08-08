@@ -1,21 +1,70 @@
 import pandas as pd
 from django import forms
 import os
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+from .models import UserProfile, Prediction, UserActivity, SystemSettings
 
-CSV_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'selected_fraud_and_4k_nonfraud.csv')
-df = pd.read_csv(CSV_PATH)
-
-def get_choices(col):
-    choices = [(v, v) for v in sorted(df[col].dropna().unique())]
-    return choices
+# Try to load CSV data, fallback to empty choices if not available
+try:
+    CSV_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'selected_fraud_and_4k_nonfraud.csv')
+    df = pd.read_csv(CSV_PATH)
+    
+    def get_choices(col):
+        choices = [(v, v) for v in sorted(df[col].dropna().unique())]
+        return choices
+except:
+    # Fallback if CSV or pandas is not available
+    def get_choices(col):
+        # Return basic choices for common fields
+        basic_choices = {
+            'Days_Policy_Accident': [
+                ('1 to 7', '1 to 7'), ('8 to 15', '8 to 15'), ('16 to 30', '16 to 30'),
+                ('31 to 60', '31 to 60'), ('61 to 90', '61 to 90'), ('91 to 180', '91 to 180')
+            ],
+            'Days_Policy_Claim': [
+                ('1 to 7', '1 to 7'), ('8 to 15', '8 to 15'), ('16 to 30', '16 to 30'),
+                ('31 to 60', '31 to 60'), ('61 to 90', '61 to 90'), ('91 to 180', '91 to 180')
+            ],
+            'PastNumberOfClaims': [
+                ('none', 'none'), ('1', '1'), ('2 to 4', '2 to 4'), ('more than 4', 'more than 4')
+            ],
+            'VehiclePrice': [
+                ('less than 20000', 'less than 20000'), ('20000 to 29000', '20000 to 29000'),
+                ('30000 to 39000', '30000 to 39000'), ('40000 to 59000', '40000 to 59000'),
+                ('60000 to 69000', '60000 to 69000'), ('more than 69000', 'more than 69000')
+            ],
+            'PoliceReportFiled': [('Yes', 'Yes'), ('No', 'No')],
+            'WitnessPresent': [('Yes', 'Yes'), ('No', 'No')],
+            'NumberOfSuppliments': [
+                ('none', 'none'), ('1 to 2', '1 to 2'), ('3 to 5', '3 to 5'), ('more than 5', 'more than 5')
+            ],
+            'AddressChange_Claim': [
+                ('no change', 'no change'), ('under 6 months', 'under 6 months'),
+                ('1 year', '1 year'), ('2 to 3 years', '2 to 3 years'), ('4 to 8 years', '4 to 8 years')
+            ],
+            'AgeOfVehicle': [
+                ('less than 1 year', 'less than 1 year'), ('1 to 2 years', '1 to 2 years'),
+                ('3 to 5 years', '3 to 5 years'), ('6 to 10 years', '6 to 10 years'),
+                ('more than 10 years', 'more than 10 years')
+            ],
+            'Fault': [('Policy Holder', 'Policy Holder'), ('Third Party', 'Third Party')],
+            'AccidentArea': [('Urban', 'Urban'), ('Rural', 'Rural')],
+            'BasePolicy': [('Liability', 'Liability'), ('Collision', 'Collision'), ('All Perils', 'All Perils')],
+            'VehicleCategory': [
+                ('Sport', 'Sport'), ('Utility', 'Utility'), ('Family', 'Family'),
+                ('Luxury', 'Luxury'), ('Economy', 'Economy')
+            ]
+        }
+        return basic_choices.get(col, [('', 'Select option')])
 
 class PredictionForm(forms.Form):
     # Form title for Fraud Prediction Detection
     form_title = "Fraud Prediction Detection"
     
     Days_Policy_Accident = forms.ChoiceField(
-        label="Days Policy Accident",
-        choices=[('', 'Select the range of days since the policy accident.')] + get_choices('Days_Policy_Accident'),
+        label="Days Between Policy Start and Accident",
+        choices=[('', 'Select timeframe between policy start and accident occurrence')] + get_choices('Days_Policy_Accident'),
         widget=forms.Select(attrs={'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none transition'})
     )
     
@@ -26,20 +75,20 @@ class PredictionForm(forms.Form):
     )
     
     PastNumberOfClaims = forms.ChoiceField(
-        label="Past Number Of Claims",
-        choices=[('', 'Select the number of past claims.')] + get_choices('PastNumberOfClaims'),
+        label="Previous Insurance Claims History",
+        choices=[('', 'Select driver\'s previous claims record (affects risk assessment)')] + get_choices('PastNumberOfClaims'),
         widget=forms.Select(attrs={'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none transition'})
     )
     
     VehiclePrice = forms.ChoiceField(
-        label="Vehicle Price",
-        choices=[('', 'Select the price range of the vehicle.')] + get_choices('VehiclePrice'),
+        label="Vehicle Market Value",
+        choices=[('', 'Select vehicle\'s current market value range (higher value = higher coverage)')] + get_choices('VehiclePrice'),
         widget=forms.Select(attrs={'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none transition'})
     )
     
     PoliceReportFiled = forms.ChoiceField(
-        label="Police Report Filed",
-        choices=[('', 'Select whether a police report was filed.')] + get_choices('PoliceReportFiled'),
+        label="Police Report Status",
+        choices=[('', 'Was an official police report filed for this accident?')] + get_choices('PoliceReportFiled'),
         widget=forms.Select(attrs={'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none transition'})
     )
     
@@ -69,7 +118,13 @@ class PredictionForm(forms.Form):
     
     DriverRating = forms.ChoiceField(
         label="Driver Rating",
-        choices=[('', 'Select the driver rating from 1 to 4.')] + [(str(i), str(i)) for i in range(1, 5)],
+        choices=[
+            ('', 'Select driver rating based on driving history'),
+            ('1', '1 - Excellent (No violations, clean record)'),
+            ('2', '2 - Good (Minor violations, mostly clean record)'),
+            ('3', '3 - Average (Some violations, moderate risk)'),
+            ('4', '4 - Poor (Multiple violations, high risk)')
+        ],
         widget=forms.Select(attrs={'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none transition'})
     )
     
@@ -86,14 +141,14 @@ class PredictionForm(forms.Form):
     )
     
     Fault = forms.ChoiceField(
-        label="Fault",
-        choices=[('', 'Select who was at fault.')] + get_choices('Fault'),
+        label="Fault Assignment",
+        choices=[('', 'Select who was determined to be at fault for the accident')] + get_choices('Fault'),
         widget=forms.Select(attrs={'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none transition'})
     )
     
     AccidentArea = forms.ChoiceField(
-        label="Accident Area",
-        choices=[('', 'Select the accident area.')] + get_choices('AccidentArea'),
+        label="Accident Location Type",
+        choices=[('', 'Select the type of area where the accident occurred')] + get_choices('AccidentArea'),
         widget=forms.Select(attrs={'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none transition'})
     )
     
@@ -254,3 +309,96 @@ class PredictionForm(forms.Form):
                 pass  # Skip validation if parsing fails
         
         return cleaned_data 
+
+class CustomUserCreationForm(UserCreationForm):
+    email = forms.EmailField(required=True)
+    first_name = forms.CharField(max_length=30, required=True)
+    last_name = forms.CharField(max_length=30, required=True)
+    phone_number = forms.CharField(max_length=15, required=False)
+    company = forms.CharField(max_length=100, required=False)
+    position = forms.CharField(max_length=100, required=False)
+    
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'first_name', 'last_name', 'password1', 'password2')
+    
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.email = self.cleaned_data['email']
+        user.first_name = self.cleaned_data['first_name']
+        user.last_name = self.cleaned_data['last_name']
+        
+        if commit:
+            user.save()
+            # Update profile with additional fields
+            profile = user.profile
+            profile.phone_number = self.cleaned_data.get('phone_number', '')
+            profile.company = self.cleaned_data.get('company', '')
+            profile.position = self.cleaned_data.get('position', '')
+            profile.save()
+        
+        return user
+
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ['phone_number', 'company', 'position']
+        widgets = {
+            'phone_number': forms.TextInput(attrs={'class': 'form-control'}),
+            'company': forms.TextInput(attrs={'class': 'form-control'}),
+            'position': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+class AdminUserManagementForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ['user_level', 'is_verified']
+        widgets = {
+            'user_level': forms.Select(attrs={'class': 'form-control'}),
+            'is_verified': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        }
+
+class SystemSettingsForm(forms.ModelForm):
+    class Meta:
+        model = SystemSettings
+        fields = ['key', 'value', 'description']
+        widgets = {
+            'key': forms.TextInput(attrs={'class': 'form-control'}),
+            'value': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
+        }
+
+class UserSearchForm(forms.Form):
+    search = forms.CharField(
+        max_length=100,
+        required=False,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Search users by username, email, or company...'
+        })
+    )
+    user_level = forms.ChoiceField(
+        choices=[('', 'All Levels')] + UserProfile.USER_LEVELS,
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+    is_verified = forms.ChoiceField(
+        choices=[('', 'All'), ('True', 'Verified'), ('False', 'Not Verified')],
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+
+class AdminDashboardForm(forms.Form):
+    date_from = forms.DateField(
+        required=False,
+        widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'})
+    )
+    date_to = forms.DateField(
+        required=False,
+        widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'})
+    )
+    activity_type = forms.ChoiceField(
+        choices=[('', 'All Activities')] + UserActivity.ACTIVITY_TYPES,
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-control'})
+    ) 

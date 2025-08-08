@@ -1,0 +1,298 @@
+{% extends 'landing/modern_dashboard.html' %}
+
+{% block title %}Settings - Fraud Detection System{% endblock %}
+{% block page_title %}Settings{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <!-- Settings Navigation -->
+    <div class="bg-white shadow rounded-lg mb-6">
+        <div class="border-b border-gray-200">
+            <nav class="-mb-px flex space-x-8 px-6" x-data="{ activeTab: 'profile' }">
+                <button @click="activeTab = 'profile'" :class="activeTab === 'profile' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                    <i class="fas fa-user mr-2"></i>
+                    Profile
+                </button>
+                <button @click="activeTab = 'preferences'" :class="activeTab === 'preferences' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                    <i class="fas fa-sliders-h mr-2"></i>
+                    Preferences
+                </button>
+                <button @click="activeTab = 'notifications'" :class="activeTab === 'notifications' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                    <i class="fas fa-bell mr-2"></i>
+                    Notifications
+                </button>
+                <button @click="activeTab = 'security'" :class="activeTab === 'security' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                    <i class="fas fa-shield-alt mr-2"></i>
+                    Security
+                </button>
+            </nav>
+        </div>
+        
+        <!-- Profile Tab -->
+        <div x-show="activeTab === 'profile'" class="p-6">
+            <div class="mb-6">
+                <h3 class="text-lg font-medium text-gray-900">Profile Information</h3>
+                <p class="mt-1 text-sm text-gray-600">Update your account profile information and email address.</p>
+            </div>
+            
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+                <input type="hidden" name="tab" value="profile">
+                
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">First Name</label>
+                        <input type="text" name="first_name" value="{{ user.first_name }}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Last Name</label>
+                        <input type="text" name="last_name" value="{{ user.last_name }}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Email</label>
+                    <input type="email" name="email" value="{{ user.email }}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                </div>
+                
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Phone Number</label>
+                        <input type="text" name="phone_number" value="{{ user.profile.phone_number }}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Company</label>
+                        <input type="text" name="company" value="{{ user.profile.company }}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Position</label>
+                    <input type="text" name="position" value="{{ user.profile.position }}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                </div>
+                
+                <div class="flex justify-end">
+                    <button type="submit" class="bg-blue-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Save Profile
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Preferences Tab -->
+        <div x-show="activeTab === 'preferences'" class="p-6">
+            <div class="mb-6">
+                <h3 class="text-lg font-medium text-gray-900">Dashboard Preferences</h3>
+                <p class="mt-1 text-sm text-gray-600">Customize how your dashboard looks and behaves.</p>
+            </div>
+            
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+                <input type="hidden" name="tab" value="preferences">
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Dashboard Theme</label>
+                    <select name="theme" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                        <option value="light">Light</option>
+                        <option value="dark">Dark</option>
+                        <option value="auto">Auto (System)</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Items per page</label>
+                    <select name="items_per_page" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Default date range</label>
+                    <select name="default_date_range" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                        <option value="7">Last 7 days</option>
+                        <option value="30">Last 30 days</option>
+                        <option value="90">Last 90 days</option>
+                        <option value="365">Last year</option>
+                    </select>
+                </div>
+                
+                <fieldset>
+                    <legend class="text-sm font-medium text-gray-700">Dashboard Widgets</legend>
+                    <div class="mt-4 space-y-4">
+                        <div class="flex items-center">
+                            <input type="checkbox" name="show_quick_stats" checked class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <label class="ml-3 text-sm text-gray-700">Show quick statistics</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" name="show_recent_predictions" checked class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <label class="ml-3 text-sm text-gray-700">Show recent predictions</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" name="show_activity_feed" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <label class="ml-3 text-sm text-gray-700">Show activity feed</label>
+                        </div>
+                    </div>
+                </fieldset>
+                
+                <div class="flex justify-end">
+                    <button type="submit" class="bg-blue-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Save Preferences
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Notifications Tab -->
+        <div x-show="activeTab === 'notifications'" class="p-6">
+            <div class="mb-6">
+                <h3 class="text-lg font-medium text-gray-900">Notification Settings</h3>
+                <p class="mt-1 text-sm text-gray-600">Choose what notifications you want to receive.</p>
+            </div>
+            
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+                <input type="hidden" name="tab" value="notifications">
+                
+                <fieldset>
+                    <legend class="text-sm font-medium text-gray-700">Email Notifications</legend>
+                    <div class="mt-4 space-y-4">
+                        <div class="flex items-center">
+                            <input type="checkbox" name="email_fraud_alerts" checked class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <label class="ml-3 text-sm text-gray-700">Fraud detection alerts</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" name="email_weekly_reports" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <label class="ml-3 text-sm text-gray-700">Weekly summary reports</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" name="email_system_updates" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <label class="ml-3 text-sm text-gray-700">System updates and maintenance</label>
+                        </div>
+                    </div>
+                </fieldset>
+                
+                <fieldset>
+                    <legend class="text-sm font-medium text-gray-700">Browser Notifications</legend>
+                    <div class="mt-4 space-y-4">
+                        <div class="flex items-center">
+                            <input type="checkbox" name="browser_fraud_alerts" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <label class="ml-3 text-sm text-gray-700">Real-time fraud alerts</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" name="browser_processing_complete" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <label class="ml-3 text-gray-700">Processing completion notifications</label>
+                        </div>
+                    </div>
+                </fieldset>
+                
+                <div class="flex justify-end">
+                    <button type="submit" class="bg-blue-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Save Notifications
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Security Tab -->
+        <div x-show="activeTab === 'security'" class="p-6">
+            <div class="mb-6">
+                <h3 class="text-lg font-medium text-gray-900">Security Settings</h3>
+                <p class="mt-1 text-sm text-gray-600">Manage your account security and access.</p>
+            </div>
+            
+            <!-- Account Info -->
+            <div class="bg-gray-50 rounded-lg p-4 mb-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-900">Account Status</h4>
+                        <div class="mt-1 flex items-center space-x-4">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                <i class="fas fa-check-circle mr-1"></i>
+                                Active
+                            </span>
+                            {% if user.profile.is_verified %}
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                    <i class="fas fa-shield-check mr-1"></i>
+                                    Verified
+                                </span>
+                            {% else %}
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                    <i class="fas fa-clock mr-1"></i>
+                                    Pending Verification
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="text-sm text-gray-500">
+                        Member since {{ user.date_joined|date:"M Y" }}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Change Password -->
+            <div class="border-t border-gray-200 pt-6">
+                <h4 class="text-sm font-medium text-gray-900 mb-4">Change Password</h4>
+                <form method="post" class="space-y-4">
+                    {% csrf_token %}
+                    <input type="hidden" name="tab" value="security">
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Current Password</label>
+                        <input type="password" name="current_password" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">New Password</label>
+                        <input type="password" name="new_password" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Confirm New Password</label>
+                        <input type="password" name="confirm_password" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    </div>
+                    
+                    <div class="flex justify-end">
+                        <button type="submit" class="bg-blue-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            Update Password
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Recent Activity -->
+            <div class="border-t border-gray-200 pt-6 mt-6">
+                <h4 class="text-sm font-medium text-gray-900 mb-4">Recent Security Activity</h4>
+                <div class="space-y-3">
+                    {% for activity in recent_activities|slice:":5" %}
+                    <div class="flex items-center justify-between py-2">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                {% if activity.activity_type == 'login' %}
+                                    <i class="fas fa-sign-in-alt text-green-500"></i>
+                                {% else %}
+                                    <i class="fas fa-cog text-blue-500"></i>
+                                {% endif %}
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm text-gray-900">{{ activity.description }}</p>
+                                <p class="text-xs text-gray-500">{{ activity.ip_address|default:"Unknown IP" }}</p>
+                            </div>
+                        </div>
+                        <div class="text-sm text-gray-500">
+                            {{ activity.created_at|timesince }} ago
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p class="text-sm text-gray-500">No recent activity</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+

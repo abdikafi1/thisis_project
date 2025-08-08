@@ -1,0 +1,190 @@
+{% extends 'landing/admin/base.html' %}
+
+{% block title %}Edit User - {{ user.username }}{% endblock %}
+{% block page_title %}Edit User - {{ user.username }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <!-- User Profile Form -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-user-edit me-2"></i>User Profile & Permissions
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.user_level.id_for_label }}" class="form-label">User Level</label>
+                            {{ form.user_level }}
+                            <div class="form-text">Determines user access permissions and features</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-check">
+                                {{ form.is_verified }}
+                                <label class="form-check-label" for="{{ form.is_verified.id_for_label }}">
+                                    Verified User
+                                </label>
+                                <div class="form-text">Verified users have access to additional features</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'admin_user_management' %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Back to User Management
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <!-- User Information -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-info-circle me-2"></i>User Information
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <strong>Username:</strong>
+                    <div>{{ user.username }}</div>
+                </div>
+                <div class="mb-3">
+                    <strong>Full Name:</strong>
+                    <div>{{ user.first_name }} {{ user.last_name|default:"" }}</div>
+                </div>
+                <div class="mb-3">
+                    <strong>Email:</strong>
+                    <div>{{ user.email }}</div>
+                </div>
+                <div class="mb-3">
+                    <strong>Date Joined:</strong>
+                    <div>{{ user.date_joined|date:"M d, Y H:i" }}</div>
+                </div>
+                <div class="mb-3">
+                    <strong>Last Login:</strong>
+                    <div>
+                        {% if user.last_login %}
+                            {{ user.last_login|date:"M d, Y H:i" }}
+                        {% else %}
+                            <span class="text-muted">Never</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <strong>Status:</strong>
+                    <div>
+                        {% if user.is_active %}
+                            <span class="badge bg-success">Active</span>
+                        {% else %}
+                            <span class="badge bg-danger">Inactive</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Profile Details -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-address-card me-2"></i>Profile Details
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if user.profile.phone_number %}
+                <div class="mb-3">
+                    <strong>Phone:</strong>
+                    <div>{{ user.profile.phone_number }}</div>
+                </div>
+                {% endif %}
+                {% if user.profile.company %}
+                <div class="mb-3">
+                    <strong>Company:</strong>
+                    <div>{{ user.profile.company }}</div>
+                </div>
+                {% endif %}
+                {% if user.profile.position %}
+                <div class="mb-3">
+                    <strong>Position:</strong>
+                    <div>{{ user.profile.position }}</div>
+                </div>
+                {% endif %}
+                <div class="mb-3">
+                    <strong>Profile Created:</strong>
+                    <div>{{ user.profile.created_at|date:"M d, Y H:i" }}</div>
+                </div>
+                <div class="mb-3">
+                    <strong>Profile Updated:</strong>
+                    <div>{{ user.profile.updated_at|date:"M d, Y H:i" }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Statistics -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-chart-bar me-2"></i>User Statistics
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <strong>Total Predictions:</strong>
+                    <div class="h4 text-primary">{{ user_predictions }}</div>
+                </div>
+                <div class="mb-3">
+                    <strong>Total Activities:</strong>
+                    <div class="h4 text-info">{{ user_activities }}</div>
+                </div>
+                <div class="mb-3">
+                    <strong>Current Level:</strong>
+                    <div>
+                        {% if user.profile.user_level == 'admin' %}
+                            <span class="badge bg-danger fs-6">{{ user.profile.get_user_level_display }}</span>
+                        {% elif user.profile.user_level == 'premium' %}
+                            <span class="badge bg-warning fs-6">{{ user.profile.get_user_level_display }}</span>
+                        {% else %}
+                            <span class="badge bg-secondary fs-6">{{ user.profile.get_user_level_display }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Danger Zone -->
+{% if user != request.user %}
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Danger Zone
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted">
+                    Once you delete a user, there is no going back. This action cannot be undone.
+                    All user data, predictions, and activities will be permanently removed.
+                </p>
+                <a href="{% url 'admin_delete_user' user.id %}" class="btn btn-danger" onclick="return confirm('Are you absolutely sure you want to delete this user? This action cannot be undone.')">
+                    <i class="fas fa-trash me-2"></i>Delete User Account
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

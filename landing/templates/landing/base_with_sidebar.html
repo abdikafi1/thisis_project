@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Fraud Detector Dashboard{% endblock %}</title>
+    <!-- TailwindCSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8f9fa;
+            overflow-x: hidden;
+        }
+        
+        .sidebar {
+            transition: transform 0.3s ease-in-out;
+            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .sidebar.collapsed {
+            transform: translateX(-100%);
+        }
+        
+        .main-content {
+            transition: margin-left 0.3s ease-in-out;
+        }
+        
+        .main-content.expanded {
+            margin-left: 0;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+        }
+        
+        .sidebar-item {
+            transition: all 0.3s ease;
+            border-radius: 12px;
+            margin: 4px 8px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .sidebar-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+        
+        .sidebar-item:hover::before {
+            left: 100%;
+        }
+        
+        .sidebar-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(8px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .sidebar-item.active {
+            background: rgba(255, 255, 255, 0.2);
+            border-right: 3px solid white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .sidebar-item.active::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-left: 8px solid white;
+            border-top: 6px solid transparent;
+            border-bottom: 6px solid transparent;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .sidebar-header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .nav-section-title {
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.75rem;
+        }
+        
+        .nav-icon {
+            width: 20px;
+            margin-right: 12px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+        
+        .nav-text {
+            font-weight: 500;
+            color: white;
+        }
+        
+        .sidebar-footer {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-weight: 600;
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .user-name {
+            font-weight: 600;
+            color: white;
+            font-size: 0.9rem;
+        }
+        
+        .user-role {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .logout-btn {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .top-header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .page-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .notification-bell {
+            position: relative;
+            font-size: 1.3rem;
+            color: #667eea;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .notification-bell:hover {
+            transform: scale(1.1);
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Sidebar -->
+    <div id="sidebar" class="sidebar fixed left-0 top-0 h-full w-64 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-white shadow-lg z-50">
+        <!-- Sidebar Header -->
+        <div class="sidebar-header text-white p-6">
+            <div class="flex items-center justify-between">
+                <h1 class="text-xl font-bold flex items-center">
+                    <i class="fas fa-shield-alt mr-3 text-2xl"></i>
+                    FraudGuard
+                </h1>
+                <button id="sidebar-toggle" class="text-white hover:text-gray-200 transition-colors">
+                    <i class="fas fa-bars text-lg"></i>
+                </button>
+            </div>
+            {% if user.is_authenticated %}
+            <div class="mt-3 text-sm opacity-90">
+                <i class="fas fa-user mr-2"></i>
+                {{ user.first_name|default:user.username }}
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Sidebar Navigation -->
+        <nav class="mt-6 flex-1 px-4">
+            <div class="mb-6">
+                <h3 class="nav-section-title px-4 py-2">Main Navigation</h3>
+            </div>
+            
+            <ul class="space-y-2">
+                <li>
+                    <a href="{% url 'dashboard' %}" class="sidebar-item flex items-center px-4 py-3 text-white hover:text-white {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                        <i class="fas fa-tachometer-alt nav-icon"></i>
+                        <span class="nav-text">Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'predict' %}" class="sidebar-item flex items-center px-4 py-3 text-white hover:text-white {% if request.resolver_match.url_name == 'predict' %}active{% endif %}">
+                        <i class="fas fa-search nav-icon"></i>
+                        <span class="nav-text">New Prediction</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'prediction_history' %}" class="sidebar-item flex items-center px-4 py-3 text-white hover:text-white {% if request.resolver_match.url_name == 'prediction_history' %}active{% endif %}">
+                        <i class="fas fa-history nav-icon"></i>
+                        <span class="nav-text">History</span>
+                    </a>
+                </li>
+            </ul>
+
+            <!-- Reports & Analytics Section -->
+            <div class="mt-8 mb-6">
+                <h3 class="nav-section-title px-4 py-2">Reports & Analytics</h3>
+            </div>
+            
+            <ul class="space-y-2">
+                <li>
+                    <a href="{% url 'user_reports' %}" class="sidebar-item flex items-center px-4 py-3 text-white hover:text-white {% if request.resolver_match.url_name == 'user_reports' %}active{% endif %}">
+                        <i class="fas fa-chart-bar nav-icon"></i>
+                        <span class="nav-text">Reports</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'fraud_analytics' %}" class="sidebar-item flex items-center px-4 py-3 text-white hover:text-white {% if request.resolver_match.url_name == 'fraud_analytics' %}active{% endif %}">
+                        <i class="fas fa-chart-line nav-icon"></i>
+                        <span class="nav-text">Analytics</span>
+                    </a>
+                </li>
+            </ul>
+
+            <!-- Settings Section -->
+            <div class="mt-8 mb-6">
+                <h3 class="nav-section-title px-4 py-2">Settings</h3>
+            </div>
+            
+            <ul class="space-y-2">
+                <li>
+                    <a href="{% url 'user_profile' %}" class="sidebar-item flex items-center px-4 py-3 text-white hover:text-white {% if request.resolver_match.url_name == 'user_profile' %}active{% endif %}">
+                        <i class="fas fa-user nav-icon"></i>
+                        <span class="nav-text">Profile Settings</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'user_settings' %}" class="sidebar-item flex items-center px-4 py-3 text-white hover:text-white {% if request.resolver_match.url_name == 'user_settings' %}active{% endif %}">
+                        <i class="fas fa-user-cog nav-icon"></i>
+                        <span class="nav-text">User Settings</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'dashboard_settings' %}" class="sidebar-item flex items-center px-4 py-3 text-white hover:text-white {% if request.resolver_match.url_name == 'dashboard_settings' %}active{% endif %}">
+                        <i class="fas fa-cog nav-icon"></i>
+                        <span class="nav-text">Dashboard Settings</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'notification_settings' %}" class="sidebar-item flex items-center px-4 py-3 text-white hover:text-white {% if request.resolver_match.url_name == 'notification_settings' %}active{% endif %}">
+                        <i class="fas fa-bell nav-icon"></i>
+                        <span class="nav-text">Notifications</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Sidebar Footer -->
+        <div class="sidebar-footer p-4">
+            {% if user.is_authenticated %}
+                <div class="flex items-center mb-4">
+                    <div class="user-avatar">
+                        {{ user.first_name|first|default:user.username|first|upper }}
+                    </div>
+                    <div>
+                        <div class="user-name">{{ user.first_name|default:user.username }}</div>
+                        <div class="user-role">User</div>
+                    </div>
+                </div>
+                <a href="{% url 'logout' %}" class="logout-btn flex items-center justify-center">
+                    <i class="fas fa-sign-out-alt mr-2"></i>
+                    Logout
+                </a>
+            {% else %}
+                <div class="flex items-center mb-4">
+                    <div class="user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div>
+                        <div class="user-name">Guest</div>
+                        <div class="user-role">Not logged in</div>
+                    </div>
+                </div>
+                <a href="{% url 'login' %}" class="logout-btn flex items-center justify-center">
+                    <i class="fas fa-sign-in-alt mr-2"></i>
+                    Login
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div id="main-content" class="main-content ml-64">
+        <!-- Top Header -->
+        <header class="top-header px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <button id="mobile-menu-toggle" class="lg:hidden mr-4 text-gray-500 hover:text-gray-700 transition-colors">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                    <h1 class="page-title">{% block page_title %}Dashboard{% endblock %}</h1>
+                </div>
+                
+                <div class="flex items-center space-x-6">
+                    <!-- Notifications -->
+                    <div class="relative">
+                        <button class="notification-bell">
+                            <i class="fas fa-bell"></i>
+                            <span class="notification-badge">3</span>
+                        </button>
+                    </div>
+                    
+                    <!-- User Menu -->
+                    {% if user.is_authenticated %}
+                    <div class="relative">
+                        <button class="flex items-center space-x-3 text-gray-700 hover:text-gray-900 transition-colors">
+                            <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-sm font-semibold shadow-lg">
+                                {{ user.first_name|first|default:user.username|first|upper }}
+                            </div>
+                            <span class="hidden md:block font-medium">{{ user.first_name|default:user.username }}</span>
+                            <i class="fas fa-chevron-down text-xs text-gray-400"></i>
+                        </button>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        <main class="p-6 glass-effect rounded-2xl shadow-lg mt-6 mx-4">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="mb-4 p-4 rounded-lg {% if message.tags == 'error' %}bg-red-100 text-red-700 border border-red-200{% elif message.tags == 'success' %}bg-green-100 text-green-700 border border-green-200{% else %}bg-blue-100 text-blue-700 border border-blue-200{% endif %} shadow-sm">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+            
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+
+    <script>
+        // Sidebar toggle functionality
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('main-content');
+        const sidebarToggle = document.getElementById('sidebar-toggle');
+        const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('expanded');
+        }
+
+        function toggleMobileSidebar() {
+            sidebar.classList.toggle('mobile-open');
+        }
+
+        if (sidebarToggle) {
+            sidebarToggle.addEventListener('click', toggleSidebar);
+        }
+
+        if (mobileMenuToggle) {
+            mobileMenuToggle.addEventListener('click', toggleMobileSidebar);
+        }
+
+        // Close mobile sidebar when clicking outside
+        document.addEventListener('click', function(event) {
+            if (window.innerWidth <= 768) {
+                if (!sidebar.contains(event.target) && !mobileMenuToggle.contains(event.target)) {
+                    sidebar.classList.remove('mobile-open');
+                }
+            }
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768) {
+                sidebar.classList.remove('mobile-open');
+            }
+        });
+
+        // Add smooth animations to sidebar items
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebarItems = document.querySelectorAll('.sidebar-item');
+            sidebarItems.forEach((item, index) => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateX(-20px)';
+                item.style.transition = 'all 0.3s ease';
+                
+                setTimeout(() => {
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateX(0)';
+                }, index * 100);
+            });
+        });
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html> 

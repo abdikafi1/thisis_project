@@ -1,0 +1,143 @@
+{% extends 'landing/admin/base.html' %}
+
+{% block title %}Activity Logs{% endblock %}
+{% block page_title %}Activity Logs{% endblock %}
+
+{% block content %}
+<!-- Filter Form -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="card-title mb-0">
+            <i class="fas fa-filter me-2"></i>Filter Activity Logs
+        </h5>
+    </div>
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-3">
+                <label for="activity_type" class="form-label">Activity Type</label>
+                <select name="activity_type" class="form-control">
+                    <option value="">All Activities</option>
+                    <option value="login" {% if request.GET.activity_type == 'login' %}selected{% endif %}>Login</option>
+                    <option value="prediction" {% if request.GET.activity_type == 'prediction' %}selected{% endif %}>Prediction</option>
+                    <option value="report_export" {% if request.GET.activity_type == 'report_export' %}selected{% endif %}>Report Export</option>
+                    <option value="settings_change" {% if request.GET.activity_type == 'settings_change' %}selected{% endif %}>Settings Change</option>
+                    <option value="admin_action" {% if request.GET.activity_type == 'admin_action' %}selected{% endif %}>Admin Action</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="date_from" class="form-label">Date From</label>
+                <input type="date" name="date_from" class="form-control" value="{{ request.GET.date_from }}">
+            </div>
+            <div class="col-md-3">
+                <label for="date_to" class="form-label">Date To</label>
+                <input type="date" name="date_to" class="form-control" value="{{ request.GET.date_to }}">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">&nbsp;</label>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search me-2"></i>Filter
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Activity Logs Table -->
+<div class="card">
+    <div class="card-header">
+        <h5 class="card-title mb-0">
+            <i class="fas fa-list-alt me-2"></i>Activity Logs ({{ page_obj.paginator.count }} total)
+        </h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>User</th>
+                        <th>Activity Type</th>
+                        <th>Description</th>
+                        <th>IP Address</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for activity in activities %}
+                    <tr>
+                        <td>
+                            <strong>{{ activity.user.username }}</strong>
+                            <br>
+                            <small class="text-muted">{{ activity.user.email }}</small>
+                        </td>
+                        <td>
+                            {% if activity.activity_type == 'login' %}
+                                <span class="badge bg-success">{{ activity.get_activity_type_display }}</span>
+                            {% elif activity.activity_type == 'prediction' %}
+                                <span class="badge bg-primary">{{ activity.get_activity_type_display }}</span>
+                            {% elif activity.activity_type == 'admin_action' %}
+                                <span class="badge bg-danger">{{ activity.get_activity_type_display }}</span>
+                            {% elif activity.activity_type == 'settings_change' %}
+                                <span class="badge bg-warning">{{ activity.get_activity_type_display }}</span>
+                            {% else %}
+                                <span class="badge bg-secondary">{{ activity.get_activity_type_display }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <small>{{ activity.description }}</small>
+                        </td>
+                        <td>
+                            <small class="text-muted">{{ activity.ip_address|default:"N/A" }}</small>
+                        </td>
+                        <td>
+                            <small>{{ activity.created_at|date:"M d, Y H:i" }}</small>
+                            <br>
+                            <small class="text-muted">{{ activity.created_at|timesince }} ago</small>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-4">
+                            <i class="fas fa-list-alt fa-3x mb-3"></i>
+                            <br>No activity logs found.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+        <nav aria-label="Activity logs pagination">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1{% if request.GET.activity_type %}&activity_type={{ request.GET.activity_type }}{% endif %}{% if request.GET.date_from %}&date_from={{ request.GET.date_from }}{% endif %}{% if request.GET.date_to %}&date_to={{ request.GET.date_to }}{% endif %}">First</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.activity_type %}&activity_type={{ request.GET.activity_type }}{% endif %}{% if request.GET.date_from %}&date_from={{ request.GET.date_from }}{% endif %}{% if request.GET.date_to %}&date_to={{ request.GET.date_to }}{% endif %}">Previous</a>
+                    </li>
+                {% endif %}
+
+                <li class="page-item active">
+                    <span class="page-link">
+                        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                    </span>
+                </li>
+
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.activity_type %}&activity_type={{ request.GET.activity_type }}{% endif %}{% if request.GET.date_from %}&date_from={{ request.GET.date_from }}{% endif %}{% if request.GET.date_to %}&date_to={{ request.GET.date_to }}{% endif %}">Next</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.activity_type %}&activity_type={{ request.GET.activity_type }}{% endif %}{% if request.GET.date_from %}&date_from={{ request.GET.date_from }}{% endif %}{% if request.GET.date_to %}&date_to={{ request.GET.date_to }}{% endif %}">Last</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

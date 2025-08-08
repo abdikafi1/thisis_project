@@ -1,0 +1,279 @@
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.models import User
+from django.contrib import messages
+from django.core.paginator import Paginator
+from django.db.models import Q, Count
+from django.utils import timezone
+from datetime import datetime, timedelta
+from .models import UserProfile, Prediction, UserActivity, SystemSettings
+from .views import get_fraud_analytics, get_ml_model_insights
+from .forms import AdminUserManagementForm, SystemSettingsForm, UserSearchForm, AdminDashboardForm
+from .decorators import admin_required, track_activity
+from .decorators import track_activity
+
+@admin_required
+@track_activity('admin_action', lambda req, *args, **kwargs: "Accessed admin dashboard")
+def admin_dashboard(request):
+    """Enhanced admin dashboard with real fraud detection analytics"""
+    # Get date range from form
+    form = AdminDashboardForm(request.GET)
+    date_from = None
+    date_to = None
+    
+    if form.is_valid():
+        date_from = form.cleaned_data.get('date_from')
+        date_to = form.cleaned_data.get('date_to')
+    
+    # Filter activities by date range
+    activities = UserActivity.objects.all()
+    if date_from:
+        activities = activities.filter(created_at__date__gte=date_from)
+    if date_to:
+        activities = activities.filter(created_at__date__lte=date_to)
+    
+    # Get basic statistics
+    total_users = User.objects.count()
+    total_predictions = Prediction.objects.count()
+    
+    # Get real fraud analytics
+    fraud_analytics = get_fraud_analytics()
+    ml_insights = get_ml_model_insights()
+    total_activities = activities.count()
+    
+    # User level distribution
+    user_levels = UserProfile.objects.values('user_level').annotate(count=Count('user_level'))
+    
+    # Recent activities
+    recent_activities = activities.order_by('-created_at')[:10]
+    
+    # Activity type distribution
+    activity_types = activities.values('activity_type').annotate(count=Count('activity_type'))
+    
+    # Daily predictions for the last 30 days
+    thirty_days_ago = timezone.now() - timedelta(days=30)
+    daily_predictions = Prediction.objects.filter(
+        created_at__gte=thirty_days_ago
+    ).extra(
+        select={'day': 'date(created_at)'}
+    ).values('day').annotate(count=Count('id')).order_by('day')
+    
+    context = {
+        'form': form,
+        'total_users': total_users,
+        'total_predictions': total_predictions,
+        'total_activities': total_activities,
+        'user_levels': user_levels,
+        'recent_activities': recent_activities,
+        'activity_types': activity_types,
+        'daily_predictions': daily_predictions,
+        # Real fraud detection analytics
+        'fraud_analytics': fraud_analytics,
+        'ml_insights': ml_insights,
+        'fraud_cases': fraud_analytics.get('fraud_cases', 0),
+        'legitimate_cases': fraud_analytics.get('legitimate_cases', 0),
+        'fraud_rate': fraud_analytics.get('fraud_rate', 0),
+        'model_accuracy': fraud_analytics.get('model_performance', {}).get('accuracy', 0),
+        'high_risk_patterns': fraud_analytics.get('high_risk_patterns', {}),
+        'feature_importance': ml_insights.get('feature_importance', {}),
+        'risk_factors': ml_insights.get('risk_factors', {}),
+    }
+    
+    return render(request, 'landing/admin/simple_admin_dashboard.html', context)
+
+@admin_required
+@track_activity('admin_action', lambda req, *args, **kwargs: "Accessed user management")
+def admin_user_management(request):
+    """Admin interface for managing users"""
+    form = UserSearchForm(request.GET)
+    users = User.objects.select_related('profile').all()
+    
+    if form.is_valid():
+        search = form.cleaned_data.get('search')
+        user_level = form.cleaned_data.get('user_level')
+        is_verified = form.cleaned_data.get('is_verified')
+        
+        if search:
+            users = users.filter(
+                Q(username__icontains=search) |
+                Q(email__icontains=search) |
+                Q(profile__company__icontains=search)
+            )
+        
+        if user_level:
+            users = users.filter(profile__user_level=user_level)
+        
+        if is_verified:
+            is_verified_bool = is_verified == 'True'
+            users = users.filter(profile__is_verified=is_verified_bool)
+    
+    # Pagination
+    paginator = Paginator(users, 20)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    context = {
+        'form': form,
+        'page_obj': page_obj,
+        'users': page_obj,
+    }
+    
+    return render(request, 'landing/admin/user_management.html', context)
+
+@admin_required
+@track_activity('admin_action', lambda req, *args, **kwargs: f"Updated user {kwargs.get('user_id')}")
+def admin_edit_user(request, user_id):
+    """Edit user profile and permissions"""
+    user = get_object_or_404(User, id=user_id)
+    
+    if request.method == 'POST':
+        form = AdminUserManagementForm(request.POST, instance=user.profile)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f'User {user.username} updated successfully.')
+            return redirect('admin_user_management')
+    else:
+        form = AdminUserManagementForm(instance=user.profile)
+    
+    # Get user statistics
+    user_predictions = Prediction.objects.filter(user=user).count()
+    user_activities = UserActivity.objects.filter(user=user).count()
+    
+    context = {
+        'form': form,
+        'user': user,
+        'user_predictions': user_predictions,
+        'user_activities': user_activities,
+    }
+    
+    return render(request, 'landing/admin/edit_user.html', context)
+
+@admin_required
+@track_activity('admin_action', lambda req, *args, **kwargs: f"Deleted user {kwargs.get('user_id')}")
+def admin_delete_user(request, user_id):
+    """Delete user (admin only)"""
+    user = get_object_or_404(User, id=user_id)
+    
+    if request.method == 'POST':
+        username = user.username
+        user.delete()
+        messages.success(request, f'User {username} deleted successfully.')
+        return redirect('admin_user_management')
+    
+    return render(request, 'landing/admin/delete_user.html', {'user': user})
+
+@admin_required
+@track_activity('admin_action', lambda req, *args, **kwargs: "Accessed system settings")
+def admin_system_settings(request):
+    """Manage system settings"""
+    settings = SystemSettings.objects.all()
+    
+    if request.method == 'POST':
+        form = SystemSettingsForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'System setting added successfully.')
+            return redirect('admin_system_settings')
+    else:
+        form = SystemSettingsForm()
+    
+    context = {
+        'settings': settings,
+        'form': form,
+    }
+    
+    return render(request, 'landing/admin/system_settings.html', context)
+
+@admin_required
+@track_activity('admin_action', lambda req, *args, **kwargs: f"Updated system setting {kwargs.get('setting_id')}")
+def admin_edit_setting(request, setting_id):
+    """Edit system setting"""
+    setting = get_object_or_404(SystemSettings, id=setting_id)
+    
+    if request.method == 'POST':
+        form = SystemSettingsForm(request.POST, instance=setting)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'System setting updated successfully.')
+            return redirect('admin_system_settings')
+    else:
+        form = SystemSettingsForm(instance=setting)
+    
+    context = {
+        'form': form,
+        'setting': setting,
+    }
+    
+    return render(request, 'landing/admin/edit_setting.html', context)
+
+@admin_required
+@track_activity('admin_action', lambda req, *args, **kwargs: "Accessed activity logs")
+def admin_activity_logs(request):
+    """View system activity logs"""
+    activities = UserActivity.objects.select_related('user').all()
+    
+    # Filter by activity type if provided
+    activity_type = request.GET.get('activity_type')
+    if activity_type:
+        activities = activities.filter(activity_type=activity_type)
+    
+    # Filter by date range if provided
+    date_from = request.GET.get('date_from')
+    date_to = request.GET.get('date_to')
+    
+    if date_from:
+        activities = activities.filter(created_at__date__gte=date_from)
+    if date_to:
+        activities = activities.filter(created_at__date__lte=date_to)
+    
+    # Pagination
+    paginator = Paginator(activities, 50)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    context = {
+        'page_obj': page_obj,
+        'activities': page_obj,
+    }
+    
+    return render(request, 'landing/admin/activity_logs.html', context)
+
+@admin_required
+@track_activity('admin_action', lambda req, *args, **kwargs: "Accessed system reports")
+def admin_reports(request):
+    """Generate system reports"""
+    # Get date range
+    end_date = timezone.now()
+    start_date = end_date - timedelta(days=30)
+    
+    # User registration report
+    new_users = User.objects.filter(date_joined__gte=start_date).count()
+    
+    # Prediction report
+    total_predictions = Prediction.objects.count()
+    recent_predictions = Prediction.objects.filter(created_at__gte=start_date).count()
+    
+    # Activity report
+    total_activities = UserActivity.objects.count()
+    recent_activities = UserActivity.objects.filter(created_at__gte=start_date).count()
+    
+    # User level distribution
+    user_levels = UserProfile.objects.values('user_level').annotate(count=Count('user_level'))
+    
+    # Top users by activity
+    top_users = User.objects.annotate(
+        activity_count=Count('activities')
+    ).order_by('-activity_count')[:10]
+    
+    context = {
+        'new_users': new_users,
+        'total_predictions': total_predictions,
+        'recent_predictions': recent_predictions,
+        'total_activities': total_activities,
+        'recent_activities': recent_activities,
+        'user_levels': user_levels,
+        'top_users': top_users,
+        'start_date': start_date,
+        'end_date': end_date,
+    }
+    
+    return render(request, 'landing/admin/reports.html', context)
