@@ -154,7 +154,7 @@
 <body class="bg-gray-50 min-h-screen">
     <div class="flex h-screen overflow-hidden">
         <!-- Enhanced Modern Sidebar -->
-        <aside id="sidebar" class="sidebar-gradient text-white w-72 flex-shrink-0 transition-all duration-300 ease-in-out animate-slide-in relative">
+        <aside id="sidebar" class="sidebar-gradient text-white w-72 flex-shrink-0 transition-all duration-300 ease-in-out animate-slide-in relative flex flex-col">
             <!-- Sidebar Header -->
             <div class="p-6 border-b border-white/10 bg-gradient-to-r from-blue-600/20 to-purple-600/20">
                 <div class="flex items-center space-x-4">
@@ -173,7 +173,7 @@
             </div>
 
             <!-- Navigation Menu -->
-            <nav class="mt-6 px-4 flex-1 overflow-y-auto" role="navigation" aria-label="Admin Sidebar Navigation">
+            <nav class="mt-6 px-4 flex-1 min-h-0 overflow-y-auto" role="navigation" aria-label="Admin Sidebar Navigation">
                 <div class="space-y-6">
                     <!-- Main Dashboard -->
                     <div class="sidebar-section">
@@ -305,30 +305,26 @@
                     </div>
                 </div>
 
-                <!-- Bottom Actions -->
-                <div class="absolute bottom-6 left-4 right-4">
-                    
-                    
-                    <!-- Quick Actions -->
-                    <div class="space-y-2">
-                        <a href="{% url 'dashboard' %}" 
-                           class="nav-item-hover flex items-center px-4 py-3 text-white/80 hover:text-white rounded-xl transition-all duration-200 group">
-                            <div class="w-8 h-8 bg-gradient-to-br from-gray-500 to-gray-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
-                                <i class="fas fa-arrow-left text-white text-sm"></i>
-                            </div>
-                            <span class="font-medium">Back to Main App</span>
-                        </a>
-                        
-                        <a href="{% url 'logout' %}" 
-                           class="nav-item-hover flex items-center px-4 py-3 text-red-300 hover:text-red-200 rounded-xl transition-all duration-200 group">
-                            <div class="w-8 h-8 bg-gradient-to-br from-red-500 to-red-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
-                                <i class="fas fa-sign-out-alt text-white text-sm"></i>
-                            </div>
-                            <span class="font-medium">Logout</span>
-                        </a>
-                    </div>
-                </div>
             </nav>
+            <!-- Bottom Actions (outside scroll) -->
+            <div class="mt-auto px-4 pb-6">
+                <div class="space-y-2">
+                    <a href="{% url 'dashboard' %}"
+                       class="nav-item-hover flex items-center px-4 py-3 text-white/80 hover:text-white rounded-xl transition-all duration-200 group">
+                        <div class="w-8 h-8 bg-gradient-to-br from-gray-500 to-gray-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-arrow-left text-white text-sm"></i>
+                        </div>
+                        <span class="font-medium">Back to Main App</span>
+                    </a>
+                    <a href="{% url 'logout' %}"
+                       class="nav-item-hover flex items-center px-4 py-3 text-red-300 hover:text-red-200 rounded-xl transition-all duration-200 group">
+                        <div class="w-8 h-8 bg-gradient-to-br from-red-500 to-red-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-sign-out-alt text-white text-sm"></i>
+                        </div>
+                        <span class="font-medium">Logout</span>
+                    </a>
+                </div>
+            </div>
         </aside>
 
         <!-- Main Content Area -->
