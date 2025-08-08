@@ -487,6 +487,45 @@ document.addEventListener('DOMContentLoaded', function() {
     ];
 
     fieldConfigs.forEach(attachMeaning);
+
+    // Add per-option tooltips (titles) so meanings show on hover in the opened dropdown
+    function setOptionTitles(selectId, getTitleForText) {
+        const sel = document.getElementById(selectId);
+        if (!sel) return;
+        Array.from(sel.options).forEach(opt => {
+            const txt = (opt.text || '').trim();
+            if (!txt || txt.toLowerCase().includes('select')) { opt.title = ''; return; }
+            const t = getTitleForText(txt) || '';
+            opt.title = t;
+        });
+        // Update again when choices might change
+        sel.addEventListener('focus', () => Array.from(sel.options).forEach(opt => {
+            const txt = (opt.text || '').trim();
+            if (!txt || txt.toLowerCase().includes('select')) { opt.title = ''; return; }
+            const t = getTitleForText(txt) || '';
+            opt.title = t;
+        }));
+    }
+
+    setOptionTitles('{{ form.BasePolicy.id_for_label }}', (t)=> basePolicyMap[t] || '');
+    setOptionTitles('{{ form.VehicleCategory.id_for_label }}', (t)=> vehicleCategoryMap[t] || '');
+    setOptionTitles('{{ form.PastNumberOfClaims.id_for_label }}', (t)=> pastClaimsMap[t] || '');
+    setOptionTitles('{{ form.PoliceReportFiled.id_for_label }}', (t)=> t.toLowerCase().includes('yes') ? 'Report filed' : (t.toLowerCase().includes('no') ? 'No report' : ''));
+    setOptionTitles('{{ form.WitnessPresent.id_for_label }}', (t)=> t.toLowerCase().includes('yes') ? 'Witness present' : (t.toLowerCase().includes('no') ? 'No witness' : ''));
+    setOptionTitles('{{ form.AccidentArea.id_for_label }}', (t)=> areaMap[t] || '');
+    setOptionTitles('{{ form.Days_Policy_Accident.id_for_label }}', (t)=> t ? `${t} between policy start and accident` : '');
+    setOptionTitles('{{ form.Days_Policy_Claim.id_for_label }}', (t)=> t ? `${t} between policy start and claim` : '');
+    setOptionTitles('{{ form.NumberOfSuppliments.id_for_label }}', (t)=> {
+        const m = { 'none':'No supplements', '1 to 2':'1–2 supplements', '3 to 5':'3–5 supplements', 'more than 5':'5+ supplements' };
+        return m[t] || (t ? `Supplements: ${t}` : '');
+    });
+    setOptionTitles('{{ form.VehiclePrice.id_for_label }}', (t)=> t ? `Price band: ${t}` : '');
+    setOptionTitles('{{ form.AgeOfVehicle.id_for_label }}', (t)=> t ? `Vehicle age: ${t}` : '');
+    setOptionTitles('{{ form.Fault.id_for_label }}', (t)=> t === 'Policy Holder' ? 'Insured at fault' : (t === 'Third Party' ? 'Other party at fault' : ''));
+    setOptionTitles('{{ form.DriverRating.id_for_label }}', (t)=> {
+        const m = { '1':'High risk driver', '2':'Moderate risk driver', '3':'Low risk driver', '4':'Very safe driver' };
+        return m[String((t||'').split(' ')[0])] || '';
+    });
 });
 </script>
 {% endblock %} 
