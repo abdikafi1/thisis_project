@@ -313,8 +313,12 @@
     const featEl = document.getElementById('featChart');
     if (featEl) {
         const fctx = featEl.getContext('2d');
-        const raw = JSON.parse('{{ feature_importance|default:"{}"|escapejs }}');
-        const pairs = Object.entries(raw || {}).sort((a,b)=> b[1]-a[1]).slice(0, 10);
+        const raw = {% if feature_importance %}{
+            {% for k, v in feature_importance.items %}
+            "{{ k|escapejs }}": {{ v|floatformat:"6" }}{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        }{% else %}{}{% endif %};
+        const pairs = Object.entries(raw).sort((a,b)=> b[1]-a[1]).slice(0, 10);
         const labels = pairs.map(p => p[0]);
         const values = pairs.map(p => p[1]);
         new Chart(fctx, {
@@ -341,7 +345,7 @@
     const dlBtn = document.getElementById('downloadJson');
     if (dlBtn) {
         dlBtn.addEventListener('click', () => {
-            const data = {{ prediction.input_dict|default:{}|safe }};
+            const data = {% if prediction %}{{ prediction.input_data|safe }}{% else %}{}{% endif %};
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
