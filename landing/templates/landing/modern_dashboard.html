@@ -60,7 +60,7 @@
                                     {% elif user.profile.user_level == 'premium' %}
                                         <i class="fas fa-gem mr-1"></i>Premium User
                                     {% else %}
-                                        <i class="fas fa-user mr-1"></i>Basic User
+                                        <i class="fas fa-user mr-1"></i>User
                                     {% endif %}
                                 </p>
                             </div>
@@ -69,7 +69,13 @@
                 </div>
 
                 <!-- Navigation -->
+
                 <nav class="mt-8 flex-1 px-2 space-y-1">
+                    
+                    <a href="{% url 'prediction_history' %}" class="{% if request.resolver_match.url_name == 'prediction_history' %}bg-blue-50 border-r-4 border-blue-600 text-blue-700{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %} group flex items-center px-2 py-2 text-sm font-medium rounded-md">
+                        <i class="fas fa-history mr-3 flex-shrink-0 h-6 w-6"></i>
+                        Home
+                    </a>
                     <a href="{% url 'user_dashboard' %}" class="{% if request.resolver_match.url_name == 'user_dashboard' %}bg-blue-50 border-r-4 border-blue-600 text-blue-700{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %} group flex items-center px-2 py-2 text-sm font-medium rounded-md">
                         <i class="fas fa-tachometer-alt mr-3 flex-shrink-0 h-6 w-6"></i>
                         Dashboard
@@ -77,13 +83,10 @@
                     
                     <a href="{% url 'predict' %}" class="{% if request.resolver_match.url_name == 'predict' %}bg-blue-50 border-r-4 border-blue-600 text-blue-700{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %} group flex items-center px-2 py-2 text-sm font-medium rounded-md">
                         <i class="fas fa-search mr-3 flex-shrink-0 h-6 w-6"></i>
-                        New Prediction
+                        New Detection
                     </a>
                     
-                    <a href="{% url 'prediction_history' %}" class="{% if request.resolver_match.url_name == 'prediction_history' %}bg-blue-50 border-r-4 border-blue-600 text-blue-700{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %} group flex items-center px-2 py-2 text-sm font-medium rounded-md">
-                        <i class="fas fa-history mr-3 flex-shrink-0 h-6 w-6"></i>
-                        History
-                    </a>
+                    
                     
                     {% if user.profile.is_premium %}
                     <a href="{% url 'user_reports' %}" class="{% if request.resolver_match.url_name == 'user_reports' %}bg-blue-50 border-r-4 border-blue-600 text-blue-700{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %} group flex items-center px-2 py-2 text-sm font-medium rounded-md">
