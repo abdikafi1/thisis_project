@@ -74,6 +74,9 @@
         }
 
         /* Lightweight utilities to support existing Bootstrap-like markup in admin templates */
+        /* Sidebar spacing refinements */
+        .sidebar-section a + a { margin-top: 0.25rem; }
+
         .row { display: flex; flex-wrap: wrap; margin-left: -0.5rem; margin-right: -0.5rem; }
         .col-12, .col-md-2, .col-md-3, .col-md-4, .col-md-6, .col-md-8, .col-lg-4, .col-lg-8 { padding-left: 0.5rem; padding-right: 0.5rem; }
         .col-12 { width: 100%; }
@@ -170,13 +173,13 @@
             </div>
 
             <!-- Navigation Menu -->
-            <nav class="mt-6 px-4 flex-1 overflow-y-auto">
+            <nav class="mt-6 px-4 flex-1 overflow-y-auto" role="navigation" aria-label="Admin Sidebar Navigation">
                 <div class="space-y-6">
                     <!-- Main Dashboard -->
                     <div class="sidebar-section">
-                        <a href="{% url 'admin_dashboard' %}" 
-                           class="nav-item-hover flex items-center px-4 py-4 text-white/90 hover:text-white rounded-xl transition-all duration-200 {% if request.resolver_match.url_name == 'admin_dashboard' %}nav-item-active{% endif %} group">
-                            <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mr-4 group-hover:scale-110 transition-transform">
+                        <a href="{% url 'admin_dashboard' %}" {% if request.resolver_match.url_name == 'admin_dashboard' %}aria-current="page"{% endif %}
+                           class="nav-item-hover flex items-center px-4 py-3 text-white/90 hover:text-white rounded-xl transition-all duration-200 {% if request.resolver_match.url_name == 'admin_dashboard' %}nav-item-active{% endif %} group">
+                            <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mr-4 group-hover:scale-110 transition-transform">
                                 <i class="fas fa-chart-line text-white"></i>
                             </div>
                             <div class="flex-1">
@@ -196,7 +199,7 @@
                             </div>
                         </div>
                         
-                        <a href="{% url 'predict' %}" 
+                        <a href="{% url 'predict' %}" {% if request.resolver_match.url_name == 'predict' %}aria-current="page"{% endif %}
                            class="nav-item-hover flex items-center px-4 py-3 text-white/80 hover:text-white rounded-xl transition-all duration-200 group">
                             <div class="w-8 h-8 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
                                 <i class="fas fa-brain text-white text-sm"></i>
@@ -208,7 +211,7 @@
                             <span class="bg-green-500 w-3 h-3 rounded-full status-indicator"></span>
                         </a>
 
-                        <a href="{% url 'fraud_analytics' %}" 
+                        <a href="{% url 'fraud_analytics' %}" {% if request.resolver_match.url_name == 'fraud_analytics' %}aria-current="page"{% endif %}
                            class="nav-item-hover flex items-center px-4 py-3 text-white/80 hover:text-white rounded-xl transition-all duration-200 group">
                             <div class="w-8 h-8 bg-gradient-to-br from-red-500 to-red-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
                                 <i class="fas fa-search text-white text-sm"></i>
@@ -220,7 +223,7 @@
                             <span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full font-semibold">Live</span>
                         </a>
 
-                        <a href="{% url 'user_reports' %}" 
+                        <a href="{% url 'user_reports' %}" {% if request.resolver_match.url_name == 'user_reports' %}aria-current="page"{% endif %}
                            class="nav-item-hover flex items-center px-4 py-3 text-white/80 hover:text-white rounded-xl transition-all duration-200 group">
                             <div class="w-8 h-8 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
                                 <i class="fas fa-chart-pie text-white text-sm"></i>
@@ -241,7 +244,7 @@
                             </div>
                         </div>
                         
-                        <a href="{% url 'admin_user_management' %}" 
+                        <a href="{% url 'admin_user_management' %}" {% if request.resolver_match.url_name == 'admin_user_management' %}aria-current="page"{% endif %}
                            class="nav-item-hover flex items-center px-4 py-3 text-white/80 hover:text-white rounded-xl transition-all duration-200 {% if request.resolver_match.url_name == 'admin_user_management' %}nav-item-active{% endif %} group">
                             <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
                                 <i class="fas fa-users text-white text-sm"></i>
@@ -253,7 +256,7 @@
                             <i class="fas fa-chevron-right text-white/40 group-hover:text-white transition-colors"></i>
                         </a>
 
-                        <a href="{% url 'admin_activity_logs' %}" 
+                        <a href="{% url 'admin_activity_logs' %}" {% if request.resolver_match.url_name == 'admin_activity_logs' %}aria-current="page"{% endif %}
                            class="nav-item-hover flex items-center px-4 py-3 text-white/80 hover:text-white rounded-xl transition-all duration-200 {% if request.resolver_match.url_name == 'admin_activity_logs' %}nav-item-active{% endif %} group">
                             <div class="w-8 h-8 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
                                 <i class="fas fa-list-alt text-white text-sm"></i>
@@ -265,7 +268,7 @@
                             <i class="fas fa-chevron-right text-white/40 group-hover:text-white transition-colors"></i>
                         </a>
 
-                        <a href="{% url 'admin_system_settings' %}" 
+                        <a href="{% url 'admin_system_settings' %}" {% if request.resolver_match.url_name == 'admin_system_settings' %}aria-current="page"{% endif %}
                            class="nav-item-hover flex items-center px-4 py-3 text-white/80 hover:text-white rounded-xl transition-all duration-200 {% if request.resolver_match.url_name == 'admin_system_settings' %}nav-item-active{% endif %} group">
                             <div class="w-8 h-8 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
                                 <i class="fas fa-cogs text-white text-sm"></i>
@@ -277,7 +280,7 @@
                             <i class="fas fa-chevron-right text-white/40 group-hover:text-white transition-colors"></i>
                         </a>
 
-                        <a href="{% url 'admin_reports' %}" 
+                        <a href="{% url 'admin_reports' %}" {% if request.resolver_match.url_name == 'admin_reports' %}aria-current="page"{% endif %}
                            class="nav-item-hover flex items-center px-4 py-3 text-white/80 hover:text-white rounded-xl transition-all duration-200 {% if request.resolver_match.url_name == 'admin_reports' %}nav-item-active{% endif %} group">
                             <div class="w-8 h-8 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
                                 <i class="fas fa-file-alt text-white text-sm"></i>
