@@ -71,7 +71,6 @@
                 <!-- Navigation -->
 
                 <nav class="mt-8 flex-1 px-2 space-y-1">
-                    
                     <a href="{% url 'prediction_history' %}" class="{% if request.resolver_match.url_name == 'prediction_history' %}bg-blue-50 border-r-4 border-blue-600 text-blue-700{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %} group flex items-center px-2 py-2 text-sm font-medium rounded-md">
                         <i class="fas fa-history mr-3 flex-shrink-0 h-6 w-6"></i>
                         Home
