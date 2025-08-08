@@ -202,13 +202,12 @@
                         <a href="{% url 'predict' %}" {% if request.resolver_match.url_name == 'predict' %}aria-current="page"{% endif %}
                            class="nav-item-hover flex items-center px-4 py-3 text-white/80 hover:text-white rounded-xl transition-all duration-200 group">
                             <div class="w-8 h-8 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
-                                <i class="fas fa-brain text-white text-sm"></i>
+                                <i class="fas fa-magnifying-glass text-white text-sm"></i>
                             </div>
                             <div class="flex-1">
-                                <span class="font-medium">ML Model Status</span>
-                                <p class="text-xs text-white/50 mt-1">Model performance & health</p>
+                                <span class="font-medium">New Prediction</span>
+                                <p class="text-xs text-white/50 mt-1">Start a new fraud analysis</p>
                             </div>
-                            <span class="bg-green-500 w-3 h-3 rounded-full status-indicator"></span>
                         </a>
 
                         <a href="{% url 'fraud_analytics' %}" {% if request.resolver_match.url_name == 'fraud_analytics' %}aria-current="page"{% endif %}
@@ -223,14 +222,36 @@
                             <span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full font-semibold">Live</span>
                         </a>
 
+                        
+                    </div>
+
+                    <!-- Reports & Exports Section -->
+                    <div class="sidebar-section">
+                        <div class="flex items-center justify-between mb-4 px-4">
+                            <p class="text-xs font-bold text-white/70 uppercase tracking-wider">Reports & Exports</p>
+                            <div class="w-8 h-8 bg-amber-500/20 rounded-full flex items-center justify-center">
+                                <i class="fas fa-file-chart-column text-amber-300 text-xs"></i>
+                            </div>
+                        </div>
+                        <a href="{% url 'admin_reports' %}" {% if request.resolver_match.url_name == 'admin_reports' %}aria-current="page"{% endif %}
+                           class="nav-item-hover flex items-center px-4 py-3 text-white/80 hover:text-white rounded-xl transition-all duration-200 group">
+                            <div class="w-8 h-8 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
+                                <i class="fas fa-file-alt text-white text-sm"></i>
+                            </div>
+                            <div class="flex-1">
+                                <span class="font-medium">Fraud Reports</span>
+                                <p class="text-xs text-white/50 mt-1">Generate & view reports</p>
+                            </div>
+                            <i class="fas fa-chevron-right text-white/40 group-hover:text-white transition-colors"></i>
+                        </a>
                         <a href="{% url 'user_reports' %}" {% if request.resolver_match.url_name == 'user_reports' %}aria-current="page"{% endif %}
                            class="nav-item-hover flex items-center px-4 py-3 text-white/80 hover:text-white rounded-xl transition-all duration-200 group">
                             <div class="w-8 h-8 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
                                 <i class="fas fa-chart-pie text-white text-sm"></i>
                             </div>
                             <div class="flex-1">
-                                <span class="font-medium">Risk Analysis</span>
-                                <p class="text-xs text-white/50 mt-1">Risk assessment & scoring</p>
+                                <span class="font-medium">User Reports</span>
+                                <p class="text-xs text-white/50 mt-1">User & team insights</p>
                             </div>
                         </a>
                     </div>
@@ -280,42 +301,13 @@
                             <i class="fas fa-chevron-right text-white/40 group-hover:text-white transition-colors"></i>
                         </a>
 
-                        <a href="{% url 'admin_reports' %}" {% if request.resolver_match.url_name == 'admin_reports' %}aria-current="page"{% endif %}
-                           class="nav-item-hover flex items-center px-4 py-3 text-white/80 hover:text-white rounded-xl transition-all duration-200 {% if request.resolver_match.url_name == 'admin_reports' %}nav-item-active{% endif %} group">
-                            <div class="w-8 h-8 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
-                                <i class="fas fa-file-alt text-white text-sm"></i>
-                            </div>
-                            <div class="flex-1">
-                                <span class="font-medium">Fraud Reports</span>
-                                <p class="text-xs text-white/50 mt-1">Generate & view reports</p>
-                            </div>
-                            <i class="fas fa-chevron-right text-white/40 group-hover:text-white transition-colors"></i>
-                        </a>
+                        
                     </div>
                 </div>
 
                 <!-- Bottom Actions -->
                 <div class="absolute bottom-6 left-4 right-4">
-                    <!-- System Status -->
-                    <div class="glass-effect rounded-xl p-4 mb-4">
-                        <div class="flex items-center justify-between mb-3">
-                            <span class="text-white/90 font-semibold">System Status</span>
-                            <span class="text-green-400 font-bold">Online</span>
-                        </div>
-                        <div class="space-y-2">
-                            <div class="flex items-center justify-between text-sm">
-                                <span class="text-white/70">Model Accuracy</span>
-                                <span class="text-white font-semibold">94.7%</span>
-                            </div>
-                            <div class="w-full bg-white/20 rounded-full h-2">
-                                <div class="bg-gradient-to-r from-green-400 to-green-500 h-2 rounded-full" style="width: 94.7%"></div>
-                            </div>
-                            <div class="flex items-center justify-between text-sm">
-                                <span class="text-white/70">Active Users</span>
-                                <span class="text-white font-semibold">127</span>
-                            </div>
-                        </div>
-                    </div>
+                    
                     
                     <!-- Quick Actions -->
                     <div class="space-y-2">
