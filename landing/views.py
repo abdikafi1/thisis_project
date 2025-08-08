@@ -16,17 +16,32 @@ MODEL_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'ml_model')
 MODEL_PATH = os.path.join(MODEL_DIR, 'model.pkl')
 ENCODERS_PATH = os.path.join(MODEL_DIR, 'encoders.pkl')
 CATEGORICAL_COLS_PATH = os.path.join(MODEL_DIR, 'categorical_cols.pkl')
+FEATURE_COLUMNS_PATH = os.path.join(MODEL_DIR, 'feature_columns.pkl')
+NUMERIC_COLS_PATH = os.path.join(MODEL_DIR, 'numeric_cols.pkl')
 
 # Load model and encoders once
 model = joblib.load(MODEL_PATH)
 encoders = joblib.load(ENCODERS_PATH)
 categorical_cols = joblib.load(CATEGORICAL_COLS_PATH)
+try:
+    feature_columns = joblib.load(FEATURE_COLUMNS_PATH)
+    numeric_cols = joblib.load(NUMERIC_COLS_PATH)
+except Exception:
+    feature_columns = None
+    numeric_cols = None
 
 def predict_fraud(input_data):
     import time
     start_time = time.time()
     
     input_df = pd.DataFrame([input_data])
+    # Ensure all expected columns exist
+    if feature_columns:
+        for col in feature_columns:
+            if col not in input_df.columns:
+                input_df[col] = None
+        # Order columns exactly as during training
+        input_df = input_df[feature_columns]
     errors = []
     
     # Handle categorical columns
@@ -497,7 +512,7 @@ def get_started_view(request):
                 return render(request, 'landing/get_started.html', {'form': form, 'errors': errors})
             result = 'Fraud' if pred == 1 else 'Not Fraud'
             # Save to DB with user
-            Prediction.objects.create(
+            prediction = Prediction.objects.create(
                 user=request.user,
                 input_data=json.dumps(input_data),
                 result=result,
@@ -507,6 +522,9 @@ def get_started_view(request):
             request.session['prediction_result'] = result
             request.session['confidence_score'] = confidence_score
             request.session['processing_time'] = processing_time
+            request.session['risk_factors'] = risk_factors
+            request.session['feature_importance'] = feature_importance
+            request.session['prediction_id'] = prediction.id
             return redirect('prediction_result')
     else:
         form = PredictionForm()
@@ -540,6 +558,25 @@ def prediction_result_view(request):
         except Prediction.DoesNotExist:
             pass
     
+    # Fallback: populate from latest prediction if session missing
+    if (not result or confidence_score in (None, 0)) and prediction:
+        try:
+            # Use stored DB values
+            result = prediction.result
+            if prediction.confidence_score is not None:
+                confidence_score = prediction.confidence_score
+            if prediction.processing_time is not None:
+                processing_time = prediction.processing_time
+            # Optionally recompute risk factors/feature importance for display
+            input_data = prediction.input_dict()
+            pred_tmp, conf_tmp, _, _, feat_imp_tmp, risk_tmp = predict_fraud(input_data)
+            if not risk_factors:
+                risk_factors = risk_tmp or []
+            if not feature_importance:
+                feature_importance = feat_imp_tmp or {}
+        except Exception:
+            pass
+
     # Prepare context
     context = {
         'result': result,

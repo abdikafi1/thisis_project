@@ -91,6 +91,14 @@
                     </div>
                     <h3 class="text-xl font-bold text-gray-900">ML Model Risk Factor Analysis</h3>
                 </div>
+                <!-- Summary chips -->
+                <div class="flex flex-wrap gap-2 mb-4">
+                    {% for factor in risk_factors %}
+                    <span class="px-3 py-1 rounded-full text-xs font-semibold {% if factor.risk_level == 'HIGH' %}bg-red-100 text-red-700{% elif factor.risk_level == 'MEDIUM' %}bg-yellow-100 text-yellow-700{% else %}bg-blue-100 text-blue-700{% endif %}">
+                        {{ factor.factor }}: {{ factor.risk_level }}
+                    </span>
+                    {% endfor %}
+                </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {% for factor in risk_factors %}
@@ -121,19 +129,8 @@
                     </div>
                     <h3 class="text-xl font-bold text-gray-900">ML Model Feature Importance</h3>
                 </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {% for feature, importance in feature_importance.items %}
-                    <div class="bg-white rounded-lg p-4 border border-blue-200 hover:shadow-md transition">
-                        <div class="flex items-center justify-between mb-2">
-                            <h4 class="font-semibold text-gray-900">{{ feature|title }}</h4>
-                            <span class="text-sm font-bold text-blue-600">{{ importance|floatformat:3 }}</span>
-                        </div>
-                        <div class="w-full bg-gray-200 rounded-full h-2">
-                            <div class="bg-blue-600 h-2 rounded-full" style="width: {{ importance|floatformat:0 }}%"></div>
-                        </div>
-                    </div>
-                    {% endfor %}
+                <div class="bg-white rounded-lg p-4 border border-blue-200">
+                    <canvas id="featChart" height="180"></canvas>
                 </div>
             </div>
             {% endif %}
@@ -155,6 +152,18 @@
             </div>
             {% endif %}
         </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="flex flex-wrap gap-3 justify-center mb-4">
+        <button id="printResult" class="inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium rounded-lg border border-gray-200 transition">
+            <i class="fas fa-print mr-2"></i>Print
+        </button>
+        {% if prediction %}
+        <button id="downloadJson" class="inline-flex items-center px-4 py-2 bg-white hover:bg-gray-50 text-gray-800 font-medium rounded-lg border border-gray-200 transition">
+            <i class="fas fa-download mr-2"></i>Download Case JSON
+        </button>
+        {% endif %}
     </div>
 
     <!-- Enhanced Recommendation Card -->
@@ -297,6 +306,49 @@
                 cutout: '70%',
                 plugins: { legend: { display: false } }
             }
+        });
+    }
+
+    // Feature importance bar chart
+    const featEl = document.getElementById('featChart');
+    if (featEl) {
+        const fctx = featEl.getContext('2d');
+        const raw = JSON.parse('{{ feature_importance|default:"{}"|escapejs }}');
+        const pairs = Object.entries(raw || {}).sort((a,b)=> b[1]-a[1]).slice(0, 10);
+        const labels = pairs.map(p => p[0]);
+        const values = pairs.map(p => p[1]);
+        new Chart(fctx, {
+            type: 'bar',
+            data: {
+                labels,
+                datasets: [{
+                    label: 'Importance',
+                    data: values,
+                    backgroundColor: '#3b82f6'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+    }
+
+    // Quick actions
+    const printBtn = document.getElementById('printResult');
+    if (printBtn) printBtn.addEventListener('click', () => window.print());
+    const dlBtn = document.getElementById('downloadJson');
+    if (dlBtn) {
+        dlBtn.addEventListener('click', () => {
+            const data = {{ prediction.input_dict|default:{}|safe }};
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'claim_case.json';
+            a.click();
+            URL.revokeObjectURL(url);
         });
     }
 </script>

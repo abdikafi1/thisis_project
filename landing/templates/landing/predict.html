@@ -330,15 +330,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const driverRatingSelect = document.getElementById('{{ form.DriverRating.id_for_label }}');
     const driverRatingInfoEl = document.getElementById('driverRatingInfo');
     const driverRatingMeaning = {
-        '1': '1 - High risk driver (frequent incidents)',
-        '2': '2 - Moderate risk driver',
-        '3': '3 - Low risk driver',
-        '4': '4 - Very low risk (safe) driver'
+        '1': 'High risk driver',
+        '2': 'Moderate risk driver',
+        '3': 'Low risk driver',
+        '4': 'Very safe driver'
     };
     function updateDriverRatingInfo() {
         if (!driverRatingSelect || !driverRatingInfoEl) return;
         const v = String(driverRatingSelect.value || '').trim();
-        driverRatingInfoEl.textContent = driverRatingMeaning[v] || 'Select a rating from 1 (high risk) to 4 (very safe).';
+        driverRatingInfoEl.textContent = driverRatingMeaning[v] || '';
     }
     if (driverRatingSelect) {
         driverRatingSelect.addEventListener('change', updateDriverRatingInfo);
@@ -442,27 +442,48 @@ document.addEventListener('DOMContentLoaded', function() {
             const text = opt ? opt.text : '';
             const value = selectEl.value;
             const desc = (typeof config.hint === 'function') ? config.hint(text, value) : '';
-            infoEl.textContent = (text && !text.toLowerCase().includes('select')) ? (desc || text) : (config.defaultHint || 'Please choose a value.');
+            infoEl.textContent = (text && !text.toLowerCase().includes('select')) ? (desc || '') : '';
         };
         selectEl.addEventListener('change', update);
         update();
     }
 
+    const basePolicyMap = {
+        'Liability': 'Third-party coverage',
+        'Collision': 'Your vehicle damage',
+        'All Perils': 'Broad combined coverage'
+    };
+    const vehicleCategoryMap = {
+        'Sport': 'High‑performance',
+        'Utility': 'SUV/utility',
+        'Family': 'Family/commuter',
+        'Luxury': 'Premium class',
+        'Economy': 'Budget class'
+    };
+    const pastClaimsMap = {
+        'none': 'No prior claims',
+        '1': 'One prior claim',
+        '2 to 4': '2–4 prior claims',
+        'more than 4': '5+ prior claims'
+    };
+    const yesNo = (t)=> t.toLowerCase().includes('yes') ? 'Yes' : (t.toLowerCase().includes('no') ? 'No' : '');
+    const areaMap = { 'Urban': 'City area', 'Rural': 'Countryside' };
+
     const fieldConfigs = [
-        { id: '{{ form.Days_Policy_Accident.id_for_label }}', defaultHint: 'Days since policy start and accident.', hint: (t)=>`Days since policy start and accident: ${t}` },
-        { id: '{{ form.Days_Policy_Claim.id_for_label }}', defaultHint: 'Days since policy start and claim.', hint: (t)=>`Days since policy start and claim: ${t}` },
-        { id: '{{ form.PastNumberOfClaims.id_for_label }}', defaultHint: 'Number of previous claims.', hint: (t)=>`${t} previous claims` },
-        { id: '{{ form.VehiclePrice.id_for_label }}', defaultHint: 'Vehicle price band.', hint: (t)=>`Vehicle price band: ${t}` },
-        { id: '{{ form.AgeOfVehicle.id_for_label }}', defaultHint: 'Vehicle age band.', hint: (t)=>`Vehicle age: ${t}` },
-        { id: '{{ form.VehicleCategory.id_for_label }}', defaultHint: 'Vehicle category.', hint: (t)=>`Vehicle category: ${t}` },
-        { id: '{{ form.PoliceReportFiled.id_for_label }}', defaultHint: 'Whether an official police report was filed.', hint: (t)=> t.toLowerCase().includes('yes') ? 'Yes — report filed' : (t.toLowerCase().includes('no') ? 'No — report not filed' : `Police report: ${t}`) },
-        { id: '{{ form.WitnessPresent.id_for_label }}', defaultHint: 'Whether a witness was present.', hint: (t)=> t.toLowerCase().includes('yes') ? 'Yes — witness present' : (t.toLowerCase().includes('no') ? 'No — no witness' : `Witness: ${t}`) },
-        { id: '{{ form.NumberOfSuppliments.id_for_label }}', defaultHint: 'Additional supplements associated with the claim.', hint: (t)=>`Supplemental claims: ${t}` },
-        { id: '{{ form.AddressChange_Claim.id_for_label }}', defaultHint: 'How recently the address changed before the claim.', hint: (t)=>`Address change before claim: ${t}` },
-        { id: '{{ form.DriverRating.id_for_label }}', elementIdOverride: 'driverRatingInfo', defaultHint: 'Select a rating from 1 (high risk) to 4 (very safe).', hint: (t, v)=> ({ '1': '1 - High risk driver (frequent incidents)', '2': '2 - Moderate risk driver', '3': '3 - Low risk driver', '4': '4 - Very low risk (safe) driver' }[String(v)] || `Driver rating: ${t}`) },
-        { id: '{{ form.Fault.id_for_label }}', defaultHint: 'Party considered at fault for the accident.', hint: (t)=>`Party at fault: ${t}` },
-        { id: '{{ form.AccidentArea.id_for_label }}', defaultHint: 'Area or environment where the accident occurred.', hint: (t)=>`Accident area: ${t}` },
-        { id: '{{ form.BasePolicy.id_for_label }}', defaultHint: 'Base policy type for this claim.', hint: (t)=>`Base policy type: ${t}` },
+        { id: '{{ form.Days_Policy_Accident.id_for_label }}', hint: (t)=> t ? `${t} between policy start and accident` : '' },
+        { id: '{{ form.Days_Policy_Claim.id_for_label }}', hint: (t)=> t ? `${t} between policy start and claim` : '' },
+        { id: '{{ form.PastNumberOfClaims.id_for_label }}', hint: (t)=> pastClaimsMap[t] || t || '' },
+        { id: '{{ form.VehiclePrice.id_for_label }}', hint: (t)=> t ? `Price band: ${t}` : '' },
+        { id: '{{ form.AgeOfVehicle.id_for_label }}', hint: (t)=> t ? `Vehicle age: ${t}` : '' },
+        { id: '{{ form.VehicleCategory.id_for_label }}', hint: (t)=> vehicleCategoryMap[t] || (t ? `Category: ${t}` : '') },
+        { id: '{{ form.PoliceReportFiled.id_for_label }}', hint: (t)=> yesNo(t) },
+        { id: '{{ form.WitnessPresent.id_for_label }}', hint: (t)=> yesNo(t) },
+        { id: '{{ form.NumberOfSuppliments.id_for_label }}', hint: (t)=> t ? `Supplements: ${t}` : '' },
+        { id: '{{ form.AddressChange_Claim.id_for_label }}', hint: (t)=> t ? `Address change: ${t}` : '' },
+        { id: '{{ form.DriverRating.id_for_label }}', elementIdOverride: 'driverRatingInfo', hint: (t, v)=> driverRatingMeaning[String(v)] || '' },
+        { id: '{{ form.Fault.id_for_label }}', hint: (t)=> t ? `At fault: ${t}` : '' },
+        { id: '{{ form.AccidentArea.id_for_label }}', hint: (t)=> areaMap[t] || '' },
+        { id: '{{ form.BasePolicy.id_for_label }}', hint: (t)=> basePolicyMap[t] || '' },
     ];
 
     fieldConfigs.forEach(attachMeaning);
