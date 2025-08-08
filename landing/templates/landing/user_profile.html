@@ -39,17 +39,17 @@
         </div>
     </div>
 
-    <!-- Profile Form -->
+            <!-- Profile Form -->
     <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-8">
         <div class="flex items-center mb-6">
             <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-4">
                 <i class="fas fa-user-edit text-blue-600"></i>
             </div>
             <h2 class="text-2xl font-bold text-gray-900">Edit Profile Information</h2>
-        </div>
+                </div>
 
         <form method="post" class="space-y-6">
-            {% csrf_token %}
+                        {% csrf_token %}
             
             <!-- Personal Information -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -57,40 +57,40 @@
                     <label for="{{ form.phone_number.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
                         <i class="fas fa-phone mr-2 text-blue-500"></i>Phone Number
                     </label>
-                    {{ form.phone_number }}
+                                {{ form.phone_number }}
                     {% if form.phone_number.errors %}
                         <p class="text-sm text-red-600 mt-1">{{ form.phone_number.errors.0 }}</p>
                     {% endif %}
-                </div>
+                            </div>
                 
                 <div>
                     <label for="{{ form.company.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
                         <i class="fas fa-building mr-2 text-blue-500"></i>Company
                     </label>
-                    {{ form.company }}
+                                {{ form.company }}
                     {% if form.company.errors %}
                         <p class="text-sm text-red-600 mt-1">{{ form.company.errors.0 }}</p>
                     {% endif %}
-                </div>
-            </div>
+                            </div>
+                        </div>
             
             <div>
                 <label for="{{ form.position.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
                     <i class="fas fa-briefcase mr-2 text-blue-500"></i>Position
                 </label>
-                {{ form.position }}
+                                {{ form.position }}
                 {% if form.position.errors %}
                     <p class="text-sm text-red-600 mt-1">{{ form.position.errors.0 }}</p>
                 {% endif %}
-            </div>
-            
+                        </div>
+                        
             <div class="flex justify-end">
                 <button type="submit" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
                     <i class="fas fa-save mr-2"></i>Update Profile
-                </button>
-            </div>
-        </form>
-    </div>
+                            </button>
+                        </div>
+                    </form>
+                </div>
 
     <!-- Account Information -->
     <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-8">
@@ -100,7 +100,7 @@
             </div>
             <h2 class="text-2xl font-bold text-gray-900">Account Information</h2>
         </div>
-        
+
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="bg-gray-50 rounded-lg p-4">
                 <div class="flex items-center mb-2">
@@ -108,33 +108,33 @@
                     <span class="font-semibold text-gray-700">Full Name</span>
                 </div>
                 <p class="text-gray-900">{{ user.first_name }} {{ user.last_name|default:"" }}</p>
-            </div>
+                </div>
             
             <div class="bg-gray-50 rounded-lg p-4">
                 <div class="flex items-center mb-2">
                     <i class="fas fa-envelope mr-2 text-blue-500"></i>
                     <span class="font-semibold text-gray-700">Email Address</span>
-                </div>
+                        </div>
                 <p class="text-gray-900">{{ user.email }}</p>
-            </div>
-            
+                    </div>
+                    
             <div class="bg-gray-50 rounded-lg p-4">
                 <div class="flex items-center mb-2">
                     <i class="fas fa-calendar mr-2 text-blue-500"></i>
                     <span class="font-semibold text-gray-700">Member Since</span>
-                </div>
+                    </div>
                 <p class="text-gray-900">{{ user.date_joined|date:"M d, Y" }}</p>
-            </div>
+                    </div>
             
             <div class="bg-gray-50 rounded-lg p-4">
                 <div class="flex items-center mb-2">
                     <i class="fas fa-clock mr-2 text-blue-500"></i>
                     <span class="font-semibold text-gray-700">Last Login</span>
-                </div>
+                    </div>
                 <p class="text-gray-900">{{ user.last_login|date:"M d, Y H:i"|default:"Never" }}</p>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
 
     <!-- Account Statistics -->
     <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-8">
@@ -152,15 +152,15 @@
                 </div>
                 <h3 class="font-semibold text-gray-900 mb-2">Total Predictions</h3>
                 <p class="text-2xl font-bold text-blue-600">{{ total_predictions }}</p>
-            </div>
+                        </div>
             
             <div class="text-center bg-red-50 rounded-xl p-6">
                 <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
                     <i class="fas fa-exclamation-triangle text-red-600"></i>
-                </div>
+                        </div>
                 <h3 class="font-semibold text-gray-900 mb-2">Fraud Detected</h3>
                 <p class="text-2xl font-bold text-red-600">{{ fraud_predictions }}</p>
-            </div>
+                        </div>
             
             <div class="text-center bg-green-50 rounded-xl p-6">
                 <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">

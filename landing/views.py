@@ -348,11 +348,17 @@ def prediction_view(request):
         form = PredictionForm(request.POST)
         if form.is_valid():
             input_data = form.cleaned_data
+            
+            # Call ML model for prediction
             pred, confidence_score, processing_time, errors, feature_importance, risk_factors = predict_fraud(input_data)
+            
             if errors:
                 return render(request, 'landing/predict.html', {'form': form, 'errors': errors})
+            
+            # Determine result
             result = 'Fraud' if pred == 1 else 'Not Fraud'
-            # Save to DB with user
+            
+            # Create prediction record
             prediction = Prediction.objects.create(
                 user=request.user,
                 input_data=json.dumps(input_data),
@@ -360,14 +366,19 @@ def prediction_view(request):
                 confidence_score=confidence_score,
                 processing_time=processing_time
             )
+            
+            # Store results in session for result page
             request.session['prediction_result'] = result
             request.session['confidence_score'] = confidence_score
             request.session['processing_time'] = processing_time
             request.session['risk_factors'] = risk_factors
             request.session['feature_importance'] = feature_importance
+            request.session['prediction_id'] = prediction.id
+            
             return redirect('prediction_result')
     else:
         form = PredictionForm()
+    
     return render(request, 'landing/predict.html', {'form': form})
 
 @login_required
@@ -515,29 +526,43 @@ def get_started_view(request):
 
 @login_required
 def prediction_result_view(request):
+    # Get results from session
     result = request.session.get('prediction_result')
     confidence_score = request.session.get('confidence_score', 0)
     processing_time = request.session.get('processing_time', 0)
     risk_factors = request.session.get('risk_factors', [])
     feature_importance = request.session.get('feature_importance', {})
+    prediction_id = request.session.get('prediction_id')
     
     if not result:
         return redirect('predict')
     
-    # Get the latest prediction for this user
-    try:
-        prediction = Prediction.objects.filter(user=request.user).latest('created_at')
-    except Prediction.DoesNotExist:
-        prediction = None
+    # Get prediction object if available
+    prediction = None
+    if prediction_id:
+        try:
+            prediction = Prediction.objects.get(id=prediction_id, user=request.user)
+        except Prediction.DoesNotExist:
+            pass
     
-    return render(request, 'landing/prediction_result.html', {
+    # If no prediction object, try to get the latest one
+    if not prediction:
+        try:
+            prediction = Prediction.objects.filter(user=request.user).latest('created_at')
+        except Prediction.DoesNotExist:
+            pass
+    
+    # Prepare context
+    context = {
         'result': result,
         'confidence_score': confidence_score,
         'processing_time': processing_time,
         'prediction': prediction,
         'risk_factors': risk_factors,
         'feature_importance': feature_importance
-    })
+    }
+    
+    return render(request, 'landing/prediction_result.html', context)
 
 # Authentication Views
 @track_activity('login', lambda req, *args, **kwargs: f"User {req.user.username} logged in")

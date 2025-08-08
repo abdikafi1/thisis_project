@@ -120,10 +120,10 @@ class PredictionForm(forms.Form):
         label="Driver Rating",
         choices=[
             ('', 'Select driver rating based on driving history'),
-            ('1', '1 - Excellent (No violations, clean record)'),
-            ('2', '2 - Good (Minor violations, mostly clean record)'),
-            ('3', '3 - Average (Some violations, moderate risk)'),
-            ('4', '4 - Poor (Multiple violations, high risk)')
+            ('1', '1 - Poor (Multiple violations, high risk)'),
+            ('2', '2 - Average (Some violations, moderate risk)'),
+            ('3', '3 - Good (Minor violations, mostly clean record)'),
+            ('4', '4 - Excellent (No violations, clean record')
         ],
         widget=forms.Select(attrs={'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none transition'})
     )
