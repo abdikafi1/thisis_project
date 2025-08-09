@@ -172,7 +172,7 @@ def get_fraud_analytics():
     try:
         csv_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'selected_fraud_and_4k_nonfraud.csv')
         df = pd.read_csv(csv_path)
-
+        
         total_records = len(df)
         fraud_cases = int((df['FraudFound_P'] == 1).sum())
         legitimate_cases = int((df['FraudFound_P'] == 0).sum())
@@ -189,13 +189,13 @@ def get_fraud_analytics():
         # Driver rating and vehicle price distributions among frauds
         driver_rating_fraud = df[df['FraudFound_P'] == 1]['DriverRating'].value_counts().to_dict()
         vehicle_price_fraud = df[df['FraudFound_P'] == 1]['VehiclePrice'].value_counts().to_dict()
-
+        
         # Time-based patterns
         time_patterns = {
             'accident_timing': df[df['FraudFound_P'] == 1]['Days_Policy_Accident'].value_counts().to_dict(),
             'claim_timing': df[df['FraudFound_P'] == 1]['Days_Policy_Claim'].value_counts().to_dict()
         }
-
+        
         # Compute real model metrics using saved encoders/model on full dataset
         model_metrics = { 'accuracy': 0.0, 'precision': 0.0, 'recall': 0.0, 'f1_score': 0.0 }
         try:
@@ -239,7 +239,7 @@ def get_fraud_analytics():
             }
         except Exception as metric_err:
             print(f"Model metric computation failed: {metric_err}")
-
+        
         return {
             'total_records': total_records,
             'fraud_cases': fraud_cases,
@@ -267,7 +267,7 @@ def get_ml_model_insights():
     try:
         csv_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'selected_fraud_and_4k_nonfraud.csv')
         df = pd.read_csv(csv_path)
-
+        
         # Feature importance from trained model
         feature_importance: dict = {}
         try:
@@ -285,7 +285,7 @@ def get_ml_model_insights():
             'medium': ['Rural accident area', 'High deductible', 'Older vehicle'],
             'low': ['Long policy history', 'Driver rating 1-2', 'Police report filed']
         }
-
+        
         # Last trained from model file mtime
         try:
             model_path = MODEL_PATH

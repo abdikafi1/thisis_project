@@ -263,7 +263,7 @@
             
             <ul class="space-y-1.5">
                   <li>
-                    <a href="{% url 'prediction_history' %}" {% if request.resolver_match.url_name == 'prediction_history' %}aria-current="page"{% endif %} class="sidebar-item flex items-center px-4 py-3 text-white hover:text-white {% if request.resolver_match.url_name == 'prediction_history' %}active{% endif %}">
+                    <a href="{% url 'home' %}" {% if request.resolver_match.url_name == 'home' %}aria-current="page"{% endif %} class="sidebar-item flex items-center px-4 py-3 text-white hover:text-white {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
                         <i class="fas fa-home nav-icon"></i>
                         <span class="nav-text">Home</span>
                     </a>

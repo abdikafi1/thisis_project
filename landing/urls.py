@@ -27,7 +27,7 @@ urlpatterns = [
     
     # Prediction and Analysis
     path('predict/', prediction_view, name='predict'),
-    path('history/', history_view, name='prediction_history'),
+    path('home/', history_view, name='home'),
     path('get-started/', get_started_view, name='get_started'),
     path('prediction-result/', prediction_result_view, name='prediction_result'),
     

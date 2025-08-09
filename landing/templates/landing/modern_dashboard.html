@@ -71,7 +71,7 @@
                 <!-- Navigation -->
 
                 <nav class="mt-6 flex-1 px-3 space-y-1" role="navigation" aria-label="User Sidebar Navigation">
-                    <a href="{% url 'prediction_history' %}" {% if request.resolver_match.url_name == 'prediction_history' %}aria-current="page"{% endif %} class="{% if request.resolver_match.url_name == 'prediction_history' %}bg-blue-50 ring-1 ring-blue-200 text-blue-700{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %} group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg">
+                    <a href="{% url 'home' %}" {% if request.resolver_match.url_name == 'home' %}aria-current="page"{% endif %} class="{% if request.resolver_match.url_name == 'home' %}bg-blue-50 ring-1 ring-blue-200 text-blue-700{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %} group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg">
                         <i class="fas fa-history mr-3 flex-shrink-0 h-6 w-6"></i>
                         Home
                     </a>
