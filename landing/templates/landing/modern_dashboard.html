@@ -92,11 +92,6 @@
                         <i class="fas fa-chart-bar mr-3 flex-shrink-0 h-6 w-6"></i>
                         Reports
                     </a>
-                    
-                    <a href="{% url 'fraud_analytics' %}" {% if request.resolver_match.url_name == 'fraud_analytics' %}aria-current="page"{% endif %} class="{% if request.resolver_match.url_name == 'fraud_analytics' %}bg-blue-50 border-r-4 border-blue-600 text-blue-700{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %} group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg">
-                        <i class="fas fa-analytics mr-3 flex-shrink-0 h-6 w-6"></i>
-                        Analytics
-                    </a>
                     {% endif %}
                     
                     <!-- Settings Dropdown -->
@@ -268,7 +263,7 @@
                         <div class="bg-white/90 backdrop-blur rounded-2xl border border-gray-100 shadow-md hover:shadow-lg transition">
                             <div class="p-5">
                                 <div class="flex items-center justify-between">
-                                    <div class="flex items-center">
+                                <div class="flex items-center">
                                         <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
                                             <i class="fas fa-chart-line text-white text-sm"></i>
                                         </div>
@@ -285,7 +280,7 @@
                         <div class="bg-white/90 backdrop-blur rounded-2xl border border-gray-100 shadow-md hover:shadow-lg transition">
                             <div class="p-5">
                                 <div class="flex items-center justify-between">
-                                    <div class="flex items-center">
+                                <div class="flex items-center">
                                         <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
                                             <i class="fas fa-shield-check text-white text-sm"></i>
                                         </div>
@@ -302,7 +297,7 @@
                         <div class="bg-white/90 backdrop-blur rounded-2xl border border-gray-100 shadow-md hover:shadow-lg transition">
                             <div class="p-5">
                                 <div class="flex items-center justify-between">
-                                    <div class="flex items-center">
+                                <div class="flex items-center">
                                         <div class="w-10 h-10 bg-gradient-to-br from-red-500 to-rose-600 rounded-lg flex items-center justify-center">
                                             <i class="fas fa-exclamation-triangle text-white text-sm"></i>
                                         </div>
@@ -319,7 +314,7 @@
                         <div class="bg-white/90 backdrop-blur rounded-2xl border border-gray-100 shadow-md hover:shadow-lg transition">
                             <div class="p-5">
                                 <div class="flex items-center justify-between">
-                                    <div class="flex items-center">
+                                <div class="flex items-center">
                                         <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-lg flex items-center justify-center">
                                             <i class="fas fa-percentage text-white text-sm"></i>
                                         </div>
@@ -329,9 +324,9 @@
                                         </div>
                                     </div>
                                     <span class="text-xs px-2 py-1 rounded-full bg-purple-50 text-purple-700">Model</span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
                     </div>
 
                     <!-- Charts -->
@@ -490,6 +485,501 @@
     </script>
 </body>
 </html>
+
+
+
+
+
+                        <a href="{% url 'fraud_analytics' %}" class="group flex items-center justify-between p-4 bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition">
+
+                            <div class="flex items-center">
+
+                                <div class="w-10 h-10 bg-gradient-to-br from-orange-500 to-amber-600 rounded-lg flex items-center justify-center text-white mr-3">
+
+                                    <i class="fas fa-chart-pie"></i>
+
+                                </div>
+
+                                <div>
+
+                                    <div class="font-semibold text-gray-900">Analytics</div>
+
+                                    <div class="text-sm text-gray-500">View patterns</div>
+
+                                </div>
+
+                            </div>
+
+                            <i class="fas fa-chevron-right text-gray-300 group-hover:text-gray-400"></i>
+
+                        </a>
+
+                    </div>
+
+
+
+                    {% block content %}
+
+                    <!-- Dashboard Content -->
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+
+                        <!-- Stats Cards -->
+
+                        <div class="bg-white/90 backdrop-blur rounded-2xl border border-gray-100 shadow-md hover:shadow-lg transition">
+
+                            <div class="p-5">
+
+                                <div class="flex items-center justify-between">
+
+                                <div class="flex items-center">
+
+                                        <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
+
+                                            <i class="fas fa-chart-line text-white text-sm"></i>
+
+                                        </div>
+
+                                        <div class="ml-4">
+
+                                            <dt class="text-sm font-medium text-gray-500">Total Predictions</dt>
+
+                                            <dd class="text-2xl font-bold text-gray-900">{{ user_predictions }}</dd>
+
+                                        </div>
+
+                                    </div>
+
+                                    <span class="text-xs px-2 py-1 rounded-full bg-blue-50 text-blue-700">Live</span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <div class="bg-white/90 backdrop-blur rounded-2xl border border-gray-100 shadow-md hover:shadow-lg transition">
+
+                            <div class="p-5">
+
+                                <div class="flex items-center justify-between">
+
+                                <div class="flex items-center">
+
+                                        <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
+
+                                            <i class="fas fa-shield-check text-white text-sm"></i>
+
+                                        </div>
+
+                                        <div class="ml-4">
+
+                                            <dt class="text-sm font-medium text-gray-500">Safe Transactions</dt>
+
+                                            <dd class="text-2xl font-bold text-gray-900">{{ safe_predictions }}</dd>
+
+                                        </div>
+
+                                    </div>
+
+                                    <span class="text-xs px-2 py-1 rounded-full bg-green-50 text-green-700">+{{ safe_predictions|default:"0" }}</span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <div class="bg-white/90 backdrop-blur rounded-2xl border border-gray-100 shadow-md hover:shadow-lg transition">
+
+                            <div class="p-5">
+
+                                <div class="flex items-center justify-between">
+
+                                <div class="flex items-center">
+
+                                        <div class="w-10 h-10 bg-gradient-to-br from-red-500 to-rose-600 rounded-lg flex items-center justify-center">
+
+                                            <i class="fas fa-exclamation-triangle text-white text-sm"></i>
+
+                                        </div>
+
+                                        <div class="ml-4">
+
+                                            <dt class="text-sm font-medium text-gray-500">Fraud Detected</dt>
+
+                                            <dd class="text-2xl font-bold text-gray-900">{{ fraud_predictions }}</dd>
+
+                                        </div>
+
+                                    </div>
+
+                                    <span class="text-xs px-2 py-1 rounded-full bg-red-50 text-red-700">{{ fraud_predictions|default:"0" }}</span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <div class="bg-white/90 backdrop-blur rounded-2xl border border-gray-100 shadow-md hover:shadow-lg transition">
+
+                            <div class="p-5">
+
+                                <div class="flex items-center justify-between">
+
+                                <div class="flex items-center">
+
+                                        <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-lg flex items-center justify-center">
+
+                                            <i class="fas fa-percentage text-white text-sm"></i>
+
+                                        </div>
+
+                                        <div class="ml-4">
+
+                                            <dt class="text-sm font-medium text-gray-500">Accuracy Rate</dt>
+
+                                            <dd class="text-2xl font-bold text-gray-900">{{ accuracy_rate }}%</dd>
+
+                                        </div>
+
+                                    </div>
+
+                                    <span class="text-xs px-2 py-1 rounded-full bg-purple-50 text-purple-700">Model</span>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                    </div>
+
+
+
+                    <!-- Charts -->
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+
+                        <div class="bg-white rounded-2xl border border-gray-100 shadow-md p-4">
+
+                            <div class="flex items-center justify-between mb-2">
+
+                                <h3 class="text-base font-semibold text-gray-900">Predictions Over Time</h3>
+
+                            </div>
+
+                            <canvas id="trendChart" height="160"></canvas>
+
+                        </div>
+
+                        <div class="bg-white rounded-2xl border border-gray-100 shadow-md p-4">
+
+                            <div class="flex items-center justify-between mb-2">
+
+                                <h3 class="text-base font-semibold text-gray-900">Fraud vs Safe</h3>
+
+                            </div>
+
+                            <canvas id="ratioChart" height="160"></canvas>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- Recent Predictions -->
+
+                    <div class="bg-white shadow rounded-lg">
+
+                        <div class="px-4 py-5 sm:p-6">
+
+                            <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Recent Predictions</h3>
+
+                            <div class="overflow-x-auto">
+
+                                <table class="min-w-full divide-y divide-gray-200">
+
+                                    <thead class="bg-gray-50">
+
+                                        <tr>
+
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Result</th>
+
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Confidence</th>
+
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Processing Time</th>
+
+                                        </tr>
+
+                                    </thead>
+
+                                    <tbody class="bg-white divide-y divide-gray-200">
+
+                                        {% for prediction in recent_predictions %}
+
+                                        <tr>
+
+                                            <td class="px-6 py-4 whitespace-nowrap">
+
+                                                {% if prediction.result == 'Fraud' %}
+
+                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+
+                                                        <i class="fas fa-exclamation-triangle mr-1"></i>
+
+                                                        Fraud
+
+                                                    </span>
+
+                                                {% else %}
+
+                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+
+                                                        <i class="fas fa-check-circle mr-1"></i>
+
+                                                        Safe
+
+                                                    </span>
+
+                                                {% endif %}
+
+                                            </td>
+
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+
+                                                {% if prediction.confidence_score %}
+
+                                                    {{ prediction.confidence_score|floatformat:2 }}%
+
+                                                {% else %}
+
+                                                    N/A
+
+                                                {% endif %}
+
+                                            </td>
+
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+
+                                                {{ prediction.created_at|date:"M d, Y H:i" }}
+
+                                            </td>
+
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+
+                                                {% if prediction.processing_time %}
+
+                                                    {{ prediction.processing_time|floatformat:3 }}s
+
+                                                {% else %}
+
+                                                    N/A
+
+                                                {% endif %}
+
+                                            </td>
+
+                                        </tr>
+
+                                        {% empty %}
+
+                                        <tr>
+
+                                            <td colspan="4" class="px-6 py-4 text-center text-gray-500">
+
+                                                No predictions yet. <a href="{% url 'predict' %}" class="text-blue-600 hover:text-blue-500">Make your first prediction!</a>
+
+                                            </td>
+
+                                        </tr>
+
+                                        {% endfor %}
+
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    {% endblock %}
+
+                </div>
+
+            </main>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- Chart.js -->
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+
+    <!-- Alpine.js for interactive components -->
+
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+
+
+
+    <script>
+
+        // Mobile sidebar toggle
+
+        const sidebar = document.getElementById('app-sidebar');
+
+        const overlay = document.getElementById('sidebar-overlay');
+
+        const menuBtn = document.getElementById('mobile-menu-button');
+
+        if (menuBtn && sidebar && overlay) {
+
+            menuBtn.addEventListener('click', () => {
+
+                sidebar.classList.toggle('-translate-x-full');
+
+                overlay.classList.toggle('hidden');
+
+            });
+
+            overlay.addEventListener('click', () => {
+
+                sidebar.classList.add('-translate-x-full');
+
+                overlay.classList.add('hidden');
+
+            });
+
+        }
+
+
+
+        // Charts
+
+        const trendCanvas = document.getElementById('trendChart');
+
+        if (trendCanvas) {
+
+            const trendCtx = trendCanvas.getContext('2d');
+
+            const trendData = JSON.parse('{{ predictions_trend|default:"[5,9,7,12,8,10,6]" }}');
+
+            new Chart(trendCtx, {
+
+                type: 'line',
+
+                data: {
+
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+
+                    datasets: [{
+
+                        label: 'Predictions',
+
+                        data: trendData,
+
+                        borderColor: '#3b82f6',
+
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+
+                        tension: 0.3,
+
+                        fill: true,
+
+                        borderWidth: 2
+
+                    }]
+
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    plugins: { legend: { display: false } },
+
+                    scales: { y: { beginAtZero: true } }
+
+                }
+
+            });
+
+        }
+
+
+
+        const ratioCanvas = document.getElementById('ratioChart');
+
+        if (ratioCanvas) {
+
+            const ratioCtx = ratioCanvas.getContext('2d');
+
+            const safeCount = parseInt('{{ safe_predictions|default:"0" }}');
+
+            const fraudCount = parseInt('{{ fraud_predictions|default:"0" }}');
+
+            new Chart(ratioCtx, {
+
+                type: 'doughnut',
+
+                data: {
+
+                    labels: ['Safe', 'Fraud'],
+
+                    datasets: [{
+
+                        data: [safeCount, fraudCount],
+
+                        backgroundColor: ['#10b981', '#ef4444'],
+
+                        borderWidth: 2,
+
+                        borderColor: '#ffffff'
+
+                    }]
+
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    plugins: { legend: { position: 'bottom' } }
+
+                }
+
+            });
+
+        }
+
+    </script>
+
+</body>
+
+</html>
+
+
+
+
+
 
 
 

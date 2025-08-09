@@ -9,27 +9,27 @@
         <div class="absolute inset-0 opacity-10 {% if result == 'Fraud' %}bg-[radial-gradient(circle_at_top_left,_#ef4444,_transparent_50%)]{% else %}bg-[radial-gradient(circle_at_top_left,_#10b981,_transparent_50%)]{% endif %}"></div>
         <div class="relative {% if result == 'Fraud' %}bg-gradient-to-r from-red-500 to-rose-600{% else %}bg-gradient-to-r from-green-500 to-emerald-600{% endif %} p-8 text-white">
             <div class="flex flex-col lg:flex-row items-center justify-between gap-6">
-                <div class="flex items-center space-x-4">
+                    <div class="flex items-center space-x-4">
                     <div class="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center">
-                        {% if result == 'Fraud' %}
-                            <i class="fas fa-exclamation-triangle text-3xl"></i>
-                        {% else %}
-                            <i class="fas fa-check-circle text-3xl"></i>
-                        {% endif %}
-                    </div>
-                    <div>
+                            {% if result == 'Fraud' %}
+                                <i class="fas fa-exclamation-triangle text-3xl"></i>
+                            {% else %}
+                                <i class="fas fa-check-circle text-3xl"></i>
+                            {% endif %}
+                        </div>
+                        <div>
                         <h2 class="text-3xl font-extrabold tracking-tight">
                             {% if result == 'Fraud' %}Fraud Detected{% else %}No Fraud Detected{% endif %}
-                        </h2>
+                            </h2>
                         <p class="text-white/90 mt-2 max-w-2xl">
-                            {% if result == 'Fraud' %}
+                                {% if result == 'Fraud' %}
                                 This claim shows multiple high-risk indicators and requires immediate attention.
-                            {% else %}
+                                {% else %}
                                 This claim appears legitimate and can proceed with standard processing.
-                            {% endif %}
-                        </p>
+                                {% endif %}
+                            </p>
+                        </div>
                     </div>
-                </div>
                 <div class="flex items-center gap-6">
                     <div class="text-center">
                         <div class="text-4xl font-extrabold">{{ processing_time|floatformat:3|default:"0.234" }}s</div>
@@ -37,7 +37,7 @@
                     </div>
                     <div class="w-28 h-28 bg-white/10 rounded-full flex items-center justify-center">
                         <canvas id="confidenceDonut" width="96" height="96" aria-label="Confidence Donut"></canvas>
-                    </div>
+                </div>
                 </div>
             </div>
         </div>
@@ -129,7 +129,7 @@
                     </div>
                     <h3 class="text-xl font-bold text-gray-900">ML Model Feature Importance</h3>
                 </div>
-                <div class="bg-white rounded-lg p-4 border border-blue-200">
+                    <div class="bg-white rounded-lg p-4 border border-blue-200">
                     <canvas id="featChart" height="180"></canvas>
                 </div>
             </div>

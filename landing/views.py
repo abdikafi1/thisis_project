@@ -576,7 +576,7 @@ def prediction_result_view(request):
                 feature_importance = feat_imp_tmp or {}
         except Exception:
             pass
-
+    
     # Prepare context
     context = {
         'result': result,
