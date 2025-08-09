@@ -168,42 +168,78 @@ def analyze_fraud_patterns():
     fraud_df = df[df['FraudFound_P'] == 1]
     
 def get_fraud_analytics():
-    """Get comprehensive fraud detection analytics for admin dashboard"""
+    """Get analytics and real model performance based on saved model and dataset."""
     try:
         csv_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'selected_fraud_and_4k_nonfraud.csv')
         df = pd.read_csv(csv_path)
-        
+
         total_records = len(df)
-        fraud_cases = len(df[df['FraudFound_P'] == 1])
-        legitimate_cases = len(df[df['FraudFound_P'] == 0])
-        fraud_rate = (fraud_cases / total_records) * 100
-        
-        # High-risk patterns
+        fraud_cases = int((df['FraudFound_P'] == 1).sum())
+        legitimate_cases = int((df['FraudFound_P'] == 0).sum())
+        fraud_rate = (fraud_cases / total_records) * 100 if total_records else 0
+
+        # High-risk patterns (from dataset)
         high_risk_patterns = {
-            'quick_accidents': len(df[(df['Days_Policy_Accident'] == '1 to 7') & (df['FraudFound_P'] == 1)]),
-            'low_driver_rating': len(df[(df['DriverRating'] == '4') & (df['FraudFound_P'] == 1)]),
-            'no_police_report': len(df[(df['PoliceReportFiled'] == 'No') & (df['FraudFound_P'] == 1)]),
-            'multiple_claims': len(df[(df['PastNumberOfClaims'].isin(['2 to 4', 'more than 4'])) & (df['FraudFound_P'] == 1)])
+            'quick_accidents': int(len(df[(df['Days_Policy_Accident'] == '1 to 7') & (df['FraudFound_P'] == 1)])),
+            'low_driver_rating': int(len(df[(df['DriverRating'] == '4') & (df['FraudFound_P'] == 1)])),
+            'no_police_report': int(len(df[(df['PoliceReportFiled'] == 'No') & (df['FraudFound_P'] == 1)])),
+            'multiple_claims': int(len(df[(df['PastNumberOfClaims'].isin(['2 to 4', 'more than 4'])) & (df['FraudFound_P'] == 1)]))
         }
-        
-        # Driver rating analysis
+
+        # Driver rating and vehicle price distributions among frauds
         driver_rating_fraud = df[df['FraudFound_P'] == 1]['DriverRating'].value_counts().to_dict()
-        
-        # Vehicle price analysis
         vehicle_price_fraud = df[df['FraudFound_P'] == 1]['VehiclePrice'].value_counts().to_dict()
-        
+
         # Time-based patterns
         time_patterns = {
             'accident_timing': df[df['FraudFound_P'] == 1]['Days_Policy_Accident'].value_counts().to_dict(),
             'claim_timing': df[df['FraudFound_P'] == 1]['Days_Policy_Claim'].value_counts().to_dict()
         }
-        
-        # Model performance metrics (simulated based on real patterns)
-        model_accuracy = 94.7  # Based on typical fraud detection model performance
-        precision = 92.3
-        recall = 89.1
-        f1_score = 90.6
-        
+
+        # Compute real model metrics using saved encoders/model on full dataset
+        model_metrics = { 'accuracy': 0.0, 'precision': 0.0, 'recall': 0.0, 'f1_score': 0.0 }
+        try:
+            from sklearn.metrics import accuracy_score, precision_recall_fscore_support
+
+            X_eval = df.drop('FraudFound_P', axis=1).copy()
+            y_true = df['FraudFound_P'].astype(int).values
+
+            # Ensure all expected columns exist and are ordered as in training
+            if feature_columns:
+                for col in feature_columns:
+                    if col not in X_eval.columns:
+                        X_eval[col] = None
+            else:
+                # Fallback to current columns order
+                feature_cols_in_use = list(X_eval.columns)
+
+            # Encode categorical features using saved encoders
+            for col in categorical_cols:
+                le = encoders.get(col)
+                if le is None:
+                    continue
+                try:
+                    X_eval[col] = le.transform(X_eval[col].astype(str).str.strip())
+                except Exception:
+                    # Unknown categories → map to -1
+                    X_eval[col] = X_eval[col].astype(str).str.strip().map(lambda _: -1)
+
+            # Order columns
+            if feature_columns:
+                X_eval = X_eval[feature_columns]
+
+            y_pred = model.predict(X_eval)
+            acc = float(accuracy_score(y_true, y_pred)) * 100.0
+            pr, rc, f1, _ = precision_recall_fscore_support(y_true, y_pred, average='binary', zero_division=0)
+            model_metrics = {
+                'accuracy': round(acc, 2),
+                'precision': round(float(pr) * 100.0, 2),
+                'recall': round(float(rc) * 100.0, 2),
+                'f1_score': round(float(f1) * 100.0, 2),
+            }
+        except Exception as metric_err:
+            print(f"Model metric computation failed: {metric_err}")
+
         return {
             'total_records': total_records,
             'fraud_cases': fraud_cases,
@@ -213,72 +249,72 @@ def get_fraud_analytics():
             'driver_rating_fraud': driver_rating_fraud,
             'vehicle_price_fraud': vehicle_price_fraud,
             'time_patterns': time_patterns,
-            'model_performance': {
-                'accuracy': model_accuracy,
-                'precision': precision,
-                'recall': recall,
-                'f1_score': f1_score
-            }
+            'model_performance': model_metrics,
         }
     except Exception as e:
         print(f"Error in fraud analytics: {e}")
         return {
-            'total_records': 4925,
-            'fraud_cases': 492,
-            'legitimate_cases': 4433,
-            'fraud_rate': 10.0,
-            'high_risk_patterns': {'quick_accidents': 45, 'low_driver_rating': 78, 'no_police_report': 156, 'multiple_claims': 89},
-            'model_performance': {'accuracy': 94.7, 'precision': 92.3, 'recall': 89.1, 'f1_score': 90.6}
+            'total_records': 0,
+            'fraud_cases': 0,
+            'legitimate_cases': 0,
+            'fraud_rate': 0.0,
+            'high_risk_patterns': {},
+            'model_performance': {'accuracy': 0.0, 'precision': 0.0, 'recall': 0.0, 'f1_score': 0.0},
         }
 
 def get_ml_model_insights():
-    """Get ML model insights and feature importance"""
+    """Get ML model insights from saved model and dataset."""
     try:
         csv_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'selected_fraud_and_4k_nonfraud.csv')
         df = pd.read_csv(csv_path)
-        
-        # Feature importance based on fraud correlation (simplified)
-        feature_importance = {
-            'Policy Timing': 0.18,         # Days_Policy_Accident - High importance
-            'Driver Rating': 0.16,         # Driver behavior
-            'Claims History': 0.15,        # PastNumberOfClaims
-            'Police Report': 0.12,         # Documentation
-            'Witness Present': 0.10,       # Evidence
-            'Vehicle Price': 0.08,         # Value at risk
-            'Driver Age': 0.07,            # Demographic
-            'Deductible': 0.06,            # Financial
-            'Accident Area': 0.05,         # Location
-            'Vehicle Age': 0.03            # Vehicle condition
-        }
-        
-        # Risk factors analysis
+
+        # Feature importance from trained model
+        feature_importance: dict = {}
+        try:
+            if hasattr(model, 'feature_importances_') and feature_columns:
+                importances = list(model.feature_importances_)
+                names = list(feature_columns)
+                feature_importance = { names[i]: float(importances[i]) for i in range(min(len(names), len(importances))) }
+        except Exception as _:
+            feature_importance = {}
+
+        # Risk factors are derived separately (kept as heuristics)
         risk_factors = {
             'very_high': ['1 to 7 days policy to accident', 'Driver rating 4', 'No police report'],
             'high': ['Multiple past claims', 'No witness present', 'Policy holder at fault'],
             'medium': ['Rural accident area', 'High deductible', 'Older vehicle'],
             'low': ['Long policy history', 'Driver rating 1-2', 'Police report filed']
         }
-        
+
+        # Last trained from model file mtime
+        try:
+            model_path = MODEL_PATH
+            mtime = os.path.getmtime(model_path)
+            import datetime
+            last_trained = datetime.datetime.fromtimestamp(mtime).strftime('%Y-%m-%d %H:%M')
+        except Exception:
+            last_trained = ''
+
         return {
             'feature_importance': feature_importance,
             'risk_factors': risk_factors,
-            'model_version': '2.1.3',
-            'last_trained': '2024-01-15',
+            'model_version': 'BalancedRandomForest',
+            'last_trained': last_trained,
             'training_data_size': len(df)
         }
     except Exception as e:
         print(f"Error in ML insights: {e}")
         return {
-            'feature_importance': {'Days_Policy_Accident': 0.18, 'DriverRating': 0.16},
+            'feature_importance': {},
             'risk_factors': {
                 'very_high': ['1 to 7 days policy to accident', 'Driver rating 4', 'No police report'],
                 'high': ['Multiple past claims', 'No witness present', 'Policy holder at fault'],
                 'medium': ['Rural accident area', 'High deductible', 'Older vehicle'],
                 'low': ['Long policy history', 'Driver rating 1-2', 'Police report filed']
             },
-            'model_version': '2.1.3',
-            'last_trained': '2024-01-15',
-            'training_data_size': 4925
+            'model_version': 'BalancedRandomForest',
+            'last_trained': '',
+            'training_data_size': 0
         }
 
 def get_feature_impact(input_data):

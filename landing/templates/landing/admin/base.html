@@ -27,6 +27,9 @@
         .glass-effect { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); }
         .sidebar-section { border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 1rem; margin-bottom: 1rem; }
         .status-indicator { animation: pulse-slow 2s infinite; }
+        /* Edge toggle for hidden sidebar */
+        .sidebar-fab { position: fixed; left: 12px; bottom: 20px; z-index: 60; }
+        .sidebar-fab-btn { width: 44px; height: 44px; border-radius: 9999px; display:flex; align-items:center; justify-content:center; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05); }
         .card { background: #ffffff; border-radius: 0.75rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05); padding: 1rem; border: 1px solid #e5e7eb; }
         .card-header { border-bottom: 1px solid #e5e7eb; margin-bottom: 1rem; padding-bottom: 0.75rem; }
         .card-title { font-size: 1.125rem; line-height: 1.75rem; font-weight: 600; color: #111827; }
@@ -80,7 +83,7 @@
                                 <i class="fas fa-shield-check text-green-400 text-xs"></i>
                             </div>
                         </div>
-                        <a href="{% url 'predict' %}" class="nav-item-hover flex items-center px-4 py-3 text-white/80 hover:text-white rounded-xl transition-all duration-200 group">
+                        <a href="{% url 'admin_predict' %}" class="nav-item-hover flex items-center px-4 py-3 text-white/80 hover:text-white rounded-xl transition-all duration-200 {% if request.resolver_match.url_name == 'admin_predict' %}nav-item-active{% endif %} group">
                             <div class="w-8 h-8 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
                                 <i class="fas fa-magnifying-glass text-white text-sm"></i>
                             </div>
@@ -149,17 +152,7 @@
                             </div>
                             <i class="fas fa-chevron-right text-white/40 group-hover:text-white transition-colors"></i>
                         </a>
-                        <a href="{% url 'admin_system_settings' %}" {% if request.resolver_match.url_name == 'admin_system_settings' %}aria-current="page"{% endif %}
-                           class="nav-item-hover flex items-center px-4 py-3 text-white/80 hover:text-white rounded-xl transition-all duration-200 {% if request.resolver_match.url_name == 'admin_system_settings' %}nav-item-active{% endif %} group">
-                            <div class="w-8 h-8 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
-                                <i class="fas fa-cogs text-white text-sm"></i>
-                            </div>
-                            <div class="flex-1">
-                                <span class="font-medium">System Settings</span>
-                                <p class="text-xs text-white/50 mt-1">Configuration & preferences</p>
-                            </div>
-                            <i class="fas fa-chevron-right text-white/40 group-hover:text-white transition-colors"></i>
-                        </a>
+                        
                     </div>
                 </div>
             </nav>
@@ -190,7 +183,7 @@
                             <i class="fas fa-bars text-xl"></i>
                         </button>
                         <div>
-                            <h1 class="text-3xl font-bold text-gray-900">{% block page_title %}Admin Dashboard{% endblock %}</h1>
+                            <h1 id="page-title-toggle" class="text-3xl font-bold text-gray-900 cursor-pointer select-none" title="Toggle sidebar">{% block page_title %}Admin Dashboard{% endblock %}</h1>
                             <p class="text-gray-500 mt-1 flex items-center">
                                 <i class="fas fa-shield-alt text-blue-500 mr-2"></i>
                                 Monitor and manage your fraud detection system
@@ -198,15 +191,6 @@
                         </div>
                     </div>
                     <div class="flex items-center space-x-4">
-                        <a href="{% url 'admin_user_management' %}" class="p-2 text-gray-600 hover:text-gray-900" title="Users">
-                            <i class="fas fa-users"></i>
-                        </a>
-                        <a href="{% url 'admin_reports' %}" class="p-2 text-gray-600 hover:text-gray-900" title="Reports">
-                            <i class="fas fa-file-alt"></i>
-                        </a>
-                        <a href="{% url 'admin_system_settings' %}" class="p-2 text-gray-600 hover:text-gray-900" title="Settings">
-                            <i class="fas fa-cog"></i>
-                        </a>
                         <div class="flex items-center space-x-3 bg-gray-50 px-3 py-2 rounded-lg">
                             <div class="text-right">
                                 <p class="text-sm font-semibold text-gray-900">{{ user.get_full_name|default:user.username }}</p>
@@ -237,18 +221,42 @@
             </main>
         </div>
     </div>
+    <!-- Floating toggle button (appears when sidebar is hidden) -->
+    <div id="sidebar-edge-toggle" class="sidebar-fab hidden">
+        <button class="sidebar-fab-btn bg-white text-gray-700 hover:bg-gray-100" title="Show sidebar">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
     <script>
         const sidebar = document.getElementById('sidebar');
         const sidebarToggle = document.getElementById('sidebar-toggle');
-        if (sidebarToggle) {
-            sidebarToggle.addEventListener('click', () => {
-                sidebar.classList.toggle('-translate-x-full');
-            });
+        const pageTitleToggle = document.getElementById('page-title-toggle');
+        const edgeToggleWrap = document.getElementById('sidebar-edge-toggle');
+        const edgeToggleBtn = edgeToggleWrap ? edgeToggleWrap.querySelector('button') : null;
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('-translate-x-full');
+            updateEdgeToggle();
         }
+
+        function updateEdgeToggle() {
+            if (!edgeToggleWrap) return;
+            const isHidden = sidebar.classList.contains('-translate-x-full');
+            if (isHidden) {
+                edgeToggleWrap.classList.remove('hidden');
+            } else {
+                edgeToggleWrap.classList.add('hidden');
+            }
+        }
+
+        if (sidebarToggle) sidebarToggle.addEventListener('click', toggleSidebar);
+        if (pageTitleToggle) pageTitleToggle.addEventListener('click', toggleSidebar);
+        if (edgeToggleBtn) edgeToggleBtn.addEventListener('click', toggleSidebar);
         document.addEventListener('click', (e) => {
             if (window.innerWidth <= 1024) {
                 if (!sidebar.contains(e.target) && !sidebarToggle.contains(e.target)) {
                     sidebar.classList.add('-translate-x-full');
+                    updateEdgeToggle();
                 }
             }
         });
@@ -263,6 +271,7 @@
                     item.style.transform = 'translateX(0)';
                 }, index * 100);
             });
+            updateEdgeToggle();
         });
     </script>
     {% block extra_js %}{% endblock %}
