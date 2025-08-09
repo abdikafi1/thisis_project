@@ -70,17 +70,17 @@
 
                 <!-- Navigation -->
 
-                <nav class="mt-8 flex-1 px-2 space-y-1" role="navigation" aria-label="User Sidebar Navigation">
-                    <a href="{% url 'prediction_history' %}" {% if request.resolver_match.url_name == 'prediction_history' %}aria-current="page"{% endif %} class="{% if request.resolver_match.url_name == 'prediction_history' %}bg-blue-50 border-r-4 border-blue-600 text-blue-700{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %} group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg">
+                <nav class="mt-6 flex-1 px-3 space-y-1" role="navigation" aria-label="User Sidebar Navigation">
+                    <a href="{% url 'prediction_history' %}" {% if request.resolver_match.url_name == 'prediction_history' %}aria-current="page"{% endif %} class="{% if request.resolver_match.url_name == 'prediction_history' %}bg-blue-50 ring-1 ring-blue-200 text-blue-700{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %} group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg">
                         <i class="fas fa-history mr-3 flex-shrink-0 h-6 w-6"></i>
                         Home
                     </a>
-                    <a href="{% url 'user_dashboard' %}" {% if request.resolver_match.url_name == 'user_dashboard' %}aria-current="page"{% endif %} class="{% if request.resolver_match.url_name == 'user_dashboard' %}bg-blue-50 border-r-4 border-blue-600 text-blue-700{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %} group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg">
+                    <a href="{% url 'user_dashboard' %}" {% if request.resolver_match.url_name == 'user_dashboard' %}aria-current="page"{% endif %} class="{% if request.resolver_match.url_name == 'user_dashboard' %}bg-blue-50 ring-1 ring-blue-200 text-blue-700{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %} group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg">
                         <i class="fas fa-tachometer-alt mr-3 flex-shrink-0 h-6 w-6"></i>
                         Dashboard
                     </a>
                     
-                    <a href="{% url 'predict' %}" {% if request.resolver_match.url_name == 'predict' %}aria-current="page"{% endif %} class="{% if request.resolver_match.url_name == 'predict' %}bg-blue-50 border-r-4 border-blue-600 text-blue-700{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %} group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg">
+                    <a href="{% url 'predict' %}" {% if request.resolver_match.url_name == 'predict' %}aria-current="page"{% endif %} class="{% if request.resolver_match.url_name == 'predict' %}bg-blue-50 ring-1 ring-blue-200 text-blue-700{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %} group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg">
                         <i class="fas fa-search mr-3 flex-shrink-0 h-6 w-6"></i>
                         New Detection
                     </a>
@@ -88,7 +88,7 @@
                     
                     
                     {% if user.profile.is_premium %}
-                    <a href="{% url 'user_reports' %}" {% if request.resolver_match.url_name == 'user_reports' %}aria-current="page"{% endif %} class="{% if request.resolver_match.url_name == 'user_reports' %}bg-blue-50 border-r-4 border-blue-600 text-blue-700{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %} group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg">
+                    <a href="{% url 'user_reports' %}" {% if request.resolver_match.url_name == 'user_reports' %}aria-current="page"{% endif %} class="{% if request.resolver_match.url_name == 'user_reports' %}bg-blue-50 ring-1 ring-blue-200 text-blue-700{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %} group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg">
                         <i class="fas fa-chart-bar mr-3 flex-shrink-0 h-6 w-6"></i>
                         Reports
                     </a>
@@ -96,12 +96,12 @@
                     
                     <!-- Settings Dropdown -->
                     <div class="relative" x-data="{ open: false }">
-                        <button @click="open = !open" class="w-full text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-2 py-2 text-sm font-medium rounded-md">
+                        <button @click="open = !open" class="w-full text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-3 py-2.5 text-sm font-medium rounded-md">
                             <i class="fas fa-cog mr-3 flex-shrink-0 h-6 w-6"></i>
                             Settings
                             <i class="fas fa-chevron-down ml-auto"></i>
                         </button>
-                        <div x-show="open" @click.away="open = false" class="ml-6 mt-1 space-y-1">
+                        <div x-show="open" @click.away="open = false" class="ml-10 mt-1 space-y-1">
                             <a href="{% url 'user_profile' %}" class="text-gray-500 hover:text-gray-700 group flex items-center px-2 py-2 text-sm rounded-md">
                                 <i class="fas fa-user-edit mr-3 flex-shrink-0 h-5 w-5"></i>
                                 Profile
