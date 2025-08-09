@@ -99,27 +99,35 @@
 
     <!-- Real Database Statistics -->
     <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
-        <!-- User Level Distribution -->
+        <!-- Comprehensive User Stats -->
         <div class="bg-white rounded-xl shadow-lg p-6">
             <h5 class="text-lg font-semibold text-gray-900 mb-4">
-                <i class="fas fa-chart-pie text-blue-500 mr-2"></i>User Levels
+                <i class="fas fa-users-cog text-blue-500 mr-2"></i>User Status & Levels
             </h5>
             <div class="space-y-3">
                 <div class="flex justify-between items-center">
-                    <span class="text-sm text-gray-600">Basic Users</span>
-                    <span class="text-sm font-semibold text-gray-800">{{ user_stats.basic_users|default:"0" }}</span>
+                    <span class="text-sm text-gray-600">Active Users</span>
+                    <span class="text-sm font-semibold text-green-600">{{ user_stats.active_users|default:"0" }}</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-sm text-gray-600">Inactive Users</span>
+                    <span class="text-sm font-semibold text-red-600">{{ user_stats.inactive_users|default:"0" }}</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-sm text-gray-600">Staff Users</span>
+                    <span class="text-sm font-semibold text-purple-600">{{ user_stats.staff_users|default:"0" }}</span>
                 </div>
                 <div class="flex justify-between items-center">
                     <span class="text-sm text-gray-600">Premium Users</span>
                     <span class="text-sm font-semibold text-blue-600">{{ user_stats.premium_users|default:"0" }}</span>
                 </div>
                 <div class="flex justify-between items-center">
-                    <span class="text-sm text-gray-600">Admin Users</span>
-                    <span class="text-sm font-semibold text-purple-600">{{ user_stats.admin_users|default:"0" }}</span>
+                    <span class="text-sm text-gray-600">Verified Users</span>
+                    <span class="text-sm font-semibold text-orange-600">{{ user_stats.verified_users|default:"0" }}</span>
                 </div>
                 <div class="flex justify-between items-center border-t pt-2">
-                    <span class="text-sm font-semibold text-gray-700">Verified Users</span>
-                    <span class="text-sm font-bold text-green-600">{{ user_stats.verified_users|default:"0" }}</span>
+                    <span class="text-sm font-semibold text-gray-700">With Email</span>
+                    <span class="text-sm font-bold text-teal-600">{{ user_stats.users_with_email|default:"0" }}</span>
                 </div>
             </div>
         </div>
@@ -189,6 +197,154 @@
                 <div class="flex justify-between items-center">
                     <span class="text-sm text-gray-600">Model Type</span>
                     <span class="text-xs font-semibold text-blue-600">{{ model_version|default:"RandomForest" }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detailed User Information Table -->
+    <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+        <h5 class="text-lg font-semibold text-gray-900 mb-6">
+            <i class="fas fa-table text-indigo-500 mr-2"></i>Recent Users - Detailed Information
+        </h5>
+        <div class="overflow-x-auto">
+            <table class="table w-full text-left">
+                <thead>
+                    <tr class="bg-gray-50">
+                        <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase">ID</th>
+                        <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase">Username</th>
+                        <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase">Email</th>
+                        <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase">Full Name</th>
+                        <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase">Level</th>
+                        <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase">Status</th>
+                        <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase">Staff</th>
+                        <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase">Last Login</th>
+                        <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase">Joined</th>
+                        <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase">Predictions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                    {% for user in recent_users %}
+                    <tr class="hover:bg-gray-50 transition-colors">
+                        <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ user.id }}</td>
+                        <td class="px-4 py-3">
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mr-3">
+                                    <span class="text-white text-xs font-bold">{{ user.username|first|upper }}</span>
+                                </div>
+                                <span class="text-sm font-medium text-gray-900">{{ user.username }}</span>
+                            </div>
+                        </td>
+                        <td class="px-4 py-3 text-sm text-gray-600">
+                            {% if user.email %}
+                                <i class="fas fa-envelope text-green-500 mr-1"></i>{{ user.email|truncatechars:25 }}
+                            {% else %}
+                                <span class="text-gray-400"><i class="fas fa-envelope-slash mr-1"></i>No email</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-4 py-3 text-sm text-gray-600">
+                            {% if user.first_name or user.last_name %}
+                                {{ user.first_name }} {{ user.last_name }}
+                            {% else %}
+                                <span class="text-gray-400">Not provided</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-4 py-3">
+                            {% if user.profile.user_level == 'admin' %}
+                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800">
+                                    <i class="fas fa-crown mr-1"></i>Admin
+                                </span>
+                            {% elif user.profile.user_level == 'premium' %}
+                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                                    <i class="fas fa-star mr-1"></i>Premium
+                                </span>
+                            {% else %}
+                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">
+                                    <i class="fas fa-user mr-1"></i>Basic
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td class="px-4 py-3">
+                            {% if user.is_active %}
+                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                                    <i class="fas fa-check-circle mr-1"></i>Active
+                                </span>
+                            {% else %}
+                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
+                                    <i class="fas fa-times-circle mr-1"></i>Inactive
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td class="px-4 py-3">
+                            {% if user.is_staff %}
+                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-indigo-100 text-indigo-800">
+                                    <i class="fas fa-user-tie mr-1"></i>Staff
+                                </span>
+                            {% else %}
+                                <span class="text-gray-400 text-xs">User</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-4 py-3 text-sm text-gray-600">
+                            {% if user.last_login %}
+                                <div class="flex items-center">
+                                    <i class="fas fa-clock text-blue-500 mr-1"></i>
+                                    <span title="{{ user.last_login }}">{{ user.last_login|timesince }} ago</span>
+                                </div>
+                            {% else %}
+                                <span class="text-gray-400"><i class="fas fa-question-circle mr-1"></i>Never</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-4 py-3 text-sm text-gray-600">
+                            <div class="flex items-center">
+                                <i class="fas fa-calendar text-green-500 mr-1"></i>
+                                <span title="{{ user.date_joined }}">{{ user.date_joined|date:"M d, Y" }}</span>
+                            </div>
+                        </td>
+                        <td class="px-4 py-3 text-sm text-center">
+                            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                                {{ user.predictions.count }} predictions
+                            </span>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="10" class="px-4 py-8 text-center text-gray-500">
+                            <i class="fas fa-users text-4xl mb-4 opacity-30"></i>
+                            <p>No users found in the system</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- User Activity Summary -->
+        <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-blue-50 rounded-lg p-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-blue-700">Users with Predictions</p>
+                        <p class="text-2xl font-bold text-blue-900">{{ user_activity_summary.users_with_predictions|default:"0" }}</p>
+                    </div>
+                    <i class="fas fa-brain text-blue-500 text-2xl"></i>
+                </div>
+            </div>
+            <div class="bg-green-50 rounded-lg p-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-green-700">Users with Activities</p>
+                        <p class="text-2xl font-bold text-green-900">{{ user_activity_summary.users_with_activities|default:"0" }}</p>
+                    </div>
+                    <i class="fas fa-chart-line text-green-500 text-2xl"></i>
+                </div>
+            </div>
+            <div class="bg-orange-50 rounded-lg p-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-orange-700">Never Logged In</p>
+                        <p class="text-2xl font-bold text-orange-900">{{ user_activity_summary.never_logged_in|default:"0" }}</p>
+                    </div>
+                    <i class="fas fa-user-clock text-orange-500 text-2xl"></i>
                 </div>
             </div>
         </div>
@@ -265,17 +421,18 @@
                         <i class="fas fa-user text-blue-600 text-xs"></i>
                     </div>
                     <div class="flex-1 min-w-0">
-                        <p class="text-sm font-medium text-gray-900 truncate">{{ activity.user.username }}</p>
-                        <p class="text-xs text-gray-500">{{ activity.get_activity_type_display }}</p>
+                        <p class="text-sm font-medium text-gray-900 truncate">{{ activity.user.username|default:"Unknown User" }}</p>
+                        <p class="text-xs text-gray-500">{{ activity.get_activity_type_display|default:"Admin Action" }}</p>
                     </div>
                     <div class="text-xs text-gray-400">
-                        {{ activity.created_at|timesince }} ago
+                        {% if activity.created_at %}{{ activity.created_at|timesince }} ago{% else %}Recently{% endif %}
                     </div>
                 </div>
                 {% empty %}
                 <div class="text-center py-4 text-gray-500">
                     <i class="fas fa-inbox text-2xl mb-2 opacity-50"></i>
-                    <p class="text-sm">No recent activity</p>
+                    <p class="text-sm">No recent activity found</p>
+                    <p class="text-xs text-gray-400 mt-1">Activity tracking will appear here as users interact with the system</p>
                 </div>
                 {% endfor %}
             </div>
