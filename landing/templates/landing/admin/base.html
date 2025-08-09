@@ -11,151 +11,37 @@
             theme: {
                 extend: {
                     colors: {
-                        sidebar: {
-                            50: '#f8fafc',
-                            100: '#f1f5f9',
-                            900: '#0f172a',
-                            950: '#020617',
-                        },
-                        primary: {
-                            50: '#eff6ff',
-                            500: '#3b82f6',
-                            600: '#2563eb',
-                            700: '#1d4ed8',
-                        }
+                        sidebar: { 50: '#f8fafc', 100: '#f1f5f9', 900: '#0f172a', 950: '#020617' },
+                        primary: { 50: '#eff6ff', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8' }
                     },
-                    animation: {
-                        'slide-in': 'slideIn 0.3s ease-out',
-                        'fade-in': 'fadeIn 0.5s ease-in',
-                        'pulse-slow': 'pulse 3s infinite',
-                    },
-                    keyframes: {
-                        slideIn: {
-                            '0%': { transform: 'translateX(-100%)' },
-                            '100%': { transform: 'translateX(0)' },
-                        },
-                        fadeIn: {
-                            '0%': { opacity: '0' },
-                            '100%': { opacity: '1' },
-                        }
-                    }
+                    animation: { 'slide-in': 'slideIn 0.3s ease-out', 'fade-in': 'fadeIn 0.5s ease-in', 'pulse-slow': 'pulse 3s infinite' },
+                    keyframes: { slideIn: { '0%': { transform: 'translateX(-100%)' }, '100%': { transform: 'translateX(0)' } }, fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } } }
                 }
             }
         }
     </script>
     <style>
-        .sidebar-gradient {
-            background: linear-gradient(180deg, #1e293b 0%, #334155 50%, #475569 100%);
-            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
-        }
-        .nav-item-hover:hover {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            transform: translateX(8px);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-        .nav-item-active {
-            background: rgba(255, 255, 255, 0.2);
-            border-right: 3px solid #60a5fa;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-        .glass-effect {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        .sidebar-section {
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding-bottom: 1rem;
-            margin-bottom: 1rem;
-        }
-        .status-indicator {
-            animation: pulse-slow 2s infinite;
-        }
-
-        /* Lightweight utilities to support existing Bootstrap-like markup in admin templates */
-        /* Sidebar spacing refinements */
-        .sidebar-section a + a { margin-top: 0.25rem; }
-
-        .row { display: flex; flex-wrap: wrap; margin-left: -0.5rem; margin-right: -0.5rem; }
-        .col-12, .col-md-2, .col-md-3, .col-md-4, .col-md-6, .col-md-8, .col-lg-4, .col-lg-8 { padding-left: 0.5rem; padding-right: 0.5rem; }
-        .col-12 { width: 100%; }
-        @media (min-width: 768px) {
-            .col-md-2 { width: 16.6667%; }
-            .col-md-3 { width: 25%; }
-            .col-md-4 { width: 33.3333%; }
-            .col-md-6 { width: 50%; }
-            .col-md-8 { width: 66.6667%; }
-        }
-        @media (min-width: 1024px) {
-            .col-lg-4 { width: 33.3333%; }
-            .col-lg-8 { width: 66.6667%; }
-        }
-
+        .sidebar-gradient { background: linear-gradient(180deg, #1e293b 0%, #334155 50%, #475569 100%); box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1); }
+        .nav-item-hover:hover { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); transform: translateX(8px); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); }
+        .nav-item-active { background: rgba(255, 255, 255, 0.2); border-right: 3px solid #60a5fa; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); }
+        .glass-effect { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); }
+        .sidebar-section { border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 1rem; margin-bottom: 1rem; }
+        .status-indicator { animation: pulse-slow 2s infinite; }
         .card { background: #ffffff; border-radius: 0.75rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05); padding: 1rem; border: 1px solid #e5e7eb; }
         .card-header { border-bottom: 1px solid #e5e7eb; margin-bottom: 1rem; padding-bottom: 0.75rem; }
         .card-title { font-size: 1.125rem; line-height: 1.75rem; font-weight: 600; color: #111827; }
-        .card-body { }
-
-        .form-label { display:block; font-size: 0.875rem; font-weight: 500; color:#374151; margin-bottom: 0.25rem; }
-        .form-control { width:100%; border-radius: 0.5rem; border:1px solid #d1d5db; padding: 0.5rem 0.75rem; background:#fff; transition: box-shadow 0.2s, border-color 0.2s; }
-        .form-control:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59,130,246,0.4); }
-        .form-check { display:flex; align-items:center; gap: 0.5rem; }
-        .form-check-input { height: 1rem; width: 1rem; border-radius: 0.25rem; border:1px solid #d1d5db; accent-color: #2563eb; }
-        .form-check-label { font-size: 0.875rem; color:#374151; }
-        .form-text { font-size: 0.75rem; color:#6b7280; margin-top: 0.25rem; }
-
         .table { width: 100%; text-align: left; font-size: 0.875rem; }
         .table thead { background: #f9fafb; }
         .table th, .table td { padding: 0.75rem 1rem; vertical-align: top; border-bottom: 1px solid #f3f4f6; }
-        .table-hover tbody tr:hover { background: #f9fafb; }
-        .table-light { background: #f9fafb; }
-
         .btn { display:inline-flex; align-items:center; justify-content:center; border-radius: 0.5rem; padding: 0.5rem 1rem; font-size: 0.875rem; font-weight: 500; transition: background-color 0.2s, color 0.2s, border-color 0.2s; }
-        .btn-sm { padding: 0.375rem 0.75rem; font-size: 0.75rem; }
         .btn-primary { background:#2563eb; color:#fff; }
         .btn-primary:hover { background:#1d4ed8; }
-        .btn-secondary { background:#e5e7eb; color:#111827; }
-        .btn-secondary:hover { background:#d1d5db; }
-        .btn-success { background:#16a34a; color:#fff; }
-        .btn-success:hover { background:#15803d; }
-        .btn-outline-primary { border:1px solid #2563eb; color:#1d4ed8; background: transparent; }
-        .btn-outline-primary:hover { background:#eff6ff; }
-        .btn-outline-danger { border:1px solid #dc2626; color:#b91c1c; background: transparent; }
-        .btn-outline-danger:hover { background:#fef2f2; }
-
-        .badge { display:inline-flex; align-items:center; padding: 0.125rem 0.5rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }
-        .bg-danger { background:#fee2e2; color:#991b1b; }
-        .bg-warning { background:#fef3c7; color:#92400e; }
-        .bg-secondary { background:#f3f4f6; color:#1f2937; }
-        .bg-success { background:#dcfce7; color:#166534; }
-        .bg-info { background:#dbeafe; color:#1e40af; }
-
-        .d-grid { display:grid; }
-        .justify-content-between { display:flex; justify-content: space-between; }
-        .align-items-center { align-items:center; }
-        .text-center { text-align:center; }
-        .text-muted { color:#6b7280; }
-        .h4 { font-size: 1.5rem; line-height: 2rem; font-weight: 600; }
-        .fs-6 { font-size: 0.875rem; }
-        .me-2 { margin-right: 0.5rem; }
-        .mb-0 { margin-bottom: 0; }
-        .mb-3 { margin-bottom: 0.75rem; }
-        .mb-4 { margin-bottom: 1rem; }
-        .mt-1 { margin-top: 0.25rem; }
-        .mt-4 { margin-top: 1rem; }
-
-        .pagination { display:flex; align-items:center; gap: 0.5rem; }
-        .page-item { list-style: none; }
-        .page-link { display:inline-flex; align-items:center; padding: 0.375rem 0.75rem; border-radius: 0.375rem; border:1px solid #d1d5db; background:#fff; font-size: 0.875rem; color:#374151; }
-        .page-link:hover { background:#f9fafb; }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
     <div class="flex h-screen overflow-hidden">
-        <!-- Enhanced Modern Sidebar -->
+        <!-- Sidebar -->
         <aside id="sidebar" class="sidebar-gradient text-white w-72 flex-shrink-0 transition-all duration-300 ease-in-out animate-slide-in relative flex flex-col">
-            <!-- Sidebar Header -->
             <div class="p-6 border-b border-white/10 bg-gradient-to-r from-blue-600/20 to-purple-600/20">
                 <div class="flex items-center space-x-4">
                     <div class="w-12 h-12 bg-gradient-to-br from-blue-400 to-purple-500 rounded-xl flex items-center justify-center shadow-lg">
@@ -171,11 +57,9 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Navigation Menu -->
+            <!-- Navigation -->
             <nav class="mt-6 px-4 flex-1 min-h-0 overflow-y-auto" role="navigation" aria-label="Admin Sidebar Navigation">
                 <div class="space-y-6">
-                    <!-- Main Dashboard -->
                     <div class="sidebar-section">
                         <a href="{% url 'admin_dashboard' %}" {% if request.resolver_match.url_name == 'admin_dashboard' %}aria-current="page"{% endif %}
                            class="nav-item-hover flex items-center px-4 py-3 text-white/90 hover:text-white rounded-xl transition-all duration-200 {% if request.resolver_match.url_name == 'admin_dashboard' %}nav-item-active{% endif %} group">
@@ -189,8 +73,6 @@
                             <i class="fas fa-chevron-right text-white/40 group-hover:text-white transition-colors"></i>
                         </a>
                     </div>
-
-                    <!-- Fraud Detection Section -->
                     <div class="sidebar-section">
                         <div class="flex items-center justify-between mb-4 px-4">
                             <p class="text-xs font-bold text-white/70 uppercase tracking-wider">Fraud Detection</p>
@@ -198,9 +80,7 @@
                                 <i class="fas fa-shield-check text-green-400 text-xs"></i>
                             </div>
                         </div>
-                        
-                        <a href="{% url 'predict' %}" {% if request.resolver_match.url_name == 'predict' %}aria-current="page"{% endif %}
-                           class="nav-item-hover flex items-center px-4 py-3 text-white/80 hover:text-white rounded-xl transition-all duration-200 group">
+                        <a href="{% url 'predict' %}" class="nav-item-hover flex items-center px-4 py-3 text-white/80 hover:text-white rounded-xl transition-all duration-200 group">
                             <div class="w-8 h-8 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
                                 <i class="fas fa-magnifying-glass text-white text-sm"></i>
                             </div>
@@ -209,7 +89,6 @@
                                 <p class="text-xs text-white/50 mt-1">Start a new fraud analysis</p>
                             </div>
                         </a>
-
                         <a href="{% url 'admin_dashboard' %}" {% if request.resolver_match.url_name == 'admin_dashboard' %}aria-current="page"{% endif %}
                            class="nav-item-hover flex items-center px-4 py-3 text-white/80 hover:text-white rounded-xl transition-all duration-200 {% if request.resolver_match.url_name == 'admin_dashboard' %}nav-item-active{% endif %} group">
                             <div class="w-8 h-8 bg-gradient-to-br from-red-500 to-red-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
@@ -221,11 +100,7 @@
                             </div>
                             <span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full font-semibold">Live</span>
                         </a>
-
-                        
                     </div>
-
-                    <!-- Reports & Exports Section -->
                     <div class="sidebar-section">
                         <div class="flex items-center justify-between mb-4 px-4">
                             <p class="text-xs font-bold text-white/70 uppercase tracking-wider">Reports & Exports</p>
@@ -244,10 +119,7 @@
                             </div>
                             <i class="fas fa-chevron-right text-white/40 group-hover:text-white transition-colors"></i>
                         </a>
-                        
                     </div>
-
-                    <!-- System Management Section -->
                     <div class="sidebar-section">
                         <div class="flex items-center justify-between mb-4 px-4">
                             <p class="text-xs font-bold text-white/70 uppercase tracking-wider">System Management</p>
@@ -255,7 +127,6 @@
                                 <i class="fas fa-cogs text-blue-400 text-xs"></i>
                             </div>
                         </div>
-                        
                         <a href="{% url 'admin_user_management' %}" {% if request.resolver_match.url_name == 'admin_user_management' %}aria-current="page"{% endif %}
                            class="nav-item-hover flex items-center px-4 py-3 text-white/80 hover:text-white rounded-xl transition-all duration-200 {% if request.resolver_match.url_name == 'admin_user_management' %}nav-item-active{% endif %} group">
                             <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
@@ -267,7 +138,6 @@
                             </div>
                             <i class="fas fa-chevron-right text-white/40 group-hover:text-white transition-colors"></i>
                         </a>
-
                         <a href="{% url 'admin_activity_logs' %}" {% if request.resolver_match.url_name == 'admin_activity_logs' %}aria-current="page"{% endif %}
                            class="nav-item-hover flex items-center px-4 py-3 text-white/80 hover:text-white rounded-xl transition-all duration-200 {% if request.resolver_match.url_name == 'admin_activity_logs' %}nav-item-active{% endif %} group">
                             <div class="w-8 h-8 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
@@ -279,7 +149,6 @@
                             </div>
                             <i class="fas fa-chevron-right text-white/40 group-hover:text-white transition-colors"></i>
                         </a>
-
                         <a href="{% url 'admin_system_settings' %}" {% if request.resolver_match.url_name == 'admin_system_settings' %}aria-current="page"{% endif %}
                            class="nav-item-hover flex items-center px-4 py-3 text-white/80 hover:text-white rounded-xl transition-all duration-200 {% if request.resolver_match.url_name == 'admin_system_settings' %}nav-item-active{% endif %} group">
                             <div class="w-8 h-8 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
@@ -291,36 +160,29 @@
                             </div>
                             <i class="fas fa-chevron-right text-white/40 group-hover:text-white transition-colors"></i>
                         </a>
-
-                        
-                        </div>
-                    </div>
-                    
-            </nav>
-            <!-- Bottom Actions (outside scroll) -->
-            <div class="mt-auto px-4 pb-6">
-                    <div class="space-y-2">
-                        <a href="{% url 'dashboard' %}" 
-                           class="nav-item-hover flex items-center px-4 py-3 text-white/80 hover:text-white rounded-xl transition-all duration-200 group">
-                            <div class="w-8 h-8 bg-gradient-to-br from-gray-500 to-gray-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
-                                <i class="fas fa-arrow-left text-white text-sm"></i>
-                            </div>
-                            <span class="font-medium">Back to Main App</span>
-                        </a>
-                        <a href="{% url 'logout' %}" 
-                           class="nav-item-hover flex items-center px-4 py-3 text-red-300 hover:text-red-200 rounded-xl transition-all duration-200 group">
-                            <div class="w-8 h-8 bg-gradient-to-br from-red-500 to-red-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
-                                <i class="fas fa-sign-out-alt text-white text-sm"></i>
-                            </div>
-                            <span class="font-medium">Logout</span>
-                        </a>
                     </div>
                 </div>
+            </nav>
+            <div class="mt-auto px-4 pb-6">
+                <div class="space-y-2">
+                    <a href="{% url 'dashboard' %}" class="nav-item-hover flex items-center px-4 py-3 text-white/80 hover:text-white rounded-xl transition-all duration-200 group">
+                        <div class="w-8 h-8 bg-gradient-to-br from-gray-500 to-gray-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-arrow-left text-white text-sm"></i>
+                        </div>
+                        <span class="font-medium">Back to Main App</span>
+                    </a>
+                    <a href="{% url 'logout' %}" class="nav-item-hover flex items-center px-4 py-3 text-red-300 hover:text-red-200 rounded-xl transition-all duration-200 group">
+                        <div class="w-8 h-8 bg-gradient-to-br from-red-500 to-red-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-sign-out-alt text-white text-sm"></i>
+                        </div>
+                        <span class="font-medium">Logout</span>
+                    </a>
+                </div>
+            </div>
         </aside>
 
         <!-- Main Content Area -->
         <div class="flex-1 flex flex-col overflow-hidden">
-            <!-- Enhanced Top Header -->
             <header class="bg-white shadow-lg border-b border-gray-200 px-8 py-6 animate-fade-in">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center space-x-6">
@@ -328,30 +190,24 @@
                             <i class="fas fa-bars text-xl"></i>
                         </button>
                         <div>
-                            <h1 class="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
+                            <h1 class="text-3xl font-bold text-gray-900">{% block page_title %}Admin Dashboard{% endblock %}</h1>
                             <p class="text-gray-500 mt-1 flex items-center">
                                 <i class="fas fa-shield-alt text-blue-500 mr-2"></i>
                                 Monitor and manage your fraud detection system
                             </p>
                         </div>
                     </div>
-                    
                     <div class="flex items-center space-x-6">
-                        <!-- System Status Indicator -->
                         <div class="flex items-center space-x-3 bg-green-50 px-4 py-2 rounded-lg">
                             <div class="w-3 h-3 bg-green-500 rounded-full status-indicator"></div>
                             <span class="text-green-700 font-semibold text-sm">System Online</span>
                         </div>
-                        
-                        <!-- Notifications -->
                         <div class="relative">
                             <button class="p-3 text-gray-400 hover:text-gray-600 relative bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors">
                                 <i class="fas fa-bell text-xl"></i>
                                 <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center font-bold">3</span>
                             </button>
                         </div>
-                        
-                        <!-- User Profile -->
                         <div class="flex items-center space-x-4 bg-gray-50 px-4 py-2 rounded-lg">
                             <div class="text-right">
                                 <p class="text-sm font-semibold text-gray-900">{{ user.get_full_name|default:user.username }}</p>
@@ -367,8 +223,6 @@
                     </div>
                 </div>
             </header>
-
-            <!-- Page Content -->
             <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-8">
                 {% if messages %}
                     {% for message in messages %}
@@ -380,24 +234,18 @@
                         </div>
                     {% endfor %}
                 {% endif %}
-                
                 {% block content %}{% endblock %}
             </main>
         </div>
     </div>
-
     <script>
-        // Enhanced sidebar functionality
         const sidebar = document.getElementById('sidebar');
         const sidebarToggle = document.getElementById('sidebar-toggle');
-
         if (sidebarToggle) {
             sidebarToggle.addEventListener('click', () => {
                 sidebar.classList.toggle('-translate-x-full');
             });
         }
-
-        // Close sidebar when clicking outside on mobile
         document.addEventListener('click', (e) => {
             if (window.innerWidth <= 1024) {
                 if (!sidebar.contains(e.target) && !sidebarToggle.contains(e.target)) {
@@ -405,15 +253,12 @@
                 }
             }
         });
-
-        // Add smooth animations to nav items
         document.addEventListener('DOMContentLoaded', function() {
             const navItems = document.querySelectorAll('.nav-item-hover');
             navItems.forEach((item, index) => {
                 item.style.opacity = '0';
                 item.style.transform = 'translateX(-20px)';
                 item.style.transition = 'all 0.3s ease';
-                
                 setTimeout(() => {
                     item.style.opacity = '1';
                     item.style.transform = 'translateX(0)';
@@ -421,438 +266,7 @@
             });
         });
     </script>
-    
     {% block extra_js %}{% endblock %}
 </body>
 </html>
 
-</html>
-                                <span class="font-medium">Fraud Analytics</span>
-
-                                <p class="text-xs text-white/50 mt-1">Pattern analysis & insights</p>
-
-                            </div>
-
-                            <span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full font-semibold">Live</span>
-
-                        </a>
-
-
-
-                        
-
-                    </div>
-
-
-
-                    <!-- Reports & Exports Section -->
-
-                    <div class="sidebar-section">
-
-                        <div class="flex items-center justify-between mb-4 px-4">
-
-                            <p class="text-xs font-bold text-white/70 uppercase tracking-wider">Reports & Exports</p>
-
-                            <div class="w-8 h-8 bg-amber-500/20 rounded-full flex items-center justify-center">
-
-                                <i class="fas fa-file-chart-column text-amber-300 text-xs"></i>
-
-                            </div>
-
-                        </div>
-
-                        <a href="{% url 'admin_reports' %}" {% if request.resolver_match.url_name == 'admin_reports' %}aria-current="page"{% endif %}
-
-                           class="nav-item-hover flex items-center px-4 py-3 text-white/80 hover:text-white rounded-xl transition-all duration-200 group">
-
-                            <div class="w-8 h-8 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
-
-                                <i class="fas fa-file-alt text-white text-sm"></i>
-
-                            </div>
-
-                            <div class="flex-1">
-
-                                <span class="font-medium">Fraud Reports</span>
-
-                                <p class="text-xs text-white/50 mt-1">Generate & view reports</p>
-
-                            </div>
-
-                            <i class="fas fa-chevron-right text-white/40 group-hover:text-white transition-colors"></i>
-
-                        </a>
-
-                        <a href="{% url 'user_reports' %}" {% if request.resolver_match.url_name == 'user_reports' %}aria-current="page"{% endif %}
-
-                           class="nav-item-hover flex items-center px-4 py-3 text-white/80 hover:text-white rounded-xl transition-all duration-200 group">
-
-                            <div class="w-8 h-8 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
-
-                                <i class="fas fa-chart-pie text-white text-sm"></i>
-
-                            </div>
-
-                            <div class="flex-1">
-
-                                <span class="font-medium">User Reports</span>
-
-                                <p class="text-xs text-white/50 mt-1">User & team insights</p>
-
-                            </div>
-
-                        </a>
-
-                    </div>
-
-
-
-                    <!-- System Management Section -->
-
-                    <div class="sidebar-section">
-
-                        <div class="flex items-center justify-between mb-4 px-4">
-
-                            <p class="text-xs font-bold text-white/70 uppercase tracking-wider">System Management</p>
-
-                            <div class="w-8 h-8 bg-blue-500/20 rounded-full flex items-center justify-center">
-
-                                <i class="fas fa-cogs text-blue-400 text-xs"></i>
-
-                            </div>
-
-                        </div>
-
-                        
-
-                        <a href="{% url 'admin_user_management' %}" {% if request.resolver_match.url_name == 'admin_user_management' %}aria-current="page"{% endif %}
-
-                           class="nav-item-hover flex items-center px-4 py-3 text-white/80 hover:text-white rounded-xl transition-all duration-200 {% if request.resolver_match.url_name == 'admin_user_management' %}nav-item-active{% endif %} group">
-
-                            <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
-
-                                <i class="fas fa-users text-white text-sm"></i>
-
-                            </div>
-
-                            <div class="flex-1">
-
-                                <span class="font-medium">User Management</span>
-
-                                <p class="text-xs text-white/50 mt-1">Manage users & permissions</p>
-
-                            </div>
-
-                            <i class="fas fa-chevron-right text-white/40 group-hover:text-white transition-colors"></i>
-
-                        </a>
-
-
-
-                        <a href="{% url 'admin_activity_logs' %}" {% if request.resolver_match.url_name == 'admin_activity_logs' %}aria-current="page"{% endif %}
-
-                           class="nav-item-hover flex items-center px-4 py-3 text-white/80 hover:text-white rounded-xl transition-all duration-200 {% if request.resolver_match.url_name == 'admin_activity_logs' %}nav-item-active{% endif %} group">
-
-                            <div class="w-8 h-8 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
-
-                                <i class="fas fa-list-alt text-white text-sm"></i>
-
-                            </div>
-
-                            <div class="flex-1">
-
-                                <span class="font-medium">Activity Logs</span>
-
-                                <p class="text-xs text-white/50 mt-1">System activity & audit</p>
-
-                            </div>
-
-                            <i class="fas fa-chevron-right text-white/40 group-hover:text-white transition-colors"></i>
-
-                        </a>
-
-
-
-                        <a href="{% url 'admin_system_settings' %}" {% if request.resolver_match.url_name == 'admin_system_settings' %}aria-current="page"{% endif %}
-
-                           class="nav-item-hover flex items-center px-4 py-3 text-white/80 hover:text-white rounded-xl transition-all duration-200 {% if request.resolver_match.url_name == 'admin_system_settings' %}nav-item-active{% endif %} group">
-
-                            <div class="w-8 h-8 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
-
-                                <i class="fas fa-cogs text-white text-sm"></i>
-
-                            </div>
-
-                            <div class="flex-1">
-
-                                <span class="font-medium">System Settings</span>
-
-                                <p class="text-xs text-white/50 mt-1">Configuration & preferences</p>
-
-                            </div>
-
-                            <i class="fas fa-chevron-right text-white/40 group-hover:text-white transition-colors"></i>
-
-                        </a>
-
-
-
-                        
-
-                        </div>
-
-                    </div>
-
-                    
-
-            </nav>
-
-            <!-- Bottom Actions (outside scroll) -->
-
-            <div class="mt-auto px-4 pb-6">
-
-                    <div class="space-y-2">
-
-                        <a href="{% url 'dashboard' %}" 
-
-                           class="nav-item-hover flex items-center px-4 py-3 text-white/80 hover:text-white rounded-xl transition-all duration-200 group">
-
-                            <div class="w-8 h-8 bg-gradient-to-br from-gray-500 to-gray-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
-
-                                <i class="fas fa-arrow-left text-white text-sm"></i>
-
-                            </div>
-
-                            <span class="font-medium">Back to Main App</span>
-
-                        </a>
-
-                        <a href="{% url 'logout' %}" 
-
-                           class="nav-item-hover flex items-center px-4 py-3 text-red-300 hover:text-red-200 rounded-xl transition-all duration-200 group">
-
-                            <div class="w-8 h-8 bg-gradient-to-br from-red-500 to-red-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
-
-                                <i class="fas fa-sign-out-alt text-white text-sm"></i>
-
-                            </div>
-
-                            <span class="font-medium">Logout</span>
-
-                        </a>
-
-                    </div>
-
-                </div>
-
-        </aside>
-
-
-
-        <!-- Main Content Area -->
-
-        <div class="flex-1 flex flex-col overflow-hidden">
-
-            <!-- Enhanced Top Header -->
-
-            <header class="bg-white shadow-lg border-b border-gray-200 px-8 py-6 animate-fade-in">
-
-                <div class="flex items-center justify-between">
-
-                    <div class="flex items-center space-x-6">
-
-                        <button id="sidebar-toggle" class="lg:hidden text-gray-600 hover:text-gray-900 focus:outline-none p-2 rounded-lg hover:bg-gray-100 transition-colors">
-
-                            <i class="fas fa-bars text-xl"></i>
-
-                        </button>
-
-                        <div>
-
-                            <h1 class="text-3xl font-bold text-gray-900">{% block page_title %}Admin Dashboard{% endblock %}</h1>
-
-                            <p class="text-gray-500 mt-1 flex items-center">
-
-                                <i class="fas fa-shield-alt text-blue-500 mr-2"></i>
-
-                                Monitor and manage your fraud detection system
-
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                    
-
-                    <div class="flex items-center space-x-6">
-
-                        <!-- System Status Indicator -->
-
-                        <div class="flex items-center space-x-3 bg-green-50 px-4 py-2 rounded-lg">
-
-                            <div class="w-3 h-3 bg-green-500 rounded-full status-indicator"></div>
-
-                            <span class="text-green-700 font-semibold text-sm">System Online</span>
-
-                        </div>
-
-                        
-
-                        <!-- Notifications -->
-
-                        <div class="relative">
-
-                            <button class="p-3 text-gray-400 hover:text-gray-600 relative bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors">
-
-                                <i class="fas fa-bell text-xl"></i>
-
-                                <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center font-bold">3</span>
-
-                            </button>
-
-                        </div>
-
-                        
-
-                        <!-- User Profile -->
-
-                        <div class="flex items-center space-x-4 bg-gray-50 px-4 py-2 rounded-lg">
-
-                            <div class="text-right">
-
-                                <p class="text-sm font-semibold text-gray-900">{{ user.get_full_name|default:user.username }}</p>
-
-                                <p class="text-xs text-gray-500">System Administrator</p>
-
-                            </div>
-
-                            <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
-
-                                <i class="fas fa-user text-white"></i>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </header>
-
-
-
-            <!-- Page Content -->
-
-            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-8">
-
-                {% if messages %}
-
-                    {% for message in messages %}
-
-                        <div class="mb-6 p-4 rounded-xl {% if message.tags == 'error' %}bg-red-50 border border-red-200 text-red-700{% elif message.tags == 'success' %}bg-green-50 border border-green-200 text-green-700{% else %}bg-blue-50 border border-blue-200 text-blue-700{% endif %} shadow-sm">
-
-                            <div class="flex items-center">
-
-                                <i class="fas {% if message.tags == 'error' %}fa-exclamation-circle{% elif message.tags == 'success' %}fa-check-circle{% else %}fa-info-circle{% endif %} mr-3"></i>
-
-                                {{ message }}
-
-                            </div>
-
-                        </div>
-
-                    {% endfor %}
-
-                {% endif %}
-
-                
-
-                {% block content %}{% endblock %}
-
-            </main>
-
-        </div>
-
-    </div>
-
-
-
-    <script>
-
-        // Enhanced sidebar functionality
-
-        const sidebar = document.getElementById('sidebar');
-
-        const sidebarToggle = document.getElementById('sidebar-toggle');
-
-
-
-        if (sidebarToggle) {
-
-            sidebarToggle.addEventListener('click', () => {
-
-                sidebar.classList.toggle('-translate-x-full');
-
-            });
-
-        }
-
-
-
-        // Close sidebar when clicking outside on mobile
-
-        document.addEventListener('click', (e) => {
-
-            if (window.innerWidth <= 1024) {
-
-                if (!sidebar.contains(e.target) && !sidebarToggle.contains(e.target)) {
-
-                    sidebar.classList.add('-translate-x-full');
-
-                }
-
-            }
-
-        });
-
-
-
-        // Add smooth animations to nav items
-
-        document.addEventListener('DOMContentLoaded', function() {
-
-            const navItems = document.querySelectorAll('.nav-item-hover');
-
-            navItems.forEach((item, index) => {
-
-                item.style.opacity = '0';
-
-                item.style.transform = 'translateX(-20px)';
-
-                item.style.transition = 'all 0.3s ease';
-
-                
-
-                setTimeout(() => {
-
-                    item.style.opacity = '1';
-
-                    item.style.transform = 'translateX(0)';
-
-                }, index * 100);
-
-            });
-
-        });
-
-    </script>
-
-    
-
-    {% block extra_js %}{% endblock %}
-
-</body>
-
-</html>
