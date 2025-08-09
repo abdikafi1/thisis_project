@@ -370,11 +370,19 @@ def admin_analytics(request):
     # Get predictions by date for charts
     from datetime import datetime, timedelta
     thirty_days_ago = timezone.now() - timedelta(days=30)
-    daily_fraud_stats = Prediction.objects.filter(
+    daily_fraud_stats_query = Prediction.objects.filter(
         created_at__gte=thirty_days_ago
     ).extra(
         select={'day': 'date(created_at)'}
     ).values('day', 'result').annotate(count=Count('id')).order_by('day')
+    
+    # Convert QuerySet to list for JSON serialization
+    daily_fraud_stats_list = list(daily_fraud_stats_query)
+    
+    # Convert datetime objects to strings for JSON
+    for stat in daily_fraud_stats_list:
+        if stat.get('day'):
+            stat['day'] = stat['day'].strftime('%Y-%m-%d') if hasattr(stat['day'], 'strftime') else str(stat['day'])
     
     context = {
         'fraud_analytics': fraud_analytics,
@@ -384,7 +392,7 @@ def admin_analytics(request):
         'fraud_predictions': fraud_predictions,
         'safe_predictions': safe_predictions,
         'recent_predictions': recent_predictions,
-        'daily_fraud_stats': daily_fraud_stats,
+        'daily_fraud_stats': json.dumps(daily_fraud_stats_list),
         # Real-time metrics from ML model
         'fraud_rate': fraud_analytics.get('fraud_rate', 0),
         'model_accuracy': fraud_analytics.get('model_performance', {}).get('accuracy', 0),

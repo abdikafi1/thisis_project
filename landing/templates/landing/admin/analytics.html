@@ -1,4 +1,5 @@
 {% extends 'landing/admin/base.html' %}
+{% load custom_filters %}
 
 {% block title %}Fraud Analytics{% endblock %}
 {% block page_title %}Fraud Analytics Dashboard{% endblock %}
@@ -128,7 +129,7 @@
                     {% if importance > 0.01 %}
                         <div class="space-y-2">
                             <div class="flex justify-between">
-                                <span class="text-sm font-medium text-gray-700 capitalize">{{ feature|replace:"_":" " }}</span>
+                                <span class="text-sm font-medium text-gray-700">{{ feature|replace_underscore }}</span>
                                 <span class="text-sm text-gray-500">{{ importance|floatformat:3 }}</span>
                             </div>
                             <div class="w-full bg-gray-200 rounded-full h-3">
@@ -155,7 +156,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {% for pattern, data in high_risk_patterns.items %}
                     <div class="p-4 bg-orange-50 border border-orange-200 rounded-lg">
-                        <h4 class="font-semibold text-orange-800 mb-2 capitalize">{{ pattern|replace:"_":" " }}</h4>
+                        <h4 class="font-semibold text-orange-800 mb-2">{{ pattern|replace_underscore }}</h4>
                         {% if data.fraud_rate %}
                             <p class="text-sm text-orange-700">Fraud Rate: <span class="font-semibold">{{ data.fraud_rate|floatformat:1 }}%</span></p>
                         {% endif %}
@@ -254,7 +255,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const ctx = document.getElementById('fraudTrendsChart').getContext('2d');
     
     // Process the daily fraud stats data
-    const dailyStats = {{ daily_fraud_stats|safe }};
+    const dailyStats = JSON.parse('{{ daily_fraud_stats|escapejs }}');
     const chartData = {
         labels: [],
         datasets: [
