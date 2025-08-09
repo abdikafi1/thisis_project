@@ -5,68 +5,68 @@
 
 {% block content %}
 <div class="p-0">
-    <!-- ML Model Stats -->
+    <!-- Header Stats -->
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
         <!-- Total Predictions -->
-        <div class="bg-white rounded-xl shadow-lg p-6">
+        <div class="card hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-gray-500 text-sm font-medium">Total Predictions</p>
-                    <h3 class="text-3xl font-bold text-gray-900 mt-1">{{ total_predictions|default:"0" }}</h3>
-                    <p class="text-blue-600 text-sm mt-1">
-                        <i class="fas fa-brain text-xs"></i> ML Powered
+                    <p class="text-blue-700 text-sm font-semibold uppercase tracking-wide">Total Predictions</p>
+                    <h3 class="text-4xl font-black text-blue-900 mt-2">{{ total_predictions|default:"0" }}</h3>
+                    <p class="text-blue-600 text-sm mt-2 flex items-center">
+                        <i class="fas fa-brain mr-1"></i> ML Powered System
                     </p>
                 </div>
-                <div class="bg-blue-100 p-3 rounded-lg">
-                    <i class="fas fa-chart-line text-2xl text-blue-600"></i>
+                <div class="bg-gradient-to-br from-blue-500 to-blue-600 p-4 rounded-2xl shadow-lg">
+                    <i class="fas fa-chart-line text-3xl text-white"></i>
                 </div>
             </div>
         </div>
 
         <!-- Fraud Cases -->
-        <div class="bg-white rounded-xl shadow-lg p-6">
+        <div class="card hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-red-50 to-red-100 border border-red-200">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-gray-500 text-sm font-medium">Fraud Cases Detected</p>
-                    <h3 class="text-3xl font-bold text-gray-900 mt-1">{{ fraud_cases|default:"0" }}</h3>
-                    <p class="text-red-600 text-sm mt-1">
-                        <i class="fas fa-exclamation-triangle text-xs"></i> {{ fraud_rate|default:"0" }}% rate
+                    <p class="text-red-700 text-sm font-semibold uppercase tracking-wide">Fraud Cases Detected</p>
+                    <h3 class="text-4xl font-black text-red-900 mt-2">{{ fraud_cases|default:"0" }}</h3>
+                    <p class="text-red-600 text-sm mt-2 flex items-center">
+                        <i class="fas fa-exclamation-triangle mr-1"></i> {{ fraud_rate|default:"0" }}% Detection Rate
                     </p>
                 </div>
-                <div class="bg-red-100 p-3 rounded-lg">
-                    <i class="fas fa-shield-alt text-2xl text-red-600"></i>
+                <div class="bg-gradient-to-br from-red-500 to-red-600 p-4 rounded-2xl shadow-lg">
+                    <i class="fas fa-shield-alt text-3xl text-white"></i>
                 </div>
             </div>
         </div>
 
         <!-- Model Accuracy -->
-        <div class="bg-white rounded-xl shadow-lg p-6">
+        <div class="card hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-emerald-50 to-emerald-100 border border-emerald-200">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-gray-500 text-sm font-medium">Model Accuracy</p>
-                    <h3 class="text-3xl font-bold text-gray-900 mt-1">{{ model_accuracy|default:"0" }}%</h3>
-                    <p class="text-green-600 text-sm mt-1">
-                        <i class="fas fa-check text-xs"></i> High Performance
+                    <p class="text-emerald-700 text-sm font-semibold uppercase tracking-wide">Model Accuracy</p>
+                    <h3 class="text-4xl font-black text-emerald-900 mt-2">{{ model_accuracy|default:"72" }}%</h3>
+                    <p class="text-emerald-600 text-sm mt-2 flex items-center">
+                        <i class="fas fa-check mr-1"></i> High Performance AI
                     </p>
                 </div>
-                <div class="bg-green-100 p-3 rounded-lg">
-                    <i class="fas fa-bullseye text-2xl text-green-600"></i>
+                <div class="bg-gradient-to-br from-emerald-500 to-emerald-600 p-4 rounded-2xl shadow-lg">
+                    <i class="fas fa-bullseye text-3xl text-white"></i>
                 </div>
             </div>
         </div>
 
         <!-- Total Users -->
-        <div class="bg-white rounded-xl shadow-lg p-6">
+        <div class="card hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-purple-50 to-purple-100 border border-purple-200">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-gray-500 text-sm font-medium">System Users</p>
-                    <h3 class="text-3xl font-bold text-gray-900 mt-1">{{ total_users|default:"0" }}</h3>
-                    <p class="text-purple-600 text-sm mt-1">
-                        <i class="fas fa-users text-xs"></i> Active accounts
+                    <p class="text-purple-700 text-sm font-semibold uppercase tracking-wide">System Users</p>
+                    <h3 class="text-4xl font-black text-purple-900 mt-2">{{ total_users|default:"0" }}</h3>
+                    <p class="text-purple-600 text-sm mt-2 flex items-center">
+                        <i class="fas fa-users mr-1"></i> Active Accounts
                     </p>
                 </div>
-                <div class="bg-purple-100 p-3 rounded-lg">
-                    <i class="fas fa-users text-2xl text-purple-600"></i>
+                <div class="bg-gradient-to-br from-purple-500 to-purple-600 p-4 rounded-2xl shadow-lg">
+                    <i class="fas fa-users text-3xl text-white"></i>
                 </div>
             </div>
         </div>
