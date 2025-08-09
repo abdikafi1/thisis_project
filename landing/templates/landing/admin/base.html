@@ -197,18 +197,17 @@
                             </p>
                         </div>
                     </div>
-                    <div class="flex items-center space-x-6">
-                        <div class="flex items-center space-x-3 bg-green-50 px-4 py-2 rounded-lg">
-                            <div class="w-3 h-3 bg-green-500 rounded-full status-indicator"></div>
-                            <span class="text-green-700 font-semibold text-sm">System Online</span>
-                        </div>
-                        <div class="relative">
-                            <button class="p-3 text-gray-400 hover:text-gray-600 relative bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors">
-                                <i class="fas fa-bell text-xl"></i>
-                                <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center font-bold">3</span>
-                            </button>
-                        </div>
-                        <div class="flex items-center space-x-4 bg-gray-50 px-4 py-2 rounded-lg">
+                    <div class="flex items-center space-x-4">
+                        <a href="{% url 'admin_user_management' %}" class="p-2 text-gray-600 hover:text-gray-900" title="Users">
+                            <i class="fas fa-users"></i>
+                        </a>
+                        <a href="{% url 'admin_reports' %}" class="p-2 text-gray-600 hover:text-gray-900" title="Reports">
+                            <i class="fas fa-file-alt"></i>
+                        </a>
+                        <a href="{% url 'admin_system_settings' %}" class="p-2 text-gray-600 hover:text-gray-900" title="Settings">
+                            <i class="fas fa-cog"></i>
+                        </a>
+                        <div class="flex items-center space-x-3 bg-gray-50 px-3 py-2 rounded-lg">
                             <div class="text-right">
                                 <p class="text-sm font-semibold text-gray-900">{{ user.get_full_name|default:user.username }}</p>
                                 <p class="text-xs text-gray-500">System Administrator</p>

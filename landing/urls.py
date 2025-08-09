@@ -9,7 +9,8 @@ from .views import (
 )
 from .admin_views import (
     admin_dashboard, admin_user_management, admin_edit_user, admin_delete_user,
-    admin_system_settings, admin_edit_setting, admin_activity_logs, admin_reports
+    admin_system_settings, admin_edit_setting, admin_activity_logs, admin_reports,
+    admin_predict, admin_prediction_result
 )
  
 urlpatterns = [
@@ -44,6 +45,8 @@ urlpatterns = [
     
     # Admin Routes (using 'manage' to avoid conflict with Django admin)
     path('manage/dashboard/', admin_dashboard, name='admin_dashboard'),
+    path('manage/predict/', admin_predict, name='admin_predict'),
+    path('manage/prediction-result/', admin_prediction_result, name='admin_prediction_result'),
     path('manage/users/', admin_user_management, name='admin_user_management'),
     path('manage/users/<int:user_id>/edit/', admin_edit_user, name='admin_edit_user'),
     path('manage/users/<int:user_id>/delete/', admin_delete_user, name='admin_delete_user'),

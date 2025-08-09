@@ -6,8 +6,8 @@ from django.db.models import Q, Count
 from django.utils import timezone
 from datetime import datetime, timedelta
 from .models import UserProfile, Prediction, UserActivity, SystemSettings
-from .views import get_fraud_analytics, get_ml_model_insights
-from .forms import AdminUserManagementForm, SystemSettingsForm, UserSearchForm, AdminDashboardForm
+from .views import get_fraud_analytics, get_ml_model_insights, predict_fraud
+from .forms import AdminUserManagementForm, SystemSettingsForm, UserSearchForm, AdminDashboardForm, PredictionForm
 from .decorators import admin_required, track_activity
 from .decorators import track_activity
 
@@ -277,3 +277,71 @@ def admin_reports(request):
     }
     
     return render(request, 'landing/admin/reports.html', context)
+
+
+@admin_required
+@track_activity('admin_action', lambda req, *args, **kwargs: "Accessed admin prediction")
+def admin_predict(request):
+    """Admin-side prediction form rendered within admin layout"""
+    if request.method == 'POST':
+        form = PredictionForm(request.POST)
+        if form.is_valid():
+            input_data = form.cleaned_data
+            pred, confidence_score, processing_time, errors, feature_importance, risk_factors = predict_fraud(input_data)
+
+            if errors:
+                return render(request, 'landing/admin/predict.html', { 'form': form, 'errors': errors })
+
+            result = 'Fraud' if pred == 1 else 'Not Fraud'
+
+            prediction = Prediction.objects.create(
+                user=request.user,
+                input_data=json.dumps(input_data),
+                result=result,
+                confidence_score=confidence_score,
+                processing_time=processing_time
+            )
+
+            # Store in session for result page
+            request.session['admin_prediction_result'] = result
+            request.session['admin_confidence_score'] = confidence_score
+            request.session['admin_processing_time'] = processing_time
+            request.session['admin_risk_factors'] = risk_factors
+            request.session['admin_feature_importance'] = feature_importance
+            request.session['admin_prediction_id'] = prediction.id
+
+            return redirect('admin_prediction_result')
+    else:
+        form = PredictionForm()
+
+    return render(request, 'landing/predict.html', { 'form': form })
+
+
+@admin_required
+@track_activity('admin_action', lambda req, *args, **kwargs: "Viewed admin prediction result")
+def admin_prediction_result(request):
+    """Show prediction result inside admin layout"""
+    result = request.session.get('admin_prediction_result')
+    confidence_score = request.session.get('admin_confidence_score', 0)
+    processing_time = request.session.get('admin_processing_time', 0)
+    risk_factors = request.session.get('admin_risk_factors', [])
+    feature_importance = request.session.get('admin_feature_importance', {})
+    prediction_id = request.session.get('admin_prediction_id')
+
+    prediction = None
+    if prediction_id:
+        try:
+            prediction = Prediction.objects.get(id=prediction_id, user=request.user)
+        except Prediction.DoesNotExist:
+            prediction = None
+
+    context = {
+        'result': result,
+        'confidence_score': confidence_score,
+        'processing_time': processing_time,
+        'prediction': prediction,
+        'risk_factors': risk_factors,
+        'feature_importance': feature_importance,
+    }
+
+    return render(request, 'landing/prediction_result.html', context)

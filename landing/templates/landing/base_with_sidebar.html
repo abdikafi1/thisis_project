@@ -298,37 +298,7 @@
                 
             </ul>
 
-            <!-- Settings Section -->
-            <div class="sidebar-section">
-                <h3 class="nav-section-title px-4 py-2">Settings</h3>
-            </div>
-            
-            <ul class="space-y-1.5">
-                <li>
-                    <a href="{% url 'user_profile' %}" {% if request.resolver_match.url_name == 'user_profile' %}aria-current="page"{% endif %} class="sidebar-item flex items-center px-4 py-3 text-white hover:text-white {% if request.resolver_match.url_name == 'user_profile' %}active{% endif %}">
-                        <i class="fas fa-user nav-icon"></i>
-                        <span class="nav-text">Profile Settings</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{% url 'user_settings' %}" {% if request.resolver_match.url_name == 'user_settings' %}aria-current="page"{% endif %} class="sidebar-item flex items-center px-4 py-3 text-white hover:text-white {% if request.resolver_match.url_name == 'user_settings' %}active{% endif %}">
-                        <i class="fas fa-user-cog nav-icon"></i>
-                        <span class="nav-text">User Settings</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{% url 'dashboard_settings' %}" {% if request.resolver_match.url_name == 'dashboard_settings' %}aria-current="page"{% endif %} class="sidebar-item flex items-center px-4 py-3 text-white hover:text-white {% if request.resolver_match.url_name == 'dashboard_settings' %}active{% endif %}">
-                        <i class="fas fa-cog nav-icon"></i>
-                        <span class="nav-text">Dashboard Settings</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{% url 'notification_settings' %}" {% if request.resolver_match.url_name == 'notification_settings' %}aria-current="page"{% endif %} class="sidebar-item flex items-center px-4 py-3 text-white hover:text-white {% if request.resolver_match.url_name == 'notification_settings' %}active{% endif %}">
-                        <i class="fas fa-bell nav-icon"></i>
-                        <span class="nav-text">Notifications</span>
-                    </a>
-                </li>
-            </ul>
+            <!-- Settings Section removed per request; controls moved to top header icons -->
         </nav>
 
         <!-- Sidebar Footer -->
@@ -377,26 +347,25 @@
                     <h1 class="page-title">{% block page_title %}Dashboard{% endblock %}</h1>
                 </div>
                 
-                <div class="flex items-center space-x-6">
-                    <!-- Notifications -->
-                    <div class="relative">
-                        <button class="notification-bell">
-                            <i class="fas fa-bell"></i>
-                            <span class="notification-badge">3</span>
-                        </button>
-                    </div>
-                    
-                    <!-- User Menu -->
+                <div class="flex items-center space-x-4">
                     {% if user.is_authenticated %}
-                    <div class="relative">
-                        <button class="flex items-center space-x-3 text-gray-700 hover:text-gray-900 transition-colors">
-                            <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-sm font-semibold shadow-lg">
-                                {{ user.first_name|first|default:user.username|first|upper }}
-                            </div>
-                            <span class="hidden md:block font-medium">{{ user.first_name|default:user.username }}</span>
-                            <i class="fas fa-chevron-down text-xs text-gray-400"></i>
-                        </button>
-                    </div>
+                        <a href="{% url 'user_profile' %}" class="p-2 text-gray-600 hover:text-gray-900" title="Profile">
+                            <i class="fas fa-user"></i>
+                        </a>
+                        <a href="{% url 'user_settings' %}" class="p-2 text-gray-600 hover:text-gray-900" title="User Settings">
+                            <i class="fas fa-sliders-h"></i>
+                        </a>
+                        <a href="{% url 'dashboard_settings' %}" class="p-2 text-gray-600 hover:text-gray-900" title="Dashboard Settings">
+                            <i class="fas fa-cog"></i>
+                        </a>
+                        <div class="relative">
+                            <button class="flex items-center space-x-3 text-gray-700 hover:text-gray-900 transition-colors">
+                                <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-sm font-semibold shadow-lg">
+                                    {{ user.first_name|first|default:user.username|first|upper }}
+                                </div>
+                                <span class="hidden md:block font-medium">{{ user.first_name|default:user.username }}</span>
+                            </button>
+                        </div>
                     {% endif %}
                 </div>
             </div>
