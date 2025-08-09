@@ -1,0 +1,78 @@
+{% extends 'landing/admin/base.html' %}
+
+{% block title %}Admin Reports{% endblock %}
+{% block page_title %}Fraud Reports{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    <!-- Summary Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="card">
+            <div class="card-header"><h3 class="card-title">New Users (30d)</h3></div>
+            <div class="card-body"><p class="h4 mb-0">{{ new_users|default:"0" }}</p></div>
+        </div>
+        <div class="card">
+            <div class="card-header"><h3 class="card-title">Total Predictions</h3></div>
+            <div class="card-body"><p class="h4 mb-0">{{ total_predictions|default:"0" }}</p></div>
+        </div>
+        <div class="card">
+            <div class="card-header"><h3 class="card-title">Recent Predictions (30d)</h3></div>
+            <div class="card-body"><p class="h4 mb-0">{{ recent_predictions|default:"0" }}</p></div>
+        </div>
+        <div class="card">
+            <div class="card-header"><h3 class="card-title">Activities (30d)</h3></div>
+            <div class="card-body"><p class="h4 mb-0">{{ recent_activities|default:"0" }}</p></div>
+        </div>
+    </div>
+
+    <!-- User Level Distribution -->
+    <div class="card">
+        <div class="card-header"><h3 class="card-title">User Level Distribution</h3></div>
+        <div class="card-body">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {% for level in user_levels %}
+                <div class="bg-gray-50 rounded-lg p-4 flex items-center justify-between">
+                    <span class="text-sm text-gray-600">{{ level.user_level|title }}</span>
+                    <span class="text-lg font-semibold text-gray-900">{{ level.count }}</span>
+                </div>
+                {% empty %}
+                <p class="text-gray-500">No data available.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Users by Activity -->
+    <div class="card">
+        <div class="card-header"><h3 class="card-title">Top Users by Activity</h3></div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>User</th>
+                            <th>Email</th>
+                            <th class="text-right">Activities</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in top_users %}
+                        <tr>
+                            <td>{{ user.username }}</td>
+                            <td class="text-gray-500">{{ user.email }}</td>
+                            <td class="text-right font-semibold">{{ user.activity_count }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="3" class="text-center text-gray-500">No activity data.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
