@@ -1,34 +1,128 @@
 {% extends 'landing/admin/base.html' %}
 
-{% block title %}Admin - New Prediction{% endblock %}
-{% block page_title %}New Prediction{% endblock %}
+{% block title %}New Prediction{% endblock %}
+{% block page_title %}New Fraud Detection{% endblock %}
 
 {% block content %}
-<div class="max-w-6xl mx-auto">
-    {% if errors %}
-    <div class="mb-6 p-4 rounded-lg bg-red-50 border border-red-200 text-red-700">
-        <ul class="list-disc pl-5 space-y-1">
-            {% for error in errors %}<li>{{ error }}</li>{% endfor %}
-        </ul>
+<div class="max-w-4xl mx-auto">
+    <!-- Header Section -->
+    <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 mb-8">
+        <div class="flex items-center space-x-4">
+            <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl flex items-center justify-center">
+                <i class="fas fa-search text-white text-xl"></i>
+            </div>
+            <div>
+                <h2 class="text-2xl font-bold text-gray-900">Fraud Detection Analysis</h2>
+                <p class="text-gray-600 mt-1">Enter transaction details to analyze potential fraud patterns</p>
+            </div>
+        </div>
     </div>
+
+    <!-- Error Messages -->
+    {% if errors %}
+        <div class="bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-xl mb-6">
+            <div class="flex items-center">
+                <i class="fas fa-exclamation-triangle mr-3"></i>
+                <div>
+                    <h4 class="font-semibold">Please correct the following errors:</h4>
+                    <ul class="mt-2 list-disc list-inside">
+                        {% for error in errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
     {% endif %}
 
-    <div class="card">
-        <div class="card-header">
-            <h3 class="card-title">Enter Claim Details</h3>
+    <!-- Form Section -->
+    <form method="post" class="space-y-6">
+        {% csrf_token %}
+        
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
+            <h3 class="text-xl font-semibold text-gray-900 mb-6 flex items-center">
+                <i class="fas fa-clipboard-list text-blue-500 mr-3"></i>
+                Transaction Details
+            </h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {% for field in form %}
+                    <div class="space-y-2">
+                        <label for="{{ field.id_for_label }}" class="text-sm font-medium text-gray-700 flex items-center">
+                            {% if field.label == 'policy_state' %}
+                                <i class="fas fa-map-marker-alt mr-2 text-gray-400"></i>
+                            {% elif field.label == 'policy_deductible' %}
+                                <i class="fas fa-dollar-sign mr-2 text-gray-400"></i>
+                            {% elif field.label == 'insured_sex' %}
+                                <i class="fas fa-user mr-2 text-gray-400"></i>
+                            {% elif field.label == 'incident_type' %}
+                                <i class="fas fa-exclamation-circle mr-2 text-gray-400"></i>
+                            {% elif field.label == 'collision_type' %}
+                                <i class="fas fa-car-crash mr-2 text-gray-400"></i>
+                            {% elif field.label == 'incident_severity' %}
+                                <i class="fas fa-thermometer-half mr-2 text-gray-400"></i>
+                            {% elif field.label == 'authorities_contacted' %}
+                                <i class="fas fa-phone mr-2 text-gray-400"></i>
+                            {% elif field.label == 'property_damage' %}
+                                <i class="fas fa-home mr-2 text-gray-400"></i>
+                            {% elif field.label == 'police_report_available' %}
+                                <i class="fas fa-file-alt mr-2 text-gray-400"></i>
+                            {% else %}
+                                <i class="fas fa-info-circle mr-2 text-gray-400"></i>
+                            {% endif %}
+                            {{ field.label }}
+                        </label>
+                        {{ field }}
+                        {% if field.errors %}
+                            <div class="text-red-600 text-sm">
+                                {% for error in field.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
         </div>
-        <div class="card-body">
-            <form method="post" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <div class="md:col-span-2 flex justify-end">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-search me-2"></i>Analyze
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-{% endblock %}
 
+        <!-- Submit Button -->
+        <div class="flex justify-end space-x-4">
+            <a href="{% url 'admin_dashboard' %}" class="inline-flex items-center px-6 py-3 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 font-medium transition-colors">
+                <i class="fas fa-arrow-left mr-2"></i>
+                Back to Dashboard
+            </a>
+            <button type="submit" class="inline-flex items-center px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 font-medium transition-all shadow-lg hover:shadow-xl">
+                <i class="fas fa-chart-line mr-2"></i>
+                Analyze Transaction
+            </button>
+        </div>
+    </form>
+</div>
+
+<style>
+    /* Form styling */
+    input[type="text"], input[type="number"], select {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 2px solid #e5e7eb;
+        border-radius: 0.5rem;
+        font-size: 0.875rem;
+        transition: border-color 0.2s, box-shadow 0.2s;
+        background-color: #ffffff;
+    }
+    
+    input[type="text"]:focus, input[type="number"]:focus, select:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    
+    select {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+        background-position: right 0.5rem center;
+        background-repeat: no-repeat;
+        background-size: 1.5em 1.5em;
+        padding-right: 2.5rem;
+    }
+</style>
+{% endblock %}

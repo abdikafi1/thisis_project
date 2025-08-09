@@ -1,0 +1,152 @@
+{% extends 'landing/admin/base.html' %}
+
+{% block title %}Prediction Result{% endblock %}
+{% block page_title %}Fraud Detection Result{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto">
+    <!-- Result Header -->
+    <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 mb-8">
+        <div class="text-center">
+            {% if result == 'Fraud' %}
+                <div class="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-exclamation-triangle text-red-600 text-3xl"></i>
+                </div>
+                <h2 class="text-3xl font-bold text-red-600 mb-2">FRAUD DETECTED</h2>
+                <p class="text-gray-600">This transaction shows high probability of fraudulent activity</p>
+            {% else %}
+                <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-check-circle text-green-600 text-3xl"></i>
+                </div>
+                <h2 class="text-3xl font-bold text-green-600 mb-2">TRANSACTION SAFE</h2>
+                <p class="text-gray-600">This transaction appears to be legitimate</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Key Metrics -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="bg-white rounded-xl shadow-md border border-gray-100 p-6">
+            <div class="flex items-center">
+                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
+                    <i class="fas fa-percentage text-blue-600"></i>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Confidence Score</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ confidence_score|floatformat:1 }}%</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-md border border-gray-100 p-6">
+            <div class="flex items-center">
+                <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
+                    <i class="fas fa-clock text-purple-600"></i>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Processing Time</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ processing_time|floatformat:3 }}s</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-md border border-gray-100 p-6">
+            <div class="flex items-center">
+                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
+                    <i class="fas fa-chart-line text-green-600"></i>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Analysis ID</p>
+                    <p class="text-lg font-bold text-gray-900">#{{ prediction.id|default:"N/A" }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Risk Factors and Feature Importance -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <!-- Risk Factors -->
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
+            <h3 class="text-xl font-semibold text-gray-900 mb-6 flex items-center">
+                <i class="fas fa-exclamation-triangle text-orange-500 mr-3"></i>
+                Risk Factors
+            </h3>
+            {% if risk_factors %}
+                <div class="space-y-4">
+                    {% for factor in risk_factors %}
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <span class="text-gray-700">{{ factor }}</span>
+                            <span class="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-sm font-medium">Risk</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-gray-500 text-center py-8">No specific risk factors identified</p>
+            {% endif %}
+        </div>
+
+        <!-- Feature Importance -->
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
+            <h3 class="text-xl font-semibold text-gray-900 mb-6 flex items-center">
+                <i class="fas fa-chart-bar text-blue-500 mr-3"></i>
+                Key Factors
+            </h3>
+            {% if feature_importance %}
+                <div class="space-y-3">
+                    {% for feature, importance in feature_importance.items %}
+                        {% if importance > 0.01 %}
+                            <div class="space-y-2">
+                                <div class="flex justify-between">
+                                    <span class="text-sm font-medium text-gray-700">{{ feature }}</span>
+                                    <span class="text-sm text-gray-500">{{ importance|floatformat:3 }}</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-gradient-to-r from-blue-500 to-purple-600 h-2 rounded-full" style="width: {{ importance|floatformat:1 }}%"></div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-gray-500 text-center py-8">Feature importance data not available</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Transaction Details -->
+    {% if prediction %}
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 mb-8">
+            <h3 class="text-xl font-semibold text-gray-900 mb-6 flex items-center">
+                <i class="fas fa-info-circle text-gray-500 mr-3"></i>
+                Transaction Details
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-2">
+                    <p class="text-sm text-gray-500">Analysis Date</p>
+                    <p class="font-medium text-gray-900">{{ prediction.created_at|date:"M d, Y H:i" }}</p>
+                </div>
+                <div class="space-y-2">
+                    <p class="text-sm text-gray-500">Analyzed By</p>
+                    <p class="font-medium text-gray-900">{{ prediction.user.get_full_name|default:prediction.user.username }}</p>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Action Buttons -->
+    <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+        <a href="{% url 'admin_predict' %}" class="inline-flex items-center justify-center px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 font-medium transition-all shadow-lg hover:shadow-xl">
+            <i class="fas fa-plus mr-2"></i>
+            New Analysis
+        </a>
+        <a href="{% url 'admin_dashboard' %}" class="inline-flex items-center justify-center px-8 py-3 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 font-medium transition-colors">
+            <i class="fas fa-chart-line mr-2"></i>
+            View Dashboard
+        </a>
+        <a href="{% url 'admin_reports' %}" class="inline-flex items-center justify-center px-8 py-3 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 font-medium transition-colors">
+            <i class="fas fa-file-alt mr-2"></i>
+            Generate Report
+        </a>
+    </div>
+</div>
+{% endblock %}

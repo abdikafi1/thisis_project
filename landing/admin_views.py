@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib import messages
@@ -9,7 +10,6 @@ from .models import UserProfile, Prediction, UserActivity, SystemSettings
 from .views import get_fraud_analytics, get_ml_model_insights, predict_fraud
 from .forms import AdminUserManagementForm, SystemSettingsForm, UserSearchForm, AdminDashboardForm, PredictionForm
 from .decorators import admin_required, track_activity
-from .decorators import track_activity
 
 @admin_required
 @track_activity('admin_action', lambda req, *args, **kwargs: "Accessed admin dashboard")
@@ -290,6 +290,7 @@ def admin_predict(request):
             pred, confidence_score, processing_time, errors, feature_importance, risk_factors = predict_fraud(input_data)
 
             if errors:
+                # Create template for admin predict if needed
                 return render(request, 'landing/admin/predict.html', { 'form': form, 'errors': errors })
 
             result = 'Fraud' if pred == 1 else 'Not Fraud'
@@ -314,7 +315,8 @@ def admin_predict(request):
     else:
         form = PredictionForm()
 
-    return render(request, 'landing/predict.html', { 'form': form })
+    # Use admin-specific template that extends admin base
+    return render(request, 'landing/admin/predict.html', { 'form': form })
 
 
 @admin_required
@@ -344,4 +346,56 @@ def admin_prediction_result(request):
         'feature_importance': feature_importance,
     }
 
-    return render(request, 'landing/prediction_result.html', context)
+    # Use admin-specific template that extends admin base
+    return render(request, 'landing/admin/prediction_result.html', context)
+
+
+@admin_required
+@track_activity('admin_action', lambda req, *args, **kwargs: "Accessed admin analytics")
+def admin_analytics(request):
+    """Admin analytics dashboard with real-time fraud detection data"""
+    # Get real fraud analytics from ML model and backend
+    fraud_analytics = get_fraud_analytics()
+    ml_insights = get_ml_model_insights()
+    
+    # Get database statistics
+    total_users = User.objects.count()
+    total_predictions = Prediction.objects.count()
+    fraud_predictions = Prediction.objects.filter(result='Fraud').count()
+    safe_predictions = Prediction.objects.filter(result__in=['Not Fraud', 'Safe']).count()
+    
+    # Recent activity
+    recent_predictions = Prediction.objects.select_related('user').order_by('-created_at')[:10]
+    
+    # Get predictions by date for charts
+    from datetime import datetime, timedelta
+    thirty_days_ago = timezone.now() - timedelta(days=30)
+    daily_fraud_stats = Prediction.objects.filter(
+        created_at__gte=thirty_days_ago
+    ).extra(
+        select={'day': 'date(created_at)'}
+    ).values('day', 'result').annotate(count=Count('id')).order_by('day')
+    
+    context = {
+        'fraud_analytics': fraud_analytics,
+        'ml_insights': ml_insights,
+        'total_users': total_users,
+        'total_predictions': total_predictions,
+        'fraud_predictions': fraud_predictions,
+        'safe_predictions': safe_predictions,
+        'recent_predictions': recent_predictions,
+        'daily_fraud_stats': daily_fraud_stats,
+        # Real-time metrics from ML model
+        'fraud_rate': fraud_analytics.get('fraud_rate', 0),
+        'model_accuracy': fraud_analytics.get('model_performance', {}).get('accuracy', 0),
+        'precision': fraud_analytics.get('model_performance', {}).get('precision', 0),
+        'recall': fraud_analytics.get('model_performance', {}).get('recall', 0),
+        'f1_score': fraud_analytics.get('model_performance', {}).get('f1_score', 0),
+        'feature_importance': ml_insights.get('feature_importance', {}),
+        'high_risk_patterns': fraud_analytics.get('high_risk_patterns', {}),
+        'total_records': fraud_analytics.get('total_records', 0),
+        'fraud_cases': fraud_analytics.get('fraud_cases', 0),
+        'legitimate_cases': fraud_analytics.get('legitimate_cases', 0),
+    }
+    
+    return render(request, 'landing/admin/analytics.html', context)

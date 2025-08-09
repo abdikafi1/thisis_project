@@ -92,8 +92,8 @@
                                 <p class="text-xs text-white/50 mt-1">Start a new fraud analysis</p>
                             </div>
                         </a>
-                        <a href="{% url 'admin_dashboard' %}" {% if request.resolver_match.url_name == 'admin_dashboard' %}aria-current="page"{% endif %}
-                           class="nav-item-hover flex items-center px-4 py-3 text-white/80 hover:text-white rounded-xl transition-all duration-200 {% if request.resolver_match.url_name == 'admin_dashboard' %}nav-item-active{% endif %} group">
+                        <a href="{% url 'admin_analytics' %}" {% if request.resolver_match.url_name == 'admin_analytics' %}aria-current="page"{% endif %}
+                           class="nav-item-hover flex items-center px-4 py-3 text-white/80 hover:text-white rounded-xl transition-all duration-200 {% if request.resolver_match.url_name == 'admin_analytics' %}nav-item-active{% endif %} group">
                             <div class="w-8 h-8 bg-gradient-to-br from-red-500 to-red-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
                                 <i class="fas fa-search text-white text-sm"></i>
                             </div>
@@ -153,25 +153,25 @@
                             <i class="fas fa-chevron-right text-white/40 group-hover:text-white transition-colors"></i>
                         </a>
                         
+                        </div>
                     </div>
-                </div>
             </nav>
             <div class="mt-auto px-4 pb-6">
-                <div class="space-y-2">
+                    <div class="space-y-2">
                     <a href="{% url 'dashboard' %}" class="nav-item-hover flex items-center px-4 py-3 text-white/80 hover:text-white rounded-xl transition-all duration-200 group">
-                        <div class="w-8 h-8 bg-gradient-to-br from-gray-500 to-gray-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
-                            <i class="fas fa-arrow-left text-white text-sm"></i>
-                        </div>
-                        <span class="font-medium">Back to Main App</span>
-                    </a>
+                            <div class="w-8 h-8 bg-gradient-to-br from-gray-500 to-gray-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
+                                <i class="fas fa-arrow-left text-white text-sm"></i>
+                            </div>
+                            <span class="font-medium">Back to Main App</span>
+                        </a>
                     <a href="{% url 'logout' %}" class="nav-item-hover flex items-center px-4 py-3 text-red-300 hover:text-red-200 rounded-xl transition-all duration-200 group">
-                        <div class="w-8 h-8 bg-gradient-to-br from-red-500 to-red-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
-                            <i class="fas fa-sign-out-alt text-white text-sm"></i>
-                        </div>
-                        <span class="font-medium">Logout</span>
-                    </a>
+                            <div class="w-8 h-8 bg-gradient-to-br from-red-500 to-red-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
+                                <i class="fas fa-sign-out-alt text-white text-sm"></i>
+                            </div>
+                            <span class="font-medium">Logout</span>
+                        </a>
+                    </div>
                 </div>
-            </div>
         </aside>
         <!-- Mobile overlay -->
         <div id="sidebar-overlay" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-30 hidden lg:hidden"></div>
@@ -238,7 +238,7 @@
         const edgeToggleBtn = edgeToggleWrap ? edgeToggleWrap.querySelector('button') : null;
 
         function toggleSidebar() {
-            sidebar.classList.toggle('-translate-x-full');
+                sidebar.classList.toggle('-translate-x-full');
             if (overlay && window.innerWidth <= 1024) {
                 overlay.classList.toggle('hidden');
             }

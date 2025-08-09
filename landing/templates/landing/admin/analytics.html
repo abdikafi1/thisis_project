@@ -1,0 +1,352 @@
+{% extends 'landing/admin/base.html' %}
+
+{% block title %}Fraud Analytics{% endblock %}
+{% block page_title %}Fraud Analytics Dashboard{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    <!-- Key Metrics Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="card">
+            <div class="flex items-center">
+                <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mr-4">
+                    <i class="fas fa-database text-white text-xl"></i>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Total Records</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ total_records|default:0 }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="flex items-center">
+                <div class="w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center mr-4">
+                    <i class="fas fa-exclamation-triangle text-white text-xl"></i>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Fraud Cases</p>
+                    <p class="text-2xl font-bold text-red-600">{{ fraud_cases|default:0 }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="flex items-center">
+                <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center mr-4">
+                    <i class="fas fa-shield-check text-white text-xl"></i>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Legitimate Cases</p>
+                    <p class="text-2xl font-bold text-green-600">{{ legitimate_cases|default:0 }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="flex items-center">
+                <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center mr-4">
+                    <i class="fas fa-percentage text-white text-xl"></i>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Fraud Rate</p>
+                    <p class="text-2xl font-bold text-purple-600">{{ fraud_rate|floatformat:1 }}%</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ML Model Performance -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title flex items-center">
+                    <i class="fas fa-brain text-blue-500 mr-3"></i>
+                    ML Model Performance
+                </h3>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="text-center p-4 bg-gray-50 rounded-lg">
+                    <p class="text-sm text-gray-500 mb-1">Accuracy</p>
+                    <p class="text-2xl font-bold text-blue-600">{{ model_accuracy|floatformat:1 }}%</p>
+                </div>
+                <div class="text-center p-4 bg-gray-50 rounded-lg">
+                    <p class="text-sm text-gray-500 mb-1">Precision</p>
+                    <p class="text-2xl font-bold text-green-600">{{ precision|floatformat:1 }}%</p>
+                </div>
+                <div class="text-center p-4 bg-gray-50 rounded-lg">
+                    <p class="text-sm text-gray-500 mb-1">Recall</p>
+                    <p class="text-2xl font-bold text-orange-600">{{ recall|floatformat:1 }}%</p>
+                </div>
+                <div class="text-center p-4 bg-gray-50 rounded-lg">
+                    <p class="text-sm text-gray-500 mb-1">F1 Score</p>
+                    <p class="text-2xl font-bold text-purple-600">{{ f1_score|floatformat:1 }}%</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Database Statistics -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title flex items-center">
+                    <i class="fas fa-chart-line text-green-500 mr-3"></i>
+                    System Statistics
+                </h3>
+            </div>
+            <div class="space-y-4">
+                <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                    <span class="text-gray-700">Total Users</span>
+                    <span class="font-semibold text-gray-900">{{ total_users }}</span>
+                </div>
+                <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                    <span class="text-gray-700">Total Predictions</span>
+                    <span class="font-semibold text-gray-900">{{ total_predictions }}</span>
+                </div>
+                <div class="flex justify-between items-center p-3 bg-red-50 rounded-lg">
+                    <span class="text-red-700">Fraud Predictions</span>
+                    <span class="font-semibold text-red-900">{{ fraud_predictions }}</span>
+                </div>
+                <div class="flex justify-between items-center p-3 bg-green-50 rounded-lg">
+                    <span class="text-green-700">Safe Predictions</span>
+                    <span class="font-semibold text-green-900">{{ safe_predictions }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feature Importance -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title flex items-center">
+                <i class="fas fa-chart-bar text-indigo-500 mr-3"></i>
+                Feature Importance (Top Factors)
+            </h3>
+        </div>
+        {% if feature_importance %}
+            <div class="space-y-4">
+                {% for feature, importance in feature_importance.items %}
+                    {% if importance > 0.01 %}
+                        <div class="space-y-2">
+                            <div class="flex justify-between">
+                                <span class="text-sm font-medium text-gray-700 capitalize">{{ feature|replace:"_":" " }}</span>
+                                <span class="text-sm text-gray-500">{{ importance|floatformat:3 }}</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-3">
+                                <div class="bg-gradient-to-r from-indigo-500 to-purple-600 h-3 rounded-full" style="width: {{ importance|floatformat:1 }}%"></div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-gray-500 text-center py-8">Feature importance data will be available after model training</p>
+        {% endif %}
+    </div>
+
+    <!-- High Risk Patterns -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title flex items-center">
+                <i class="fas fa-exclamation-triangle text-orange-500 mr-3"></i>
+                High Risk Patterns
+            </h3>
+        </div>
+        {% if high_risk_patterns %}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {% for pattern, data in high_risk_patterns.items %}
+                    <div class="p-4 bg-orange-50 border border-orange-200 rounded-lg">
+                        <h4 class="font-semibold text-orange-800 mb-2 capitalize">{{ pattern|replace:"_":" " }}</h4>
+                        {% if data.fraud_rate %}
+                            <p class="text-sm text-orange-700">Fraud Rate: <span class="font-semibold">{{ data.fraud_rate|floatformat:1 }}%</span></p>
+                        {% endif %}
+                        {% if data.count %}
+                            <p class="text-sm text-orange-600">Occurrences: <span class="font-semibold">{{ data.count }}</span></p>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-gray-500 text-center py-8">No high-risk patterns detected in current dataset</p>
+        {% endif %}
+    </div>
+
+    <!-- Recent Predictions -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title flex items-center">
+                <i class="fas fa-history text-gray-500 mr-3"></i>
+                Recent Predictions
+            </h3>
+        </div>
+        {% if recent_predictions %}
+            <div class="overflow-x-auto">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Result</th>
+                            <th>Confidence</th>
+                            <th>Date</th>
+                            <th>Processing Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for prediction in recent_predictions %}
+                            <tr>
+                                <td class="font-medium">{{ prediction.user.username|default:"System" }}</td>
+                                <td>
+                                    {% if prediction.result == 'Fraud' %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                            <i class="fas fa-exclamation-triangle mr-1"></i>
+                                            Fraud
+                                        </span>
+                                    {% else %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                            <i class="fas fa-check-circle mr-1"></i>
+                                            Safe
+                                        </span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if prediction.confidence_score %}
+                                        {{ prediction.confidence_score|floatformat:1 }}%
+                                    {% else %}
+                                        N/A
+                                    {% endif %}
+                                </td>
+                                <td class="text-gray-600">{{ prediction.created_at|date:"M d, H:i" }}</td>
+                                <td class="text-gray-600">
+                                    {% if prediction.processing_time %}
+                                        {{ prediction.processing_time|floatformat:3 }}s
+                                    {% else %}
+                                        N/A
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="text-gray-500 text-center py-8">No predictions available</p>
+        {% endif %}
+    </div>
+
+    <!-- Chart Section -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title flex items-center">
+                <i class="fas fa-chart-area text-blue-500 mr-3"></i>
+                Fraud Detection Trends (Last 30 Days)
+            </h3>
+        </div>
+        <div class="h-80">
+            <canvas id="fraudTrendsChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Fraud Trends Chart
+    const ctx = document.getElementById('fraudTrendsChart').getContext('2d');
+    
+    // Process the daily fraud stats data
+    const dailyStats = {{ daily_fraud_stats|safe }};
+    const chartData = {
+        labels: [],
+        datasets: [
+            {
+                label: 'Fraud Cases',
+                data: [],
+                borderColor: '#ef4444',
+                backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                tension: 0.3,
+                fill: true
+            },
+            {
+                label: 'Safe Cases',
+                data: [],
+                borderColor: '#10b981',
+                backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                tension: 0.3,
+                fill: true
+            }
+        ]
+    };
+    
+    // Aggregate data by day
+    const dayMap = {};
+    dailyStats.forEach(stat => {
+        if (!dayMap[stat.day]) {
+            dayMap[stat.day] = { fraud: 0, safe: 0 };
+        }
+        if (stat.result === 'Fraud') {
+            dayMap[stat.day].fraud = stat.count;
+        } else {
+            dayMap[stat.day].safe = stat.count;
+        }
+    });
+    
+    // Sort by date and populate chart data
+    Object.keys(dayMap).sort().forEach(day => {
+        chartData.labels.push(new Date(day).toLocaleDateString());
+        chartData.datasets[0].data.push(dayMap[day].fraud);
+        chartData.datasets[1].data.push(dayMap[day].safe);
+    });
+    
+    new Chart(ctx, {
+        type: 'line',
+        data: chartData,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top',
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Number of Cases'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Date'
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Update sidebar toggle status on load
+document.addEventListener('DOMContentLoaded', function() {
+    const sidebar = document.getElementById('sidebar');
+    const edgeToggle = document.getElementById('sidebar-edge-toggle');
+    
+    function updateEdgeToggle() {
+        if (!edgeToggle) return;
+        const isHidden = sidebar.classList.contains('-translate-x-full');
+        if (isHidden) {
+            edgeToggle.classList.remove('hidden');
+        } else {
+            edgeToggle.classList.add('hidden');
+        }
+    }
+    
+    updateEdgeToggle();
+});
+</script>
+{% endblock %}

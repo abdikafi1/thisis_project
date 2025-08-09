@@ -294,7 +294,7 @@ def get_ml_model_insights():
             last_trained = datetime.datetime.fromtimestamp(mtime).strftime('%Y-%m-%d %H:%M')
         except Exception:
             last_trained = ''
-
+        
         return {
             'feature_importance': feature_importance,
             'risk_factors': risk_factors,
