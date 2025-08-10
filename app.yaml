@@ -15,20 +15,7 @@ services:
   - key: SECRET_KEY
     value: your-secret-key-here
   - key: ALLOWED_HOST
-    value: fraud-detection-system-xxxxx.ondigitalocean.app
-  - key: DB_NAME
-    value: fraud_detection
-  - key: DB_USER
-    value: doadmin
-  - key: DB_PASSWORD
-    value: your-db-password
-  - key: DB_HOST
-    value: fraud-detection-db-xxxxx.ondigitalocean.app
-  - key: DB_PORT
-    value: "25060"
+    value: fraud-detection-system.onrender.com
+  # NO DATABASE ENVIRONMENT VARIABLES NEEDED - SQLite is included!
 
-databases:
-- name: fraud-detection-db
-  engine: PG
-  version: "15"
-  production: false
+# NO DATABASES SECTION NEEDED - SQLite is included with your app!

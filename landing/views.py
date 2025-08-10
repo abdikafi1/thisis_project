@@ -747,6 +747,86 @@ def logout_view(request):
     messages.success(request, 'You have been logged out successfully.')
     return redirect('login')
 
+def forgot_password_view(request):
+    """Handle forgot password request"""
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        
+        try:
+            # Find user by username or email
+            if username:
+                user = User.objects.get(username=username)
+            elif email:
+                user = User.objects.get(email=email)
+            else:
+                messages.error(request, 'Please provide either username or email.')
+                return render(request, 'landing/forgot_password.html')
+            
+            # Generate a simple reset token (in production, use proper token generation)
+            import hashlib
+            import time
+            reset_token = hashlib.md5(f"{user.username}{time.time()}".encode()).hexdigest()[:8]
+            
+            # Store token in session for this user
+            request.session[f'reset_token_{user.username}'] = reset_token
+            request.session[f'reset_user_{user.username}'] = user.username
+            
+            messages.success(request, f'Password reset initiated for user: {user.username}')
+            return redirect('reset_password', username=user.username)
+            
+        except User.DoesNotExist:
+            messages.error(request, 'User not found. Please check your username or email.')
+    
+    return render(request, 'landing/forgot_password.html')
+
+def reset_password_view(request, username):
+    """Handle password reset"""
+    if request.method == 'POST':
+        new_password = request.POST.get('new_password')
+        confirm_password = request.POST.get('confirm_password')
+        reset_token = request.POST.get('reset_token')
+        
+        # Verify token from session
+        stored_token = request.session.get(f'reset_token_{username}')
+        stored_user = request.session.get(f'reset_user_{username}')
+        
+        if not stored_token or stored_user != username or reset_token != stored_token:
+            messages.error(request, 'Invalid or expired reset token.')
+            return redirect('forgot_password')
+        
+        if new_password != confirm_password:
+            messages.error(request, 'Passwords do not match.')
+            return render(request, 'landing/reset_password.html', {'username': username, 'reset_token': reset_token})
+        
+        if len(new_password) < 8:
+            messages.error(request, 'Password must be at least 8 characters long.')
+            return render(request, 'landing/reset_password.html', {'username': username, 'reset_token': reset_token})
+        
+        try:
+            user = User.objects.get(username=username)
+            user.set_password(new_password)
+            user.save()
+            
+            # Clear session data
+            del request.session[f'reset_token_{username}']
+            del request.session[f'reset_user_{username}']
+            
+            messages.success(request, 'Password updated successfully! You can now login with your new password.')
+            return redirect('login')
+            
+        except User.DoesNotExist:
+            messages.error(request, 'User not found.')
+            return redirect('forgot_password')
+    
+    # Get token from session
+    reset_token = request.session.get(f'reset_token_{username}')
+    if not reset_token:
+        messages.error(request, 'Invalid or expired reset token.')
+        return redirect('forgot_password')
+    
+    return render(request, 'landing/reset_password.html', {'username': username, 'reset_token': reset_token})
+
 @login_required
 @track_activity('settings_change', lambda req, *args, **kwargs: "Updated user profile")
 def user_profile_view(request):

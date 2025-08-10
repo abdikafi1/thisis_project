@@ -497,12 +497,11 @@
                         <a href="#about" class="nav-link">About</a>
                         
                         {% if user.is_authenticated %}
-                            <span class="text-white text-sm">Welcome back, {{ user.first_name|default:user.username }}! 🎉</span>
                             <a href="{% url 'dashboard' %}" class="nav-link font-semibold">Dashboard</a>
                             <a href="{% url 'logout' %}" class="nav-link font-semibold">Logout</a>
                         {% else %}
-                            <button onclick="openModal('login')" class="nav-link font-semibold">Login</button>
-                            <button onclick="openModal('signup')" class="btn-primary">Sign Up</button>
+                            <a href="{% url 'login' %}" class="nav-link font-semibold">Login</a>
+                            <a href="{% url 'signup' %}" class="btn-primary">Sign Up</a>
                         {% endif %}
                     </div>
                     
@@ -517,8 +516,8 @@
         <!-- Hero Content -->
         <div class="hero-content">
             {% if user.is_authenticated %}
-                <h1 class="hero-title">Welcome back, {{ user.first_name|default:user.username }}! 🚀</h1>
-                <p class="hero-subtitle">Ready to keep your business safe with our smart fraud detection? Let's dive back in!</p>
+                <h1 class="hero-title">Ready to Protect Your Business! 🚀</h1>
+                <p class="hero-subtitle">Keep your business safe with our smart fraud detection. Let's dive back in!</p>
                 <div class="cta-buttons">
                     <a href="{% url 'dashboard' %}" class="btn-primary">
                         <i class="fas fa-tachometer-alt mr-2"></i>
@@ -533,14 +532,14 @@
                 <h1 class="hero-title">Stop Fraud in Its Tracks! 🛡️</h1>
                 <p class="hero-subtitle">Our super-smart AI catches fraudsters before they can hurt your business. Sleep easy knowing you're protected!</p>
                 <div class="cta-buttons">
-                    <button onclick="openModal('signup')" class="btn-primary">
+                    <a href="{% url 'signup' %}" class="btn-primary">
                         <i class="fas fa-rocket mr-2"></i>
                         Start Protecting Now
-                    </button>
-                    <button onclick="openModal('login')" class="btn-secondary">
+                    </a>
+                    <a href="{% url 'login' %}" class="btn-secondary">
                         <i class="fas fa-sign-in-alt mr-2"></i>
                         Sign In
-                    </button>
+                    </a>
                 </div>
             {% endif %}
         </div>
@@ -630,6 +629,11 @@
         </div>
     </section>
     
+    <!-- Scroll to Top Button -->
+    <button id="scrollToTop" class="fixed bottom-8 right-8 w-14 h-14 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full shadow-lg hover:shadow-xl transform hover:scale-110 transition-all duration-300 opacity-0 pointer-events-none z-50">
+        <i class="fas fa-arrow-up text-xl"></i>
+    </button>
+
     <!-- Footer -->
     <footer class="bg-gray-900 text-white py-12">
         <div class="container mx-auto px-6 text-center">
@@ -638,22 +642,11 @@
                 <h3 class="text-3xl font-bold text-white">FraudGuard</h3>
             </div>
             
-            <!-- Home Navigation Button -->
-            <div class="mb-6">
-                <a href="#home" class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
-                    <i class="fas fa-home mr-2"></i>
-                    Back to Home
-                </a>
-            </div>
+
             
             <p class="text-gray-300 mb-6 text-lg">Making fraud detection super easy and super powerful! 🚀</p>
             
-            <!-- Quick Navigation Links -->
-            <div class="flex justify-center space-x-8 mb-6">
-                <a href="#home" class="text-blue-400 hover:text-white transition-colors duration-300 font-medium">Home</a>
-                <a href="#features" class="text-blue-400 hover:text-white transition-colors duration-300 font-medium">Features</a>
-                <a href="#about" class="text-blue-400 hover:text-white transition-colors duration-300 font-medium">About</a>
-            </div>
+
             
             <div class="flex justify-center space-x-6 mb-6">
                 <a href="#" class="text-gray-400 hover:text-blue-400 transition-colors duration-300 text-xl"><i class="fab fa-twitter"></i></a>
@@ -667,90 +660,7 @@
         </div>
     </footer>
     
-    <!-- Login Modal -->
-    <div id="loginModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <span class="close" onclick="closeModal('login')">&times;</span>
-                <h2 class="text-2xl font-bold">Welcome Back! 👋</h2>
-            </div>
-            <div class="modal-body">
-                <form id="loginForm">
-                    <div class="form-group">
-                        <label class="form-label">Email</label>
-                        <input type="email" class="form-input" name="email" required placeholder="your@email.com">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Password</label>
-                        <input type="password" class="form-input" name="password" required placeholder="Enter your password">
-                    </div>
-                    <div class="form-checkbox">
-                        <input type="checkbox" id="remember" name="remember">
-                        <label for="remember">Remember me</label>
-                    </div>
-                    <div class="form-actions">
-                        <a href="#" class="forgot-link" onclick="openModal('forgot')">Forgot Password?</a>
-                        <button type="submit" class="btn-primary">Sign In</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Signup Modal -->
-    <div id="signupModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <span class="close" onclick="closeModal('signup')">&times;</span>
-                <h2 class="text-2xl font-bold">Join the Team! 🚀</h2>
-            </div>
-            <div class="modal-body">
-                <form id="signupForm">
-                    <div class="form-group">
-                        <label class="form-label">Full Name</label>
-                        <input type="text" class="form-input" name="fullname" required placeholder="Your full name">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Email</label>
-                        <input type="email" class="form-input" name="email" required placeholder="your@email.com">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Password</label>
-                        <input type="password" class="form-input" name="password" required placeholder="Create a strong password">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Confirm Password</label>
-                        <input type="password" class="form-input" name="confirm_password" required placeholder="Confirm your password">
-                    </div>
-                    <div class="form-actions">
-                        <button type="submit" class="btn-primary">Create Account</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Forgot Password Modal -->
-    <div id="forgotModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <span class="close" onclick="closeModal('forgot')">&times;</span>
-                <h2 class="text-2xl font-bold">Reset Password 🔑</h2>
-            </div>
-            <div class="modal-body">
-                <form id="forgotForm">
-                    <div class="form-group">
-                        <label class="form-label">Email</label>
-                        <input type="email" class="form-input" name="email" required placeholder="your@email.com">
-                    </div>
-                    <p class="text-gray-600 mb-4">We'll send you a link to reset your password.</p>
-                    <div class="form-actions">
-                        <button type="submit" class="btn-primary">Send Reset Link</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+    <!-- All modals removed - users now access login/signup directly via URLs -->
     
     <script>
         // Navbar scroll effect
@@ -786,55 +696,7 @@
             });
         }
         
-        // Modal functions
-        function openModal(type) {
-            const modal = document.getElementById(type + 'Modal');
-            if (modal) {
-                modal.style.display = 'block';
-                document.body.style.overflow = 'hidden';
-            }
-        }
-        
-        function closeModal(type) {
-            const modal = document.getElementById(type + 'Modal');
-            if (modal) {
-                modal.style.display = 'none';
-                document.body.style.overflow = 'auto';
-            }
-        }
-        
-        // Close modal when clicking outside
-        window.onclick = function(event) {
-            if (event.target.classList.contains('modal')) {
-                event.target.style.display = 'none';
-                document.body.style.overflow = 'auto';
-            }
-        }
-        
-        // Form submissions
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            // Handle login logic here
-            console.log('Login form submitted');
-            // You can redirect to Django login view or handle AJAX
-            window.location.href = "{% url 'login' %}";
-        });
-        
-        document.getElementById('signupForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            // Handle signup logic here
-            console.log('Signup form submitted');
-            // You can redirect to Django signup view or handle AJAX
-            window.location.href = "{% url 'signup' %}";
-        });
-        
-        document.getElementById('forgotForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            // Handle forgot password logic here
-            console.log('Forgot password form submitted');
-            alert('Password reset link sent to your email!');
-            closeModal('forgot');
-        });
+        // Modal functions removed - now using direct URL navigation
         
         // Add slide-up animation to feature cards on scroll
         const observerOptions = {
@@ -853,6 +715,28 @@
         // Observe all feature cards
         document.querySelectorAll('.feature-card').forEach(card => {
             observer.observe(card);
+        });
+        
+        // Scroll to top button functionality
+        const scrollToTopBtn = document.getElementById('scrollToTop');
+        
+        // Show/hide button based on scroll position
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 300) {
+                scrollToTopBtn.style.opacity = '1';
+                scrollToTopBtn.style.pointerEvents = 'auto';
+            } else {
+                scrollToTopBtn.style.opacity = '0';
+                scrollToTopBtn.style.pointerEvents = 'none';
+            }
+        });
+        
+        // Smooth scroll to top when clicked
+        scrollToTopBtn.addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
         });
     </script>
 </body>
