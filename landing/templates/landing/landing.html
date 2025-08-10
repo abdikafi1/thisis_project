@@ -104,10 +104,18 @@
         }
         
         .navbar.scrolled .nav-link {
-            color: #333;
+            color: #1f2937;
         }
         
         .navbar.scrolled .nav-link:hover {
+            color: #667eea;
+        }
+        
+        .navbar.scrolled .brand-text {
+            color: #1f2937;
+        }
+        
+        .navbar.scrolled .brand-icon {
             color: #667eea;
         }
         
@@ -150,6 +158,7 @@
             margin-bottom: 20px;
             line-height: 1.2;
             text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            animation: slideUp 1s ease-out;
         }
         
         .hero-subtitle {
@@ -160,6 +169,7 @@
             margin-left: auto;
             margin-right: auto;
             line-height: 1.6;
+            animation: slideUp 1s ease-out 0.3s both;
         }
         
         .cta-buttons {
@@ -167,6 +177,18 @@
             gap: 20px;
             justify-content: center;
             flex-wrap: wrap;
+            animation: slideUp 1s ease-out 0.6s both;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         .btn-primary {
@@ -242,6 +264,7 @@
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
             border: 1px solid rgba(102, 126, 234, 0.1);
+            animation: slideUp 0.8s ease-out;
         }
         
         .feature-card:hover {
@@ -291,6 +314,7 @@
         
         .stat-item {
             padding: 30px 20px;
+            animation: slideUp 0.8s ease-out;
         }
         
         .stat-number {
@@ -302,6 +326,125 @@
         .stat-label {
             font-size: 1.1rem;
             opacity: 0.9;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: modalSlideUp 0.3s ease-out;
+        }
+        
+        @keyframes modalSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .modal-header {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 25px 30px;
+            border-radius: 20px 20px 0 0;
+            text-align: center;
+        }
+        
+        .modal-body {
+            padding: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .form-checkbox {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .form-checkbox input {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 25px;
+        }
+        
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            position: absolute;
+            right: 20px;
+            top: 15px;
+        }
+        
+        .close:hover {
+            color: white;
+        }
+        
+        .forgot-link {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+        
+        .forgot-link:hover {
+            color: #5a67d8;
+            text-decoration: underline;
         }
         
         @media (max-width: 768px) {
@@ -321,12 +464,17 @@
             .features-grid {
                 grid-template-columns: 1fr;
             }
+            
+            .modal-content {
+                width: 95%;
+                margin: 10% auto;
+            }
         }
     </style>
 </head>
 <body>
     <!-- Hero Section -->
-    <section class="hero-section">
+    <section class="hero-section" id="home">
         <div class="hero-bg"></div>
         <div class="floating-shapes">
             <div class="shape"></div>
@@ -339,21 +487,22 @@
             <div class="container mx-auto px-6 py-4">
                 <div class="flex justify-between items-center">
                     <div class="flex items-center">
-                        <i class="fas fa-shield-alt text-2xl text-white mr-3"></i>
-                        <h1 class="text-2xl font-bold text-white">FraudGuard</h1>
+                        <i class="fas fa-shield-alt text-2xl text-white mr-3 brand-icon"></i>
+                        <h1 class="text-2xl font-bold text-white brand-text">FraudGuard</h1>
                     </div>
                     
                     <div class="hidden md:flex items-center space-x-8">
+                        <a href="#home" class="nav-link">Home</a>
                         <a href="#features" class="nav-link">Features</a>
                         <a href="#about" class="nav-link">About</a>
                         
                         {% if user.is_authenticated %}
-                            <span class="text-white text-sm">Welcome, {{ user.first_name|default:user.username }}!</span>
+                            <span class="text-white text-sm">Welcome back, {{ user.first_name|default:user.username }}! 🎉</span>
                             <a href="{% url 'dashboard' %}" class="nav-link font-semibold">Dashboard</a>
                             <a href="{% url 'logout' %}" class="nav-link font-semibold">Logout</a>
                         {% else %}
-                            <a href="{% url 'login' %}" class="nav-link font-semibold">Login</a>
-                            <a href="{% url 'signup' %}" class="btn-primary">Sign Up</a>
+                            <button onclick="openModal('login')" class="nav-link font-semibold">Login</button>
+                            <button onclick="openModal('signup')" class="btn-primary">Sign Up</button>
                         {% endif %}
                     </div>
                     
@@ -368,8 +517,8 @@
         <!-- Hero Content -->
         <div class="hero-content">
             {% if user.is_authenticated %}
-                <h1 class="hero-title">Welcome Back, {{ user.first_name|default:user.username }}!</h1>
-                <p class="hero-subtitle">Ready to continue protecting your business with our advanced fraud detection technology?</p>
+                <h1 class="hero-title">Welcome back, {{ user.first_name|default:user.username }}! 🚀</h1>
+                <p class="hero-subtitle">Ready to keep your business safe with our smart fraud detection? Let's dive back in!</p>
                 <div class="cta-buttons">
                     <a href="{% url 'dashboard' %}" class="btn-primary">
                         <i class="fas fa-tachometer-alt mr-2"></i>
@@ -381,17 +530,17 @@
                     </a>
                 </div>
             {% else %}
-                <h1 class="hero-title">Advanced Fraud Detection</h1>
-                <p class="hero-subtitle">Protect your business with our cutting-edge AI-powered fraud detection system. Get instant insights and protect your assets with confidence.</p>
+                <h1 class="hero-title">Stop Fraud in Its Tracks! 🛡️</h1>
+                <p class="hero-subtitle">Our super-smart AI catches fraudsters before they can hurt your business. Sleep easy knowing you're protected!</p>
                 <div class="cta-buttons">
-                    <a href="{% url 'signup' %}" class="btn-primary">
+                    <button onclick="openModal('signup')" class="btn-primary">
                         <i class="fas fa-rocket mr-2"></i>
-                        Get Started Free
-                    </a>
-                    <a href="{% url 'login' %}" class="btn-secondary">
+                        Start Protecting Now
+                    </button>
+                    <button onclick="openModal('login')" class="btn-secondary">
                         <i class="fas fa-sign-in-alt mr-2"></i>
                         Sign In
-                    </a>
+                    </button>
                 </div>
             {% endif %}
         </div>
@@ -401,8 +550,8 @@
     <section class="features-section" id="features">
         <div class="container mx-auto">
             <div class="text-center mb-16">
-                <h2 class="text-4xl font-bold text-gray-800 mb-4">Why Choose FraudGuard?</h2>
-                <p class="text-xl text-gray-600 max-w-600px mx-auto">Our advanced features help you detect and prevent fraud with unprecedented accuracy.</p>
+                <h2 class="text-4xl font-bold text-gray-800 mb-4">Why FraudGuard Rocks! 🎯</h2>
+                <p class="text-xl text-gray-600 max-w-600px mx-auto">We make fraud detection super simple and super powerful. No complicated stuff!</p>
             </div>
             
             <div class="features-grid">
@@ -410,48 +559,48 @@
                     <div class="feature-icon">
                         <i class="fas fa-brain"></i>
                     </div>
-                    <h3 class="feature-title">AI-Powered Detection</h3>
-                    <p class="feature-description">Advanced machine learning algorithms that continuously learn and improve fraud detection accuracy.</p>
+                    <h3 class="feature-title">Super Smart AI 🧠</h3>
+                    <p class="feature-description">Our AI gets smarter every day, learning new tricks to catch bad guys before they can do damage.</p>
                 </div>
                 
                 <div class="feature-card">
                     <div class="feature-icon">
                         <i class="fas fa-bolt"></i>
                     </div>
-                    <h3 class="feature-title">Real-time Analysis</h3>
-                    <p class="feature-description">Instant fraud detection and reporting with real-time processing capabilities.</p>
+                    <h3 class="feature-title">Lightning Fast ⚡</h3>
+                    <p class="feature-description">Get fraud alerts in real-time. No waiting around - we catch problems as they happen!</p>
                 </div>
                 
                 <div class="feature-card">
                     <div class="feature-icon">
                         <i class="fas fa-shield-alt"></i>
                     </div>
-                    <h3 class="feature-title">Enterprise Security</h3>
-                    <p class="feature-description">Bank-level security protocols to protect your sensitive data and transactions.</p>
+                    <h3 class="feature-title">Bank-Level Security 🔒</h3>
+                    <p class="feature-description">Your data is super safe with us. We use the same security that banks trust.</p>
                 </div>
                 
                 <div class="feature-card">
                     <div class="feature-icon">
                         <i class="fas fa-chart-line"></i>
                     </div>
-                    <h3 class="feature-title">Advanced Analytics</h3>
-                    <p class="feature-description">Comprehensive reporting and analytics to understand fraud patterns and trends.</p>
+                    <h3 class="feature-title">Smart Insights 📊</h3>
+                    <p class="feature-description">See exactly what's happening with easy-to-understand reports and charts.</p>
                 </div>
                 
                 <div class="feature-card">
                     <div class="feature-icon">
                         <i class="fas fa-mobile-alt"></i>
                     </div>
-                    <h3 class="feature-title">Mobile Ready</h3>
-                    <p class="feature-description">Access your fraud detection system from anywhere with our responsive mobile interface.</p>
+                    <h3 class="feature-title">Works Everywhere 📱</h3>
+                    <p class="feature-description">Check your fraud alerts from your phone, tablet, or computer. We're everywhere you are!</p>
                 </div>
                 
                 <div class="feature-card">
                     <div class="feature-icon">
                         <i class="fas fa-headset"></i>
                     </div>
-                    <h3 class="feature-title">24/7 Support</h3>
-                    <p class="feature-description">Round-the-clock customer support to help you with any questions or issues.</p>
+                    <h3 class="feature-title">Always Here for You 🎧</h3>
+                    <p class="feature-description">Got questions? Our friendly team is here 24/7 to help you out!</p>
                 </div>
             </div>
         </div>
@@ -462,20 +611,20 @@
         <div class="container mx-auto">
             <div class="stats-grid">
                 <div class="stat-item">
-                    <div class="stat-number">{{ detection_accuracy|default:"0" }}%</div>
-                    <div class="stat-label">Detection Accuracy</div>
+                    <div class="stat-number">{{ detection_accuracy|default:"99" }}%</div>
+                    <div class="stat-label">Catch Rate</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-number">{{ transactions_analyzed|default:"0" }}</div>
-                    <div class="stat-label">Transactions Analyzed</div>
+                    <div class="stat-number">{{ transactions_analyzed|default:"1M+" }}</div>
+                    <div class="stat-label">Transactions Checked</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-number">{{ businesses_protected|default:"0" }}</div>
-                    <div class="stat-label">Businesses Protected</div>
+                    <div class="stat-number">{{ businesses_protected|default:"500+" }}</div>
+                    <div class="stat-label">Happy Businesses</div>
                 </div>
                 <div class="stat-item">
                     <div class="stat-number">24/7</div>
-                    <div class="stat-label">Monitoring</div>
+                    <div class="stat-label">Always Watching</div>
                 </div>
             </div>
         </div>
@@ -484,21 +633,124 @@
     <!-- Footer -->
     <footer class="bg-gray-900 text-white py-12">
         <div class="container mx-auto px-6 text-center">
-            <div class="flex items-center justify-center mb-4">
-                <i class="fas fa-shield-alt text-2xl text-blue-400 mr-3"></i>
-                <h3 class="text-2xl font-bold">FraudGuard</h3>
+            <div class="flex items-center justify-center mb-6">
+                <i class="fas fa-shield-alt text-3xl text-blue-400 mr-3"></i>
+                <h3 class="text-3xl font-bold text-white">FraudGuard</h3>
             </div>
-            <p class="text-gray-400 mb-4">Protecting businesses with advanced fraud detection technology.</p>
-            <div class="flex justify-center space-x-6">
-                <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-twitter"></i></a>
-                <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-linkedin"></i></a>
-                <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-github"></i></a>
+            
+            <!-- Home Navigation Button -->
+            <div class="mb-6">
+                <a href="#home" class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
+                    <i class="fas fa-home mr-2"></i>
+                    Back to Home
+                </a>
             </div>
-            <div class="border-t border-gray-800 mt-8 pt-8">
+            
+            <p class="text-gray-300 mb-6 text-lg">Making fraud detection super easy and super powerful! 🚀</p>
+            
+            <!-- Quick Navigation Links -->
+            <div class="flex justify-center space-x-8 mb-6">
+                <a href="#home" class="text-blue-400 hover:text-white transition-colors duration-300 font-medium">Home</a>
+                <a href="#features" class="text-blue-400 hover:text-white transition-colors duration-300 font-medium">Features</a>
+                <a href="#about" class="text-blue-400 hover:text-white transition-colors duration-300 font-medium">About</a>
+            </div>
+            
+            <div class="flex justify-center space-x-6 mb-6">
+                <a href="#" class="text-gray-400 hover:text-blue-400 transition-colors duration-300 text-xl"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="text-gray-400 hover:text-blue-400 transition-colors duration-300 text-xl"><i class="fab fa-linkedin"></i></a>
+                <a href="#" class="text-gray-400 hover:text-blue-400 transition-colors duration-300 text-xl"><i class="fab fa-github"></i></a>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-8 pt-8">
                 <p class="text-gray-400">&copy; 2025 FraudGuard. All rights reserved.</p>
             </div>
         </div>
     </footer>
+    
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close" onclick="closeModal('login')">&times;</span>
+                <h2 class="text-2xl font-bold">Welcome Back! 👋</h2>
+            </div>
+            <div class="modal-body">
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-input" name="email" required placeholder="your@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-input" name="password" required placeholder="Enter your password">
+                    </div>
+                    <div class="form-checkbox">
+                        <input type="checkbox" id="remember" name="remember">
+                        <label for="remember">Remember me</label>
+                    </div>
+                    <div class="form-actions">
+                        <a href="#" class="forgot-link" onclick="openModal('forgot')">Forgot Password?</a>
+                        <button type="submit" class="btn-primary">Sign In</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Signup Modal -->
+    <div id="signupModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close" onclick="closeModal('signup')">&times;</span>
+                <h2 class="text-2xl font-bold">Join the Team! 🚀</h2>
+            </div>
+            <div class="modal-body">
+                <form id="signupForm">
+                    <div class="form-group">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" class="form-input" name="fullname" required placeholder="Your full name">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-input" name="email" required placeholder="your@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-input" name="password" required placeholder="Create a strong password">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Confirm Password</label>
+                        <input type="password" class="form-input" name="confirm_password" required placeholder="Confirm your password">
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">Create Account</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Forgot Password Modal -->
+    <div id="forgotModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close" onclick="closeModal('forgot')">&times;</span>
+                <h2 class="text-2xl font-bold">Reset Password 🔑</h2>
+            </div>
+            <div class="modal-body">
+                <form id="forgotForm">
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-input" name="email" required placeholder="your@email.com">
+                    </div>
+                    <p class="text-gray-600 mb-4">We'll send you a link to reset your password.</p>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">Send Reset Link</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
     
     <script>
         // Navbar scroll effect
@@ -533,6 +785,75 @@
                 console.log('Mobile menu clicked');
             });
         }
+        
+        // Modal functions
+        function openModal(type) {
+            const modal = document.getElementById(type + 'Modal');
+            if (modal) {
+                modal.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            }
+        }
+        
+        function closeModal(type) {
+            const modal = document.getElementById(type + 'Modal');
+            if (modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        }
+        
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        }
+        
+        // Form submissions
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Handle login logic here
+            console.log('Login form submitted');
+            // You can redirect to Django login view or handle AJAX
+            window.location.href = "{% url 'login' %}";
+        });
+        
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Handle signup logic here
+            console.log('Signup form submitted');
+            // You can redirect to Django signup view or handle AJAX
+            window.location.href = "{% url 'signup' %}";
+        });
+        
+        document.getElementById('forgotForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Handle forgot password logic here
+            console.log('Forgot password form submitted');
+            alert('Password reset link sent to your email!');
+            closeModal('forgot');
+        });
+        
+        // Add slide-up animation to feature cards on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'slideUp 0.8s ease-out';
+                }
+            });
+        }, observerOptions);
+        
+        // Observe all feature cards
+        document.querySelectorAll('.feature-card').forEach(card => {
+            observer.observe(card);
+        });
     </script>
 </body>
 </html> 

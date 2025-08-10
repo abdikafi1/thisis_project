@@ -11,16 +11,12 @@
 1. **Sign up** at [railway.app](https://railway.app)
 2. **Connect GitHub** repository
 3. **Create new project** from GitHub
-4. **Add PostgreSQL** database service
+4. **No database service needed** (SQLite is included)
 5. **Set environment variables**:
    ```
    DJANGO_SETTINGS_MODULE=myproject.settings_production
    SECRET_KEY=your-secret-key-here
-   DB_NAME=railway
-   DB_USER=postgres
-   DB_PASSWORD=from-railway-dashboard
-   DB_HOST=from-railway-dashboard
-   DB_PORT=5432
+   ALLOWED_HOSTS=your-app-name.railway.app
    ```
 6. **Deploy** - Railway will auto-detect Django and build
 
@@ -35,7 +31,7 @@
 1. **Sign up** at [digitalocean.com](https://digitalocean.com)
 2. **Create App** from GitHub repository
 3. **Configure app.yaml** (already created)
-4. **Add managed database** (PostgreSQL)
+4. **No database needed** (SQLite is included)
 5. **Set environment variables** in dashboard
 6. **Deploy**
 
@@ -50,7 +46,7 @@
 1. **Install Heroku CLI**
 2. **Login**: `heroku login`
 3. **Create app**: `heroku create your-app-name`
-4. **Add PostgreSQL**: `heroku addons:create heroku-postgresql:mini`
+4. **No database addon needed** (SQLite is included)
 5. **Set config**: `heroku config:set DJANGO_SETTINGS_MODULE=myproject.settings_production`
 6. **Deploy**: `git push heroku main`
 
@@ -66,12 +62,8 @@ SECRET_KEY=your-super-secret-key-here
 DEBUG=False
 ALLOWED_HOST=your-domain.com
 
-# Database
-DB_NAME=fraud_detection
-DB_USER=postgres
-DB_PASSWORD=your-password
-DB_HOST=localhost
-DB_PORT=5432
+# Database - SQLite (no configuration needed)
+# The database file will be created automatically
 
 # Email (optional)
 EMAIL_HOST=smtp.gmail.com
@@ -82,8 +74,8 @@ EMAIL_HOST_PASSWORD=your-app-password
 
 ### **2. Database Migration**
 ```bash
-# Create PostgreSQL database
-createdb fraud_detection
+# SQLite database will be created automatically
+# No need to create database manually
 
 # Run migrations
 python manage.py migrate
