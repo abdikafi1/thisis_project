@@ -827,6 +827,10 @@ def reset_password_view(request, username):
     
     return render(request, 'landing/reset_password.html', {'username': username, 'reset_token': reset_token})
 
+def about_view(request):
+    """About page view showing the engineering team"""
+    return render(request, 'landing/about.html')
+
 @login_required
 @track_activity('settings_change', lambda req, *args, **kwargs: "Updated user profile")
 def user_profile_view(request):
