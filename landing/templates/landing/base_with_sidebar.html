@@ -243,9 +243,6 @@
                     <i class="fas fa-shield-alt mr-3 text-2xl"></i>
                     FraudGuard
                 </h1>
-                <button id="sidebar-toggle" class="text-white hover:text-gray-200 transition-all duration-300">
-                    <i class="fas fa-bars text-lg"></i>
-                </button>
             </div>
             {% if user.is_authenticated %}
             <div class="mt-3 text-sm opacity-90">
@@ -344,7 +341,12 @@
                     <button id="mobile-menu-toggle" class="lg:hidden mr-4 text-gray-500 hover:text-gray-700 transition-colors">
                         <i class="fas fa-bars text-xl"></i>
                     </button>
-                    <h1 class="page-title">{% block page_title %}Dashboard{% endblock %}</h1>
+                    <div class="flex items-center space-x-3">
+                        <h1 class="page-title">{% block page_title %}Dashboard{% endblock %}</h1>
+                        <button id="sidebar-toggle" class="text-gray-600 hover:text-gray-900 transition-all duration-300 p-2 rounded-lg hover:bg-gray-100 border border-gray-200 hover:border-gray-300 shadow-sm" title="Toggle Sidebar">
+                            <i class="fas fa-bars text-lg"></i>
+                        </button>
+                    </div>
                 </div>
                 
                 <div class="flex items-center space-x-4">
@@ -419,7 +421,7 @@
             const isCollapsed = sidebar.classList.contains('collapsed');
             
             if (isCollapsed) {
-                // Sidebar is hidden - show floating toggle and space indicator, hide sidebar toggle
+                // Sidebar is hidden - show floating toggle and space indicator
                 if (floatingToggle) {
                     floatingToggle.style.display = 'block';
                     setTimeout(() => {
@@ -434,11 +436,9 @@
                         dashboardSpaceIndicator.classList.add('opacity-100');
                     }, 50);
                 }
-                if (sidebarToggle) {
-                    sidebarToggle.style.display = 'none';
-                }
+                // Keep the sidebar toggle visible in the header when sidebar is collapsed
             } else {
-                // Sidebar is visible - hide floating toggle and space indicator, show sidebar toggle
+                // Sidebar is visible - hide floating toggle and space indicator
                 if (floatingToggle) {
                     floatingToggle.classList.add('opacity-0', 'pointer-events-none');
                     floatingToggle.classList.remove('opacity-100');
@@ -452,9 +452,6 @@
                     setTimeout(() => {
                         dashboardSpaceIndicator.style.display = 'none';
                     }, 300);
-                }
-                if (sidebarToggle) {
-                    sidebarToggle.style.display = 'block';
                 }
             }
         }
