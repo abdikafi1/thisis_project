@@ -5,8 +5,7 @@ from .views import (
     user_reports_view, fraud_analytics_view,
     user_settings_view, dashboard_settings_view, notification_settings_view,
     export_pdf_report, export_csv_report,
-    user_profile_view, user_dashboard_view, forgot_password_view, reset_password_view,
-    about_view
+    user_profile_view, user_dashboard_view, forgot_password_view, reset_password_view
 )
 from .admin_views import (
     admin_dashboard, admin_user_management, admin_edit_user, admin_delete_user,
@@ -17,7 +16,6 @@ from .admin_views import (
 urlpatterns = [
     # Landing and Authentication
     path('', landing_page, name='landing_page'),
-    path('about/', about_view, name='about'),
     path('login/', login_view, name='login'),
     path('signup/', signup_view, name='signup'),
     path('logout/', logout_view, name='logout'),

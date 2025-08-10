@@ -119,6 +119,36 @@
             color: #667eea;
         }
         
+        /* Mobile menu styles */
+        .mobile-nav-link {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .mobile-nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #667eea;
+            transition: width 0.3s ease;
+        }
+        
+        .mobile-nav-link:hover::after {
+            width: 100%;
+        }
+        
+        /* Smooth navbar transitions */
+        .navbar {
+            transition: all 0.3s ease;
+        }
+        
+        .navbar.scrolled {
+            transition: all 0.3s ease;
+        }
+        
         .nav-link {
             color: white;
             text-decoration: none;
@@ -140,6 +170,30 @@
         
         .nav-link:hover::after {
             width: 100%;
+        }
+        
+        .nav-link.active::after {
+            width: 100%;
+            background: #667eea;
+        }
+        
+        .nav-link.active {
+            color: #667eea;
+            font-weight: 600;
+        }
+        
+        .nav-link.active::after {
+            background: #667eea;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+        }
+        
+        /* Smooth transitions for all navigation elements */
+        .nav-link {
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link::after {
+            transition: all 0.3s ease;
         }
         
         .hero-content {
@@ -297,36 +351,7 @@
             line-height: 1.6;
         }
         
-        .stats-section {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 80px 20px;
-            color: white;
-        }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 40px;
-            max-width: 1200px;
-            margin: 0 auto;
-            text-align: center;
-        }
-        
-        .stat-item {
-            padding: 30px 20px;
-            animation: slideUp 0.8s ease-out;
-        }
-        
-        .stat-number {
-            font-size: 3rem;
-            font-weight: 800;
-            margin-bottom: 10px;
-        }
-        
-        .stat-label {
-            font-size: 1.1rem;
-            opacity: 0.9;
-        }
+
         
         /* Modal Styles */
         .modal {
@@ -494,7 +519,7 @@
                     <div class="hidden md:flex items-center space-x-8">
                         <a href="#home" class="nav-link">Home</a>
                         <a href="#features" class="nav-link">Features</a>
-                        <a href="{% url 'about' %}" class="nav-link">About</a>
+                        <a href="#team" class="nav-link">About</a>
                         
                         {% if user.is_authenticated %}
                             <a href="{% url 'dashboard' %}" class="nav-link font-semibold">Dashboard</a>
@@ -509,6 +534,36 @@
                     <button class="md:hidden text-white" id="mobile-menu-btn">
                         <i class="fas fa-bars text-xl"></i>
                     </button>
+                    
+                    <!-- Mobile Menu -->
+                    <div class="md:hidden fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 backdrop-blur-sm z-50 transform translate-x-full transition-transform duration-300" id="mobile-menu">
+                        <div class="bg-white h-full w-80 max-w-[80vw] ml-auto shadow-2xl">
+                            <div class="flex justify-between items-center p-6 border-b">
+                                <h3 class="text-xl font-bold text-gray-800">Menu</h3>
+                                <button id="mobile-menu-close" class="text-gray-600 hover:text-gray-800">
+                                    <i class="fas fa-times text-xl"></i>
+                                </button>
+                            </div>
+                            <nav class="p-6">
+                                <div class="space-y-4">
+                                    <a href="#home" class="block py-3 px-4 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors mobile-nav-link">Home</a>
+                                    <a href="#features" class="block py-3 px-4 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors mobile-nav-link">Features</a>
+                                    <a href="#team" class="block py-3 px-4 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors mobile-nav-link">About</a>
+                                    
+                                    {% if user.is_authenticated %}
+                                        <div class="pt-4 border-t">
+                                            <a href="{% url 'dashboard' %}" class="block py-3 px-4 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors font-semibold">Dashboard</a>
+                                            <a href="{% url 'logout' %}" class="block py-3 px-4 text-red-600 hover:bg-red-50 rounded-lg transition-colors font-semibold">Logout</a>
+                                        </div>
+                                    {% else %}
+                                        <div class="pt-4 border-t">
+                                            <a href="{% url 'login' %}" class="block py-3 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold text-center">Login</a>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </nav>
+                        </div>
+                    </div>
                 </div>
             </div>
         </nav>
@@ -601,30 +656,162 @@
             </div>
         </div>
     </section>
-    
-    <!-- Stats Section -->
-    <section class="stats-section">
-        <div class="container mx-auto">
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <div class="stat-number">{{ detection_accuracy|default:"99" }}%</div>
-                    <div class="stat-label">Catch Rate</div>
+
+    <!-- About Team Section -->
+    <section class="py-24 relative overflow-hidden" id="team">
+        <!-- Modern Gradient Background -->
+        <div class="absolute inset-0 bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900"></div>
+        
+        <!-- Animated Background Elements -->
+        <div class="absolute inset-0">
+            <!-- Floating Shapes -->
+            <div class="absolute top-20 left-20 w-72 h-72 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-full blur-3xl animate-pulse"></div>
+            <div class="absolute top-40 right-20 w-96 h-96 bg-gradient-to-r from-pink-500/10 to-red-500/10 rounded-full blur-3xl animate-pulse" style="animation-delay: 2s;"></div>
+            <div class="absolute bottom-20 left-1/3 w-80 h-80 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-full blur-3xl animate-pulse" style="animation-delay: 4s;"></div>
+            
+            <!-- Geometric Lines -->
+            <div class="absolute top-0 left-0 w-full h-full opacity-20">
+                <svg class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+                    <defs>
+                        <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:rgba(255,255,255,0.3);stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:rgba(255,255,255,0.1);stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    <path d="M0,50 Q25,25 50,50 T100,50" stroke="url(#lineGradient)" stroke-width="0.5" fill="none"/>
+                    <path d="M0,30 Q25,5 50,30 T100,30" stroke="url(#lineGradient)" stroke-width="0.3" fill="none"/>
+                    <path d="M0,70 Q25,95 50,70 T100,70" stroke="url(#lineGradient)" stroke-width="0.3" fill="none"/>
+                </svg>
+            </div>
+        </div>
+        
+        <!-- Content Container -->
+        <div class="relative z-10 container mx-auto px-6 lg:px-8">
+            <!-- Header Section -->
+            <div class="text-center mb-20">
+                <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full mb-6 shadow-2xl">
+                    <i class="fas fa-users text-3xl text-white"></i>
                 </div>
-                <div class="stat-item">
-                    <div class="stat-number">{{ transactions_analyzed|default:"1M+" }}</div>
-                    <div class="stat-label">Transactions Checked</div>
+                <h2 class="text-6xl font-bold text-white mb-6 tracking-tight">
+                    Meet Our 
+                    <span class="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">Amazing Team</span>
+                </h2>
+                <p class="text-xl text-white/80 max-w-4xl mx-auto leading-relaxed">
+                    We're a team of passionate software engineers dedicated to building the most advanced fraud detection system. 
+                    Each member brings unique expertise and innovation to create something extraordinary.
+                </p>
+            </div>
+            
+            <!-- Team Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 max-w-6xl mx-auto">
+                
+                <!-- Engineer 1: Abdikafi Elmi -->
+                <div class="group relative">
+                    <div class="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl blur opacity-75 group-hover:opacity-100 transition duration-500"></div>
+                    <div class="relative bg-white/10 backdrop-blur-xl rounded-3xl p-6 lg:p-8 border border-white/20 hover:border-white/40 transition-all duration-500 hover:scale-105">
+                        <div class="text-center">
+                            <!-- Icon Container -->
+                            <div class="relative mb-6 lg:mb-8">
+                                <div class="w-24 h-24 lg:w-32 lg:h-32 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full mx-auto flex items-center justify-center shadow-2xl group-hover:shadow-blue-500/50 transition-all duration-500">
+                                    <i class="fas fa-graduation-cap text-4xl lg:text-6xl text-white group-hover:scale-110 transition-transform duration-300"></i>
+                                </div>
+                                <!-- Floating Elements -->
+                                <div class="absolute -top-2 -right-2 w-4 h-4 lg:w-6 lg:h-6 bg-blue-400 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-500 animate-pulse"></div>
+                                <div class="absolute -bottom-2 -left-2 w-3 h-3 lg:w-4 lg:h-4 bg-purple-400 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-500 animate-pulse" style="animation-delay: 0.5s;"></div>
+                            </div>
+                            
+                            <!-- Content -->
+                            <h3 class="text-2xl lg:text-3xl font-bold text-white mb-3 lg:mb-4 group-hover:text-blue-200 transition-colors duration-300">Abdikafi Elmi</h3>
+                            <p class="text-blue-200 font-semibold text-lg lg:text-xl mb-3 lg:mb-4">Lead Software Engineer</p>
+                            
+                            <!-- Hover Effect Line -->
+                            <div class="w-0 h-1 bg-gradient-to-r from-blue-400 to-purple-400 mx-auto group-hover:w-20 lg:group-hover:w-24 transition-all duration-500 rounded-full"></div>
+                        </div>
+                    </div>
                 </div>
-                <div class="stat-item">
-                    <div class="stat-number">{{ businesses_protected|default:"500+" }}</div>
-                    <div class="stat-label">Happy Businesses</div>
+
+                <!-- Engineer 2: Abdikafi Ahmed -->
+                <div class="group relative">
+                    <div class="absolute inset-0 bg-gradient-to-r from-green-600 to-teal-600 rounded-3xl blur opacity-75 group-hover:opacity-100 transition duration-500"></div>
+                    <div class="relative bg-white/10 backdrop-blur-xl rounded-3xl p-6 lg:p-8 border border-white/20 hover:border-white/40 transition-all duration-500 hover:scale-105">
+                        <div class="text-center">
+                            <!-- Icon Container -->
+                            <div class="relative mb-6 lg:mb-8">
+                                <div class="w-24 h-24 lg:w-32 lg:h-32 bg-gradient-to-br from-green-500 to-teal-600 rounded-full mx-auto flex items-center justify-center shadow-2xl group-hover:shadow-green-500/50 transition-all duration-500">
+                                    <i class="fas fa-graduation-cap text-4xl lg:text-6xl text-white group-hover:scale-110 transition-transform duration-300"></i>
+                                </div>
+                                <!-- Floating Elements -->
+                                <div class="absolute -top-2 -right-2 w-4 h-4 lg:w-6 lg:h-6 bg-green-400 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-500 animate-pulse"></div>
+                                <div class="absolute -bottom-2 -left-2 w-3 h-3 lg:w-4 lg:h-4 bg-teal-400 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-500 animate-pulse" style="animation-delay: 0.5s;"></div>
+                            </div>
+                            
+                            <!-- Content -->
+                            <h3 class="text-2xl lg:text-3xl font-bold text-white mb-3 lg:mb-4 group-hover:text-green-200 transition-colors duration-300">Abdikafi Ahmed</h3>
+                            <p class="text-green-200 font-semibold text-lg lg:text-xl mb-3 lg:mb-4">Machine Learning Engineer</p>
+                            
+                            <!-- Hover Effect Line -->
+                            <div class="w-0 h-1 bg-gradient-to-r from-green-400 to-teal-400 mx-auto group-hover:w-20 lg:group-hover:w-24 transition-all duration-500 rounded-full"></div>
+                        </div>
+                    </div>
                 </div>
-                <div class="stat-item">
-                    <div class="stat-number">24/7</div>
-                    <div class="stat-label">Always Watching</div>
+
+                <!-- Engineer 3: Abdikafi Hassan -->
+                <div class="group relative">
+                    <div class="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 rounded-3xl blur opacity-75 group-hover:opacity-100 transition duration-500"></div>
+                    <div class="relative bg-white/10 backdrop-blur-xl rounded-3xl p-6 lg:p-8 border border-white/20 hover:border-white/40 transition-all duration-500 hover:scale-105">
+                        <div class="text-center">
+                            <!-- Icon Container -->
+                            <div class="relative mb-6 lg:mb-8">
+                                <div class="w-24 h-24 lg:w-32 lg:h-32 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full mx-auto flex items-center justify-center shadow-2xl group-hover:shadow-purple-500/50 transition-all duration-500">
+                                    <i class="fas fa-graduation-cap text-4xl lg:text-6xl text-white group-hover:scale-110 transition-transform duration-300"></i>
+                                </div>
+                                <!-- Floating Elements -->
+                                <div class="absolute -top-2 -right-2 w-4 h-4 lg:w-6 lg:h-6 bg-purple-400 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-500 animate-pulse"></div>
+                                <div class="absolute -bottom-2 -left-2 w-3 h-3 lg:w-4 lg:h-4 bg-pink-400 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-500 animate-pulse" style="animation-delay: 0.5s;"></div>
+                            </div>
+                            
+                            <!-- Content -->
+                            <h3 class="text-2xl lg:text-3xl font-bold text-white mb-3 lg:mb-4 group-hover:text-purple-200 transition-colors duration-300">Abdikafi Hassan</h3>
+                            <p class="text-purple-200 font-semibold text-lg lg:text-xl mb-3 lg:mb-4">Cybersecurity Engineer</p>
+                            
+                            <!-- Hover Effect Line -->
+                            <div class="w-0 h-1 bg-gradient-to-r from-purple-400 to-pink-400 mx-auto group-hover:w-20 lg:group-hover:w-24 transition-all duration-500 rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Engineer 4: Abdikafi Omar -->
+                <div class="group relative">
+                    <div class="absolute inset-0 bg-gradient-to-r from-orange-600 to-red-600 rounded-3xl blur opacity-75 group-hover:opacity-100 transition duration-500"></div>
+                    <div class="relative bg-white/10 backdrop-blur-xl rounded-3xl p-6 lg:p-8 border border-white/20 hover:border-white/40 transition-all duration-500 hover:scale-105">
+                        <div class="text-center">
+                            <!-- Icon Container -->
+                            <div class="relative mb-6 lg:mb-8">
+                                <div class="w-24 h-24 lg:w-32 lg:h-32 bg-gradient-to-br from-orange-500 to-red-600 rounded-full mx-auto flex items-center justify-center shadow-2xl group-hover:shadow-orange-500/50 transition-all duration-500">
+                                    <i class="fas fa-graduation-cap text-4xl lg:text-6xl text-white group-hover:scale-110 transition-transform duration-300"></i>
+                                </div>
+                                <!-- Floating Elements -->
+                                <div class="absolute -top-2 -right-2 w-4 h-4 lg:w-6 lg:h-6 bg-orange-400 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-500 animate-pulse"></div>
+                                <div class="absolute -bottom-2 -left-2 w-3 h-3 lg:w-4 lg:h-4 bg-red-400 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-500 animate-pulse" style="animation-delay: 0.5s;"></div>
+                            </div>
+                            
+                            <!-- Content -->
+                            <h3 class="text-2xl lg:text-3xl font-bold text-white mb-3 lg:mb-4 group-hover:text-orange-200 transition-colors duration-300">Abdikafi Omar</h3>
+                            <p class="text-orange-200 font-semibold text-lg lg:text-xl mb-3 lg:mb-4">Mobile & Frontend Engineer</p>
+                            
+                            <!-- Hover Effect Line -->
+                            <div class="w-0 h-1 bg-gradient-to-r from-orange-400 to-red-400 mx-auto group-hover:w-20 lg:group-hover:w-24 transition-all duration-500 rounded-full"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
+            </div>
+        </div>
+    </section>
+    
+
     
     <!-- Scroll to Top Button -->
     <button id="scrollToTop" class="fixed bottom-8 right-8 w-14 h-14 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full shadow-lg hover:shadow-xl transform hover:scale-110 transition-all duration-300 opacity-0 pointer-events-none z-50">
@@ -644,12 +831,7 @@
             <p class="text-gray-300 mb-6 text-lg">Making fraud detection super easy and super powerful! 🚀</p>
             
 
-            
-            <div class="flex justify-center space-x-6 mb-6">
-                <a href="#" class="text-gray-400 hover:text-blue-400 transition-colors duration-300 text-xl"><i class="fab fa-twitter"></i></a>
-                <a href="#" class="text-gray-400 hover:text-blue-400 transition-colors duration-300 text-xl"><i class="fab fa-linkedin"></i></a>
-                <a href="#" class="text-gray-400 hover:text-blue-400 transition-colors duration-300 text-xl"><i class="fab fa-github"></i></a>
-            </div>
+
             
             <div class="border-t border-gray-700 mt-8 pt-8">
                 <p class="text-gray-400">&copy; 2025 FraudGuard. All rights reserved.</p>
@@ -676,20 +858,57 @@
                 e.preventDefault();
                 const target = document.querySelector(this.getAttribute('href'));
                 if (target) {
+                    // Close mobile menu if open
+                    const navbar = document.getElementById('navbar');
+                    if (navbar.classList.contains('mobile-open')) {
+                        navbar.classList.remove('mobile-open');
+                    }
+                    
+                    // Smooth scroll to target
                     target.scrollIntoView({
                         behavior: 'smooth',
                         block: 'start'
                     });
+                    
+                    // Update active navigation state
+                    document.querySelectorAll('.nav-link').forEach(link => {
+                        link.classList.remove('active');
+                    });
+                    this.classList.add('active');
                 }
             });
         });
         
-        // Mobile menu toggle
+        // Mobile menu functionality
         const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-        if (mobileMenuBtn) {
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileMenuClose = document.getElementById('mobile-menu-close');
+        
+        if (mobileMenuBtn && mobileMenu) {
             mobileMenuBtn.addEventListener('click', function() {
-                // Add mobile menu functionality here
-                console.log('Mobile menu clicked');
+                mobileMenu.classList.remove('translate-x-full');
+                document.body.style.overflow = 'hidden';
+            });
+            
+            mobileMenuClose.addEventListener('click', function() {
+                mobileMenu.classList.add('translate-x-full');
+                document.body.style.overflow = 'auto';
+            });
+            
+            // Close menu when clicking outside
+            mobileMenu.addEventListener('click', function(e) {
+                if (e.target === mobileMenu) {
+                    mobileMenu.classList.add('translate-x-full');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+            
+            // Close menu when clicking on mobile nav links
+            document.querySelectorAll('.mobile-nav-link').forEach(link => {
+                link.addEventListener('click', function() {
+                    mobileMenu.classList.add('translate-x-full');
+                    document.body.style.overflow = 'auto';
+                });
             });
         }
         
@@ -713,6 +932,31 @@
         document.querySelectorAll('.feature-card').forEach(card => {
             observer.observe(card);
         });
+        
+        // Scroll spy functionality to highlight active navigation
+        function updateActiveNav() {
+            const sections = document.querySelectorAll('section[id]');
+            const navLinks = document.querySelectorAll('.nav-link[href^="#"]');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (window.scrollY >= (sectionTop - 200)) {
+                    current = section.getAttribute('id');
+                }
+            });
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        }
+        
+        // Update active navigation on scroll
+        window.addEventListener('scroll', updateActiveNav);
         
         // Scroll to top button functionality
         const scrollToTopBtn = document.getElementById('scrollToTop');
