@@ -340,11 +340,8 @@
                 
                 <div class="flex items-center space-x-4">
                     {% if user.is_authenticated %}
-                        <a href="{% url 'user_profile' %}" class="p-2 text-gray-600 hover:text-gray-900" title="Profile">
-                            <i class="fas fa-user"></i>
-                        </a>
                         <div class="relative">
-                            <button class="flex items-center space-x-3 text-gray-700 hover:text-gray-900 transition-colors">
+                            <button id="user-info-btn" class="flex items-center space-x-3 text-gray-700 hover:text-gray-900 transition-colors" title="Click to see user info">
                                 <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-sm font-semibold shadow-lg">
                                     {{ user.first_name|first|default:user.username|first|upper }}
                                 </div>
@@ -429,6 +426,15 @@
         // Event listeners
         if (sidebarToggle) {
             sidebarToggle.addEventListener('click', toggleSidebar);
+        }
+
+        // User info button functionality
+        const userInfoBtn = document.getElementById('user-info-btn');
+        if (userInfoBtn) {
+            userInfoBtn.addEventListener('click', function() {
+                const userName = '{{ user.first_name|default:user.username }}';
+                alert(`Welcome ${userName}! You are logged in.`);
+            });
         }
 
 

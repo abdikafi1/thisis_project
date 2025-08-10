@@ -165,19 +165,12 @@
                                 <i class="fas fa-bell"></i>
                             </button>
                             <!-- User menu -->
-                            <div class="relative" x-data="{ open: false }">
-                                <button @click="open = !open" class="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            <div class="relative">
+                                <button id="user-info-btn-modern" class="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" title="Click to see user info">
                                     <div class="w-8 h-8 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center">
                                         <i class="fas fa-user text-white text-sm"></i>
                                     </div>
                                 </button>
-                                <div x-show="open" @click.away="open = false" class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-                                    <div class="py-1">
-                                        <a href="{% url 'user_profile' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
-
-                                        <a href="{% url 'logout' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign out</a>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -511,6 +504,15 @@
                     responsive: true,
                     plugins: { legend: { position: 'bottom' } }
                 }
+            });
+        }
+
+        // User info button functionality
+        const userInfoBtnModern = document.getElementById('user-info-btn-modern');
+        if (userInfoBtnModern) {
+            userInfoBtnModern.addEventListener('click', function() {
+                const userName = '{{ user.first_name|default:user.username }}';
+                alert(`Welcome ${userName}! You are logged in.`);
             });
         }
     </script>
