@@ -118,8 +118,8 @@
                     <span class="text-sm font-semibold text-purple-600">{{ user_stats.staff_users|default:"0" }}</span>
                 </div>
                 <div class="flex justify-between items-center">
-                    <span class="text-sm text-gray-600">Premium Users</span>
-                    <span class="text-sm font-semibold text-blue-600">{{ user_stats.premium_users|default:"0" }}</span>
+                    <span class="text-sm text-gray-600">Admin Users</span>
+                    <span class="text-sm font-semibold text-blue-600">{{ user_stats.admin_users|default:"0" }}</span>
                 </div>
                 <div class="flex justify-between items-center">
                     <span class="text-sm text-gray-600">Verified Users</span>
@@ -254,10 +254,7 @@
                                 <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800">
                                     <i class="fas fa-crown mr-1"></i>Admin
                                 </span>
-                            {% elif user.profile.user_level == 'premium' %}
-                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
-                                    <i class="fas fa-star mr-1"></i>Premium
-                                </span>
+
                             {% else %}
                                 <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">
                                     <i class="fas fa-user mr-1"></i>Basic

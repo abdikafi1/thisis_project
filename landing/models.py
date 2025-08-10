@@ -8,7 +8,6 @@ import json
 class UserProfile(models.Model):
     USER_LEVELS = [
         ('basic', 'Basic User'),
-        ('premium', 'Premium User'),
         ('admin', 'Administrator'),
     ]
     
@@ -27,10 +26,6 @@ class UserProfile(models.Model):
     @property
     def is_admin(self):
         return self.user_level == 'admin'
-    
-    @property
-    def is_premium(self):
-        return self.user_level in ['premium', 'admin']
     
     @property
     def is_basic(self):

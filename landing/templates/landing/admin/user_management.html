@@ -80,8 +80,7 @@
                         <td>
                             {% if user.profile.user_level == 'admin' %}
                                 <span class="badge bg-danger">{{ user.profile.get_user_level_display }}</span>
-                            {% elif user.profile.user_level == 'premium' %}
-                                <span class="badge bg-warning">{{ user.profile.get_user_level_display }}</span>
+                            
                             {% else %}
                                 <span class="badge bg-secondary">{{ user.profile.get_user_level_display }}</span>
                             {% endif %}
@@ -187,12 +186,12 @@
     <div class="col-md-3">
         <div class="card text-center">
             <div class="card-body">
-                <h5 class="card-title">Premium Users</h5>
-                <h2 class="text-warning">
-                    {% for user in users %}
-                        {% if user.profile.is_premium %}1{% else %}0{% endif %}
-                    {% empty %}0{% endfor %}
-                </h2>
+                                    <h5 class="card-title">Admin Users</h5>
+                    <h2 class="text-danger">
+                        {% for user in users %}
+                            {% if user.profile.is_admin %}1{% else %}0{% endif %}
+                        {% empty %}0{% endfor %}
+                    </h2>
             </div>
         </div>
     </div>

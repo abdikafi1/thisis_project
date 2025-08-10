@@ -21,8 +21,8 @@ def admin_required(view_func):
         return view_func(request, *args, **kwargs)
     return _wrapped_view
 
-def premium_required(view_func):
-    """Decorator to require premium or admin level access"""
+def admin_or_basic_required(view_func):
+    """Decorator to require admin or basic level access"""
     @wraps(view_func)
     def _wrapped_view(request, *args, **kwargs):
         if not request.user.is_authenticated:
@@ -31,9 +31,9 @@ def premium_required(view_func):
         from .models import UserProfile
         profile, created = UserProfile.objects.get_or_create(user=request.user)
         
-        if not profile.is_premium:
-            messages.error(request, 'This feature requires Premium or Admin access.')
-            return HttpResponseForbidden("This feature requires Premium or Admin access.")
+        if profile.user_level == 'basic':
+            messages.error(request, 'This feature requires Admin access.')
+            return HttpResponseForbidden("This feature requires Admin access.")
         
         return view_func(request, *args, **kwargs)
     return _wrapped_view

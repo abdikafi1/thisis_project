@@ -75,12 +75,10 @@
                     
                     
                     
-                    {% if user.profile.is_premium %}
                     <a href="{% url 'user_reports' %}" {% if request.resolver_match.url_name == 'user_reports' %}aria-current="page"{% endif %} class="{% if request.resolver_match.url_name == 'user_reports' %}bg-blue-50 ring-1 ring-blue-200 text-blue-700{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %} group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg">
                         <i class="fas fa-chart-bar mr-3 flex-shrink-0 h-6 w-6"></i>
                         Reports
                     </a>
-                    {% endif %}
                     
                     <!-- Settings Dropdown -->
                     <div class="relative" x-data="{ open: false }">
@@ -495,7 +493,7 @@
                     firstName: '{{ user.first_name|default:"" }}',
                     lastName: '{{ user.last_name|default:"" }}',
                     email: '{{ user.email }}',
-                    isPremium: '{{ user.profile.is_premium|yesno:"Yes,No" }}',
+                    isAdmin: '{{ user.profile.is_admin|yesno:"Yes,No" }}',
                     userLevel: '{{ user.profile.user_level|default:"User" }}'
                 };
                 
@@ -504,7 +502,7 @@
                     • Username: ${userInfo.username}
                     • Name: ${userInfo.firstName} ${userInfo.lastName}
                     • Email: ${userInfo.email}
-                    • Premium: ${userInfo.isPremium}
+                    • Admin: ${userInfo.isAdmin}
                     • Level: ${userInfo.userLevel}
                 `;
                 

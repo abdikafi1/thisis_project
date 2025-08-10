@@ -152,8 +152,7 @@
                     <div>
                         {% if user.profile.user_level == 'admin' %}
                             <span class="badge bg-danger fs-6">{{ user.profile.get_user_level_display }}</span>
-                        {% elif user.profile.user_level == 'premium' %}
-                            <span class="badge bg-warning fs-6">{{ user.profile.get_user_level_display }}</span>
+
                         {% else %}
                             <span class="badge bg-secondary fs-6">{{ user.profile.get_user_level_display }}</span>
                         {% endif %}

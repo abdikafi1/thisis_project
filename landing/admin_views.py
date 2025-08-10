@@ -68,7 +68,6 @@ def admin_dashboard(request):
         'total': total_users,
         'active_30_days': active_users,
         'basic_users': UserProfile.objects.filter(user_level='basic').count(),
-        'premium_users': UserProfile.objects.filter(user_level='premium').count(),
         'admin_users': UserProfile.objects.filter(user_level='admin').count(),
         'verified_users': UserProfile.objects.filter(is_verified=True).count(),
         # Django User model statistics
