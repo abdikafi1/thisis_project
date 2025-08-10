@@ -301,28 +301,20 @@
         <!-- Sidebar Footer -->
         <div class="sidebar-footer p-4">
             {% if user.is_authenticated %}
-                <div class="flex items-center mb-4">
-                    <div class="user-avatar">
+                <div class="flex items-center justify-center mb-4">
+                    <a href="{% url 'user_profile' %}" class="user-avatar hover:scale-110 transition-transform duration-200 cursor-pointer" title="View Profile">
                         {{ user.first_name|first|default:user.username|first|upper }}
-                    </div>
-                    <div>
-                        <div class="user-name">{{ user.first_name|default:user.username }}</div>
-                        <div class="user-role">User</div>
-                    </div>
+                    </a>
                 </div>
                 <a href="{% url 'logout' %}" class="logout-btn flex items-center justify-center">
                     <i class="fas fa-sign-out-alt mr-2"></i>
                     Logout
                 </a>
             {% else %}
-                <div class="flex items-center mb-4">
-                    <div class="user-avatar">
+                <div class="flex items-center justify-center mb-4">
+                    <a href="{% url 'login' %}" class="user-avatar hover:scale-110 transition-transform duration-200 cursor-pointer" title="Login">
                         <i class="fas fa-user"></i>
-                    </div>
-                    <div>
-                        <div class="user-name">Guest</div>
-                        <div class="user-role">Not logged in</div>
-                    </div>
+                    </a>
                 </div>
                 <a href="{% url 'login' %}" class="logout-btn flex items-center justify-center">
                     <i class="fas fa-sign-in-alt mr-2"></i>

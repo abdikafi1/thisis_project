@@ -46,24 +46,12 @@
                 <!-- User Profile Section -->
                 <div class="mt-6 px-4">
                     <div class="bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg p-4 text-white">
-                        <div class="flex items-center">
-                            <div class="flex-shrink-0">
+                        <div class="flex items-center justify-center">
+                            <a href="{% url 'user_profile' %}" class="flex-shrink-0 hover:scale-110 transition-transform duration-200 cursor-pointer" title="View Profile">
                                 <div class="w-10 h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
                                     <i class="fas fa-user text-white"></i>
                                 </div>
-                            </div>
-                            <div class="ml-3">
-                                <p class="text-sm font-medium">{{ user.first_name|default:user.username }}</p>
-                                <p class="text-xs text-blue-100">
-                                    {% if user.profile.user_level == 'admin' %}
-                                        <i class="fas fa-crown mr-1"></i>Administrator
-                                    {% elif user.profile.user_level == 'premium' %}
-                                        <i class="fas fa-gem mr-1"></i>Premium User
-                                    {% else %}
-                                        <i class="fas fa-user mr-1"></i>User
-                                    {% endif %}
-                                </p>
-                            </div>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -136,16 +124,12 @@
                 
                 <!-- User Menu -->
                 <div class="flex-shrink-0 flex border-t border-gray-200 p-4">
-                    <div class="flex items-center w-full">
-                        <div class="flex-shrink-0">
+                    <div class="flex items-center justify-center w-full">
+                        <a href="{% url 'user_profile' %}" class="flex-shrink-0 hover:scale-110 transition-transform duration-200 cursor-pointer" title="View Profile">
                             <div class="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
                                 <i class="fas fa-user text-gray-600 text-sm"></i>
                             </div>
-                        </div>
-                        <div class="ml-3 flex-1">
-                            <p class="text-sm font-medium text-gray-700">{{ user.username }}</p>
-                            <p class="text-xs text-gray-500">{{ user.email }}</p>
-                        </div>
+                        </a>
                         <div class="ml-3">
                             <a href="{% url 'logout' %}" class="text-gray-400 hover:text-gray-600">
                                 <i class="fas fa-sign-out-alt"></i>

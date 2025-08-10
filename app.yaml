@@ -1,0 +1,34 @@
+name: fraud-detection-system
+services:
+- name: web
+  source_dir: /
+  github:
+    repo: your-username/thisis_project
+    branch: main
+  run_command: python manage.py migrate && python manage.py collectstatic --noinput && gunicorn myproject.wsgi:application
+  environment_slug: python
+  instance_count: 1
+  instance_size_slug: basic-xxs
+  envs:
+  - key: DJANGO_SETTINGS_MODULE
+    value: myproject.settings_production
+  - key: SECRET_KEY
+    value: your-secret-key-here
+  - key: ALLOWED_HOST
+    value: fraud-detection-system-xxxxx.ondigitalocean.app
+  - key: DB_NAME
+    value: fraud_detection
+  - key: DB_USER
+    value: doadmin
+  - key: DB_PASSWORD
+    value: your-db-password
+  - key: DB_HOST
+    value: fraud-detection-db-xxxxx.ondigitalocean.app
+  - key: DB_PORT
+    value: "25060"
+
+databases:
+- name: fraud-detection-db
+  engine: PG
+  version: "15"
+  production: false
