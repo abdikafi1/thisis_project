@@ -462,15 +462,15 @@
         <div class="container mx-auto">
             <div class="stats-grid">
                 <div class="stat-item">
-                    <div class="stat-number">99.9%</div>
+                    <div class="stat-number">{{ detection_accuracy|default:"0" }}%</div>
                     <div class="stat-label">Detection Accuracy</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-number">10M+</div>
+                    <div class="stat-number">{{ transactions_analyzed|default:"0" }}</div>
                     <div class="stat-label">Transactions Analyzed</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-number">500+</div>
+                    <div class="stat-number">{{ businesses_protected|default:"0" }}</div>
                     <div class="stat-label">Businesses Protected</div>
                 </div>
                 <div class="stat-item">
