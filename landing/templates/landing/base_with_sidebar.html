@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Fraud Detector Dashboard{% endblock %}</title>
     <!-- TailwindCSS CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
@@ -341,7 +341,12 @@
                 <div class="flex items-center space-x-4">
                     {% if user.is_authenticated %}
                         <div class="relative">
-                            <button id="user-info-btn" class="flex items-center space-x-3 text-gray-700 hover:text-gray-900 transition-colors" title="Click to see user info">
+                            <button id="user-info-btn" class="p-2 text-gray-600 hover:text-gray-900 transition-colors" title="Click to see user info">
+                                <i class="fas fa-user"></i>
+                            </button>
+                        </div>
+                        <div class="relative">
+                            <button id="user-avatar-btn" class="flex items-center space-x-3 text-gray-700 hover:text-gray-900 transition-colors" title="Click to see user info">
                                 <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-sm font-semibold shadow-lg">
                                     {{ user.first_name|first|default:user.username|first|upper }}
                                 </div>
@@ -369,48 +374,16 @@
 
     
 
-        <!-- Dashboard Space Indicator (shows when sidebar is hidden) -->
-        <div id="dashboard-space-indicator" class="fixed top-28 left-8 z-40 bg-white/95 backdrop-blur-sm rounded-xl px-4 py-3 shadow-xl border border-gray-200 opacity-0 pointer-events-none transition-all duration-300">
-            <div class="flex items-center space-x-3">
-                <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                    <i class="fas fa-tachometer-alt text-white text-sm"></i>
-                </div>
-                <div>
-                    <p class="text-sm font-semibold text-gray-900">Dashboard</p>
-                </div>
-            </div>
-        </div>
+
 
     <script>
         // Sidebar toggle functionality
         const sidebar = document.getElementById('sidebar');
         const mainContent = document.getElementById('main-content');
         const sidebarToggle = document.getElementById('sidebar-toggle');
-        const dashboardSpaceIndicator = document.getElementById('dashboard-space-indicator');
 
         function updateToggleVisibility() {
-            const isCollapsed = sidebar.classList.contains('collapsed');
-            
-            if (isCollapsed) {
-                // Sidebar is hidden - show space indicator
-                if (dashboardSpaceIndicator) {
-                    dashboardSpaceIndicator.style.display = 'block';
-                    setTimeout(() => {
-                        dashboardSpaceIndicator.classList.remove('opacity-0', 'pointer-events-none');
-                        dashboardSpaceIndicator.classList.add('opacity-100');
-                    }, 50);
-                }
-                // Keep the sidebar toggle visible in the header when sidebar is collapsed
-            } else {
-                // Sidebar is visible - hide space indicator
-                if (dashboardSpaceIndicator) {
-                    dashboardSpaceIndicator.classList.add('opacity-0', 'pointer-events-none');
-                    dashboardSpaceIndicator.classList.remove('opacity-100');
-                    setTimeout(() => {
-                        dashboardSpaceIndicator.style.display = 'none';
-                    }, 300);
-                }
-            }
+            // Function simplified - no dashboard indicator needed
         }
 
         function toggleSidebar() {
@@ -426,15 +399,6 @@
         // Event listeners
         if (sidebarToggle) {
             sidebarToggle.addEventListener('click', toggleSidebar);
-        }
-
-        // User info button functionality
-        const userInfoBtn = document.getElementById('user-info-btn');
-        if (userInfoBtn) {
-            userInfoBtn.addEventListener('click', function() {
-                const userName = '{{ user.first_name|default:user.username }}';
-                alert(`Welcome ${userName}! You are logged in.`);
-            });
         }
 
 
@@ -475,6 +439,42 @@
                     item.style.transform = 'translateX(0)';
                 }, index * 100);
             });
+        });
+
+        // User info functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const userInfoBtn = document.getElementById('user-info-btn');
+            const userAvatarBtn = document.getElementById('user-avatar-btn');
+            
+            function showUserInfo() {
+                const userInfo = {
+                    username: '{{ user.username }}',
+                    firstName: '{{ user.first_name|default:"" }}',
+                    lastName: '{{ user.last_name|default:"" }}',
+                    email: '{{ user.email }}',
+                    isPremium: '{{ user.profile.is_premium|yesno:"Yes,No" }}',
+                    userLevel: '{{ user.profile.user_level|default:"User" }}'
+                };
+                
+                const infoText = `
+                    👤 User Information:
+                    • Username: ${userInfo.username}
+                    • Name: ${userInfo.firstName} ${userInfo.lastName}
+                    • Email: ${userInfo.email}
+                    • Premium: ${userInfo.isPremium}
+                    • Level: ${userInfo.userLevel}
+                `;
+                
+                alert(infoText);
+            }
+            
+            if (userInfoBtn) {
+                userInfoBtn.addEventListener('click', showUserInfo);
+            }
+            
+            if (userAvatarBtn) {
+                userAvatarBtn.addEventListener('click', showUserInfo);
+            }
         });
     </script>
     

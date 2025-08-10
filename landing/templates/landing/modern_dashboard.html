@@ -90,11 +90,6 @@
                             <i class="fas fa-chevron-down ml-auto"></i>
                         </button>
                         <div x-show="open" @click.away="open = false" class="ml-10 mt-1 space-y-1">
-                            <a href="{% url 'user_profile' %}" class="text-gray-500 hover:text-gray-700 group flex items-center px-2 py-2 text-sm rounded-md">
-                                <i class="fas fa-user-edit mr-3 flex-shrink-0 h-5 w-5"></i>
-                                Profile
-                            </a>
-
                             <a href="{% url 'notification_settings' %}" class="text-gray-500 hover:text-gray-700 group flex items-center px-2 py-2 text-sm rounded-md">
                                 <i class="fas fa-bell mr-3 flex-shrink-0 h-5 w-5"></i>
                                 Notifications
@@ -122,11 +117,11 @@
                 <!-- User Menu -->
                 <div class="flex-shrink-0 flex border-t border-gray-200 p-4">
                     <div class="flex items-center justify-center w-full">
-                        <a href="{% url 'user_profile' %}" class="flex-shrink-0 hover:scale-110 transition-transform duration-200 cursor-pointer" title="View Profile">
+                        <button id="sidebar-user-btn" class="flex-shrink-0 hover:scale-110 transition-transform duration-200 cursor-pointer" title="Click to see user info">
                             <div class="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
                                 <i class="fas fa-user text-gray-600 text-sm"></i>
                             </div>
-                        </a>
+                        </button>
                         <div class="ml-3">
                             <a href="{% url 'logout' %}" class="text-gray-400 hover:text-gray-600">
                                 <i class="fas fa-sign-out-alt"></i>
@@ -165,12 +160,17 @@
                                 <i class="fas fa-bell"></i>
                             </button>
                             <!-- User menu -->
-                            <div class="relative">
-                                <button id="user-info-btn-modern" class="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" title="Click to see user info">
+                            <div class="relative" x-data="{ open: false }">
+                                <button @click="open = !open" class="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                                     <div class="w-8 h-8 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center">
                                         <i class="fas fa-user text-white text-sm"></i>
                                     </div>
                                 </button>
+                                <div x-show="open" @click.away="open = false" class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                                    <div class="py-1">
+                                        <a href="{% url 'logout' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign out</a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -364,7 +364,7 @@
                                                     <div class="flex items-center">
                                                         <span class="mr-2">{{ prediction.confidence_score|floatformat:2 }}%</span>
                                                         <div class="w-12 bg-gray-200 rounded-full h-2">
-                                                            <div class="bg-blue-500 h-2 rounded-full" style="width: {{ prediction.confidence_score|floatformat:0 }}%"></div>
+                                                            <div class="bg-blue-500 h-2 rounded-full" style="--confidence-width: {{ prediction.confidence_score|floatformat:0 }}%; width: var(--confidence-width);"></div>
                                                         </div>
                                                     </div>
                                                 {% else %}
@@ -484,6 +484,42 @@
             });
         }
 
+        // User info functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebarUserBtn = document.getElementById('sidebar-user-btn');
+            const topUserBtn = document.querySelector('button[class*="flex items-center text-sm rounded-full"]');
+            
+            function showUserInfo() {
+                const userInfo = {
+                    username: '{{ user.username }}',
+                    firstName: '{{ user.first_name|default:"" }}',
+                    lastName: '{{ user.last_name|default:"" }}',
+                    email: '{{ user.email }}',
+                    isPremium: '{{ user.profile.is_premium|yesno:"Yes,No" }}',
+                    userLevel: '{{ user.profile.user_level|default:"User" }}'
+                };
+                
+                const infoText = `
+                    👤 User Information:
+                    • Username: ${userInfo.username}
+                    • Name: ${userInfo.firstName} ${userInfo.lastName}
+                    • Email: ${userInfo.email}
+                    • Premium: ${userInfo.isPremium}
+                    • Level: ${userInfo.userLevel}
+                `;
+                
+                alert(infoText);
+            }
+            
+            if (sidebarUserBtn) {
+                sidebarUserBtn.addEventListener('click', showUserInfo);
+            }
+            
+            if (topUserBtn) {
+                topUserBtn.addEventListener('click', showUserInfo);
+            }
+        });
+
         const ratioCanvas = document.getElementById('ratioChart');
         if (ratioCanvas) {
             const ratioCtx = ratioCanvas.getContext('2d');
@@ -504,15 +540,6 @@
                     responsive: true,
                     plugins: { legend: { position: 'bottom' } }
                 }
-            });
-        }
-
-        // User info button functionality
-        const userInfoBtnModern = document.getElementById('user-info-btn-modern');
-        if (userInfoBtnModern) {
-            userInfoBtnModern.addEventListener('click', function() {
-                const userName = '{{ user.first_name|default:user.username }}';
-                alert(`Welcome ${userName}! You are logged in.`);
             });
         }
     </script>
