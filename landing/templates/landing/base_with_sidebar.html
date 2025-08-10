@@ -338,15 +338,12 @@
         <header class="top-header px-6 py-4">
             <div class="flex items-center justify-between">
                 <div class="flex items-center">
-                    <button id="mobile-menu-toggle" class="lg:hidden mr-4 text-gray-500 hover:text-gray-700 transition-colors">
-                        <i class="fas fa-bars text-xl"></i>
-                    </button>
-                    <div class="flex items-center space-x-3">
-                        <h1 class="page-title">{% block page_title %}Dashboard{% endblock %}</h1>
-                        <button id="sidebar-toggle" class="text-gray-600 hover:text-gray-900 transition-all duration-300 p-2 rounded-lg hover:bg-gray-100 border border-gray-200 hover:border-gray-300 shadow-sm" title="Toggle Sidebar">
-                            <i class="fas fa-bars text-lg"></i>
-                        </button>
-                    </div>
+                                <div class="flex items-center space-x-3">
+                <button id="sidebar-toggle" class="text-gray-600 hover:text-gray-900 transition-all duration-300 p-2 rounded-lg hover:bg-gray-100 border border-gray-200 hover:border-gray-300 shadow-sm" title="Toggle Sidebar">
+                    <i class="fas fa-bars text-lg"></i>
+                </button>
+                <h1 class="page-title">{% block page_title %}Dashboard{% endblock %}</h1>
+            </div>
                 </div>
                 
                 <div class="flex items-center space-x-4">
@@ -413,7 +410,6 @@
         const sidebar = document.getElementById('sidebar');
         const mainContent = document.getElementById('main-content');
         const sidebarToggle = document.getElementById('sidebar-toggle');
-        const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
         const floatingToggle = document.getElementById('floating-toggle');
         const dashboardSpaceIndicator = document.getElementById('dashboard-space-indicator');
 
@@ -475,9 +471,7 @@
             floatingToggle.addEventListener('click', toggleSidebar);
         }
 
-        if (mobileMenuToggle) {
-            mobileMenuToggle.addEventListener('click', toggleMobileSidebar);
-        }
+
 
         // Initialize toggle visibility on page load
         document.addEventListener('DOMContentLoaded', function() {
@@ -487,7 +481,7 @@
         // Close mobile sidebar when clicking outside
         document.addEventListener('click', function(event) {
             if (window.innerWidth <= 768) {
-                if (!sidebar.contains(event.target) && !mobileMenuToggle.contains(event.target)) {
+                if (!sidebar.contains(event.target)) {
                     sidebar.classList.remove('mobile-open');
                 }
             }
