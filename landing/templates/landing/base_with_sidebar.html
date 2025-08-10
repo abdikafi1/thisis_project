@@ -385,26 +385,26 @@
         </main>
     </div>
 
-    <!-- Floating Toggle Button (appears when sidebar is hidden) -->
-    <button id="floating-toggle" class="fixed top-6 left-6 z-50 w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-700 text-white rounded-2xl shadow-2xl hover:shadow-3xl hover:scale-110 transition-all duration-300 opacity-0 pointer-events-none group">
-        <i class="fas fa-bars text-xl group-hover:rotate-180 transition-transform duration-300"></i>
-        <div class="absolute -bottom-2 -right-2 w-6 h-6 bg-green-500 rounded-full border-2 border-white flex items-center justify-center">
-            <i class="fas fa-chevron-right text-white text-xs"></i>
-        </div>
-    </button>
+            <!-- Floating Toggle Button (appears when sidebar is hidden) -->
+        <button id="floating-toggle" class="fixed top-8 left-8 z-50 w-14 h-14 bg-gradient-to-br from-blue-600 to-purple-700 text-white rounded-2xl shadow-2xl hover:shadow-3xl hover:scale-110 transition-all duration-300 opacity-0 pointer-events-none group">
+            <i class="fas fa-bars text-lg group-hover:rotate-180 transition-transform duration-300"></i>
+            <div class="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-2 border-white flex items-center justify-center">
+                <i class="fas fa-chevron-right text-white text-xs"></i>
+            </div>
+        </button>
 
-    <!-- Dashboard Space Indicator (shows when sidebar is hidden) -->
-    <div id="dashboard-space-indicator" class="fixed top-24 left-6 z-40 bg-white/90 backdrop-blur-sm rounded-xl px-4 py-3 shadow-lg border border-gray-200 opacity-0 pointer-events-none transition-all duration-300">
-        <div class="flex items-center space-x-3">
-            <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                <i class="fas fa-tachometer-alt text-white text-sm"></i>
-            </div>
-            <div>
-                <p class="text-sm font-semibold text-gray-900">Dashboard Space</p>
-                <p class="text-xs text-gray-500">Click menu to access sidebar</p>
+        <!-- Dashboard Space Indicator (shows when sidebar is hidden) -->
+        <div id="dashboard-space-indicator" class="fixed top-28 left-8 z-40 bg-white/95 backdrop-blur-sm rounded-xl px-4 py-3 shadow-xl border border-gray-200 opacity-0 pointer-events-none transition-all duration-300">
+            <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-tachometer-alt text-white text-sm"></i>
+                </div>
+                <div>
+                    <p class="text-sm font-semibold text-gray-900">Dashboard</p>
+                    <p class="text-xs text-gray-500">Click menu to access sidebar</p>
+                </div>
             </div>
         </div>
-    </div>
 
     <script>
         // Sidebar toggle functionality
@@ -421,30 +421,40 @@
             if (isCollapsed) {
                 // Sidebar is hidden - show floating toggle and space indicator, hide sidebar toggle
                 if (floatingToggle) {
-                    floatingToggle.classList.remove('opacity-0', 'pointer-events-none');
-                    floatingToggle.classList.add('opacity-100');
+                    floatingToggle.style.display = 'block';
+                    setTimeout(() => {
+                        floatingToggle.classList.remove('opacity-0', 'pointer-events-none');
+                        floatingToggle.classList.add('opacity-100');
+                    }, 50);
                 }
                 if (dashboardSpaceIndicator) {
-                    dashboardSpaceIndicator.classList.remove('opacity-0', 'pointer-events-none');
-                    dashboardSpaceIndicator.classList.add('opacity-100');
+                    dashboardSpaceIndicator.style.display = 'block';
+                    setTimeout(() => {
+                        dashboardSpaceIndicator.classList.remove('opacity-0', 'pointer-events-none');
+                        dashboardSpaceIndicator.classList.add('opacity-100');
+                    }, 50);
                 }
                 if (sidebarToggle) {
-                    sidebarToggle.classList.add('opacity-0', 'pointer-events-none');
-                    sidebarToggle.classList.remove('opacity-100');
+                    sidebarToggle.style.display = 'none';
                 }
             } else {
                 // Sidebar is visible - hide floating toggle and space indicator, show sidebar toggle
                 if (floatingToggle) {
                     floatingToggle.classList.add('opacity-0', 'pointer-events-none');
                     floatingToggle.classList.remove('opacity-100');
+                    setTimeout(() => {
+                        floatingToggle.style.display = 'none';
+                    }, 300);
                 }
                 if (dashboardSpaceIndicator) {
                     dashboardSpaceIndicator.classList.add('opacity-0', 'pointer-events-none');
                     dashboardSpaceIndicator.classList.remove('opacity-100');
+                    setTimeout(() => {
+                        dashboardSpaceIndicator.style.display = 'none';
+                    }, 300);
                 }
                 if (sidebarToggle) {
-                    sidebarToggle.classList.remove('opacity-0', 'pointer-events-none');
-                    sidebarToggle.classList.add('opacity-100');
+                    sidebarToggle.style.display = 'block';
                 }
             }
         }
