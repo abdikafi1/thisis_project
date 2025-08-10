@@ -82,8 +82,8 @@
                 </div>
             </div>
 
-            <!-- Risk Factors Analysis -->
-            {% if risk_factors %}
+            <!-- Risk Factors Analysis - Only Show for Fraud Cases -->
+            {% if result == 'Fraud' and risk_factors %}
             <div class="bg-yellow-50 rounded-xl p-6 mb-8 border border-yellow-200">
                 <div class="flex items-center mb-6">
                     <div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center mr-4">
