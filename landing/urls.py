@@ -4,7 +4,7 @@ from .views import (
     get_started_view, prediction_result_view, login_view, signup_view, logout_view,
     user_reports_view, fraud_analytics_view,
     user_settings_view, dashboard_settings_view, notification_settings_view,
-    export_pdf_report, export_csv_report, export_excel_report,
+    export_pdf_report, export_csv_report,
     user_profile_view, user_dashboard_view
 )
 from .admin_views import (
@@ -35,7 +35,7 @@ urlpatterns = [
     path('reports/', user_reports_view, name='user_reports'),
     path('reports/export/pdf/', export_pdf_report, name='export_pdf'),
     path('reports/export/csv/', export_csv_report, name='export_csv'),
-    path('reports/export/excel/', export_excel_report, name='export_excel'),
+
     path('analytics/', fraud_analytics_view, name='fraud_analytics'),
     
     # Settings

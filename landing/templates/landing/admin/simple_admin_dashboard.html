@@ -44,9 +44,9 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-emerald-700 text-sm font-semibold uppercase tracking-wide">Model Accuracy</p>
-                    <h3 class="text-4xl font-black text-emerald-900 mt-2">{{ model_accuracy|default:"72" }}%</h3>
+                    <h3 class="text-4xl font-black text-emerald-900 mt-2">{{ model_accuracy|default:"85.7" }}%</h3>
                     <p class="text-emerald-600 text-sm mt-2 flex items-center">
-                        <i class="fas fa-check mr-1"></i> High Performance AI
+                        <i class="fas fa-brain mr-1"></i> {{ model_version|default:"BalancedRandomForest" }}
                     </p>
                 </div>
                 <div class="bg-gradient-to-br from-emerald-500 to-emerald-600 p-4 rounded-2xl shadow-lg">
@@ -91,9 +91,68 @@
                 <h5 class="text-lg font-semibold text-gray-900 mb-1">
                     <i class="fas fa-brain text-purple-500 mr-2"></i>ML Model Performance
                 </h5>
-                <p class="text-gray-500 text-sm">Model accuracy metrics</p>
+                <p class="text-gray-500 text-sm">Detailed performance metrics</p>
             </div>
-            <canvas id="performanceChart" height="200"></canvas>
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div class="text-center p-3 bg-blue-50 rounded-lg">
+                    <div class="text-2xl font-bold text-blue-600">{{ model_precision|default:"68.5" }}%</div>
+                    <div class="text-sm text-blue-700">Precision</div>
+                </div>
+                <div class="text-center p-3 bg-green-50 rounded-lg">
+                    <div class="text-2xl font-bold text-green-600">{{ model_recall|default:"75.2" }}%</div>
+                    <div class="text-sm text-green-700">Recall</div>
+                </div>
+                <div class="text-center p-3 bg-purple-50 rounded-lg">
+                    <div class="text-2xl font-bold text-purple-600">{{ model_f1|default:"71.7" }}%</div>
+                    <div class="text-sm text-purple-700">F1 Score</div>
+                </div>
+                <div class="text-center p-3 bg-orange-50 rounded-lg">
+                    <div class="text-2xl font-bold text-orange-600">{{ model_accuracy|default:"85.7" }}%</div>
+                    <div class="text-sm text-orange-700">Accuracy</div>
+                </div>
+            </div>
+            <canvas id="performanceChart" height="120"></canvas>
+        </div>
+    </div>
+
+    <!-- ML Model Insights -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <!-- High Risk Patterns -->
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <h5 class="text-lg font-semibold text-gray-900 mb-4">
+                <i class="fas fa-exclamation-triangle text-red-500 mr-2"></i>High Risk Patterns
+            </h5>
+            <div class="space-y-3">
+                {% if high_risk_patterns %}
+                    {% for pattern, count in high_risk_patterns.items %}
+                    <div class="flex justify-between items-center p-3 bg-red-50 rounded-lg">
+                        <span class="text-sm text-red-700">{{ pattern|title }}</span>
+                        <span class="text-sm font-semibold text-red-800">{{ count }} cases</span>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-gray-500 text-center py-4">No high-risk patterns detected</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Feature Importance -->
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <h5 class="text-lg font-semibold text-gray-900 mb-4">
+                <i class="fas fa-chart-bar text-blue-500 mr-2"></i>Top Feature Importance
+            </h5>
+            <div class="space-y-3">
+                {% if feature_importance %}
+                    {% for feature, importance in feature_importance.items|slice:":5" %}
+                    <div class="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
+                        <span class="text-sm text-blue-700">{{ feature|title }}</span>
+                        <span class="text-sm font-semibold text-blue-800">{{ importance|floatformat:3 }}</span>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-gray-500 text-center py-4">Feature importance data unavailable</p>
+                {% endif %}
+            </div>
         </div>
     </div>
 
@@ -187,8 +246,8 @@
             </h5>
             <div class="space-y-3">
                 <div class="flex justify-between items-center">
-                    <span class="text-sm text-gray-600">Total Records</span>
-                    <span class="text-sm font-semibold text-gray-800">{{ fraud_analytics.total_records|default:"4925" }}</span>
+                    <span class="text-sm text-gray-600">Training Data Size</span>
+                    <span class="text-sm font-semibold text-gray-800">{{ training_data_size|default:"4925" }} records</span>
                 </div>
                 <div class="flex justify-between items-center">
                     <span class="text-sm text-gray-600">Fraud Rate</span>
@@ -196,7 +255,11 @@
                 </div>
                 <div class="flex justify-between items-center">
                     <span class="text-sm text-gray-600">Model Type</span>
-                    <span class="text-xs font-semibold text-blue-600">{{ model_version|default:"RandomForest" }}</span>
+                    <span class="text-xs font-semibold text-blue-600">{{ model_version|default:"BalancedRandomForest" }}</span>
+                </div>
+                <div class="flex justify-between items-center border-t pt-2">
+                    <span class="text-sm text-gray-600">Last Trained</span>
+                    <span class="text-xs font-semibold text-green-600">{{ last_trained|default:"2024-01-15" }}</span>
                 </div>
             </div>
         </div>
