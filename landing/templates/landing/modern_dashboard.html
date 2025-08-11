@@ -46,12 +46,15 @@
                 <!-- User Profile Section -->
                 <div class="mt-6 px-4">
                     <div class="bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg p-4 text-white">
-                        <div class="flex items-center justify-center">
-                            <a href="{% url 'user_profile' %}" class="flex-shrink-0 hover:scale-110 transition-transform duration-200 cursor-pointer" title="View Profile">
-                                <div class="w-10 h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-                                    <!-- Avatar icon removed - using existing avatar functionality -->
-                                </div>
-                            </a>
+                        <div class="text-center">
+                            <div class="text-lg font-bold mb-1">{{ user.username }}</div>
+                            <div class="text-sm text-blue-100">{{ user.email }}</div>
+                            {% if user.first_name or user.last_name %}
+                                <div class="text-xs text-blue-100 mt-1">{{ user.first_name }} {{ user.last_name }}</div>
+                            {% endif %}
+                            <div class="text-xs text-blue-100 mt-2 bg-white bg-opacity-20 px-2 py-1 rounded-full inline-block">
+                                {{ user.profile.user_level|default:"User" }}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -114,17 +117,19 @@
                 
                 <!-- User Menu -->
                 <div class="flex-shrink-0 flex border-t border-gray-200 p-4">
-                    <div class="flex items-center justify-center w-full">
-                        <button id="sidebar-user-btn" class="flex-shrink-0 hover:scale-110 transition-transform duration-200 cursor-pointer" title="Click to see user info">
-                            <div class="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
-                                <!-- Avatar icon removed - using existing avatar functionality -->
+                    <div class="flex items-center justify-between w-full">
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                                <i class="fas fa-user text-white text-sm"></i>
                             </div>
-                        </button>
-                        <div class="ml-3">
-                            <a href="{% url 'logout' %}" class="text-gray-400 hover:text-gray-600">
-                                <i class="fas fa-sign-out-alt"></i>
-                            </a>
+                            <div class="ml-3">
+                                <div class="text-sm font-medium text-gray-900">{{ user.username }}</div>
+                                <div class="text-xs text-gray-500">{{ user.profile.user_level|default:"User" }}</div>
+                            </div>
                         </div>
+                        <a href="{% url 'logout' %}" class="text-gray-400 hover:text-gray-600 p-2 rounded-lg hover:bg-gray-100 transition-colors" title="Sign Out">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -154,22 +159,14 @@
                         </div>
                         <div class="flex items-center space-x-4">
                             <!-- Notifications -->
-                            <button class="p-2 text-gray-400 hover:text-gray-500">
+                            <button class="p-2 text-gray-400 hover:text-gray-500 hover:bg-gray-100 rounded-lg transition-colors" title="Notifications">
                                 <i class="fas fa-bell"></i>
                             </button>
-                            <!-- User menu -->
-                            <div class="relative" x-data="{ open: false }">
-                                <button @click="open = !open" class="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                                    <div class="w-8 h-8 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center">
-                                        <!-- Avatar icon removed - using existing avatar functionality -->
-                                    </div>
-                                </button>
-                                <div x-show="open" @click.away="open = false" class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-                                    <div class="py-1">
-                                        <a href="{% url 'logout' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign out</a>
-                                    </div>
-                                </div>
-                            </div>
+                            <!-- Logout Button -->
+                            <a href="{% url 'logout' %}" class="flex items-center text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 px-3 py-2 rounded-lg transition-colors" title="Sign Out">
+                                <i class="fas fa-sign-out-alt mr-2"></i>
+                                Sign Out
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -466,41 +463,7 @@
             });
         }
 
-        // User info functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const sidebarUserBtn = document.getElementById('sidebar-user-btn');
-            const topUserBtn = document.querySelector('button[class*="flex items-center text-sm rounded-full"]');
-            
-            function showUserInfo() {
-                const userInfo = {
-                    username: '{{ user.username }}',
-                    firstName: '{{ user.first_name|default:"" }}',
-                    lastName: '{{ user.last_name|default:"" }}',
-                    email: '{{ user.email }}',
-                    isAdmin: '{{ user.profile.is_admin|yesno:"Yes,No" }}',
-                    userLevel: '{{ user.profile.user_level|default:"User" }}'
-                };
-                
-                const infoText = `
-                    👤 User Information:
-                    • Username: ${userInfo.username}
-                    • Name: ${userInfo.firstName} ${userInfo.lastName}
-                    • Email: ${userInfo.email}
-                    • Admin: ${userInfo.isAdmin}
-                    • Level: ${userInfo.userLevel}
-                `;
-                
-                alert(infoText);
-            }
-            
-            if (sidebarUserBtn) {
-                sidebarUserBtn.addEventListener('click', showUserInfo);
-            }
-            
-            if (topUserBtn) {
-                topUserBtn.addEventListener('click', showUserInfo);
-            }
-        });
+
 
         const ratioCanvas = document.getElementById('ratioChart');
         if (ratioCanvas) {

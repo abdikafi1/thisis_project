@@ -341,11 +341,6 @@
                 <div class="flex items-center space-x-4">
                     {% if user.is_authenticated %}
                         <div class="relative">
-                            <button id="user-info-btn" class="p-2 text-gray-600 hover:text-gray-900 transition-colors" title="Click to see user info">
-                                <i class="fas fa-user"></i>
-                            </button>
-                        </div>
-                        <div class="relative">
                             <button id="user-avatar-btn" class="flex items-center space-x-3 text-gray-700 hover:text-gray-900 transition-colors" title="Click to see user info">
                                 <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-sm font-semibold shadow-lg">
                                     {{ user.first_name|first|default:user.username|first|upper }}
@@ -372,80 +367,8 @@
         </main>
     </div>
 
-    <!-- User Info Modal -->
-    <div id="user-info-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden">
-        <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full mx-4 transform transition-all duration-300 scale-95 opacity-0" id="modal-content">
-                <!-- Modal Header -->
-                <div class="bg-gradient-to-r from-blue-500 to-purple-600 rounded-t-3xl p-6 text-white relative">
-                    <button id="close-modal" class="absolute top-4 right-4 text-white/80 hover:text-white transition-colors">
-                        <i class="fas fa-times text-xl"></i>
-                    </button>
-                    <div class="flex items-center space-x-4">
-                        <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center text-2xl font-bold">
-                            {{ user.first_name|first|default:user.username|first|upper }}
-                        </div>
-                        <div>
-                            <h2 class="text-2xl font-bold">{{ user.first_name|default:user.username }}</h2>
-                            <p class="text-white/90">{{ user.email }}</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Modal Body -->
-                <div class="p-6 space-y-4">
-                    <!-- User Stats -->
-                    <div class="grid grid-cols-2 gap-4 mb-6">
-                        <div class="text-center p-4 bg-blue-50 rounded-xl">
-                            <div class="text-2xl font-bold text-blue-600">{{ user.profile.user_level|title }}</div>
-                            <div class="text-sm text-blue-600 font-medium">User Level</div>
-                        </div>
-                        <div class="text-center p-4 bg-green-50 rounded-xl">
-                            <div class="text-2xl font-bold text-green-600">{{ user.profile.is_verified|yesno:"Yes,No" }}</div>
-                            <div class="text-sm text-green-600 font-medium">Verified</div>
-                        </div>
-                    </div>
-                    
-                    <!-- User Details -->
-                    <div class="space-y-3">
-                        <div class="flex items-center p-3 bg-gray-50 rounded-lg">
-                            <i class="fas fa-user text-blue-500 w-5 mr-3"></i>
-                            <span class="text-gray-700">{{ user.first_name|default:"Not set" }} {{ user.last_name|default:"" }}</span>
-                        </div>
-                        <div class="flex items-center p-3 bg-gray-50 rounded-lg">
-                            <i class="fas fa-envelope text-blue-500 w-5 mr-3"></i>
-                            <span class="text-gray-700">{{ user.email }}</span>
-                        </div>
-                        <div class="flex items-center p-3 bg-gray-50 rounded-lg">
-                            <i class="fas fa-calendar text-blue-500 w-5 mr-3"></i>
-                            <span class="text-gray-700">Joined {{ user.date_joined|date:"M d, Y" }}</span>
-                        </div>
-                        {% if user.profile.phone_number %}
-                        <div class="flex items-center p-3 bg-gray-50 rounded-lg">
-                            <i class="fas fa-phone text-blue-500 w-5 mr-3"></i>
-                            <span class="text-gray-700">{{ user.profile.phone_number }}</span>
-                        </div>
-                        {% endif %}
-                        {% if user.profile.company %}
-                        <div class="flex items-center p-3 bg-gray-50 rounded-lg">
-                            <i class="fas fa-building text-blue-500 w-5 mr-3"></i>
-                            <span class="text-gray-700">{{ user.profile.company }}</span>
-                        </div>
-                        {% endif %}
-                    </div>
-                    
-                    <!-- Action Buttons -->
-                    <div class="flex space-x-3 pt-4">
-                        <a href="{% url 'user_profile' %}" class="flex-1 bg-blue-600 text-white py-3 px-4 rounded-xl font-semibold hover:bg-blue-700 transition-colors text-center">
-                            <i class="fas fa-edit mr-2"></i>Edit Profile
-                        </a>
-                        <button id="close-modal-btn" class="flex-1 bg-gray-200 text-gray-700 py-3 px-4 rounded-xl font-semibold hover:bg-gray-300 transition-colors">
-                            Close
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+
+
     </div>
 
     <script>
@@ -513,67 +436,19 @@
             });
         });
 
-        // User info modal functionality
+        // User avatar functionality (simplified)
         document.addEventListener('DOMContentLoaded', function() {
-            const userInfoBtn = document.getElementById('user-info-btn');
             const userAvatarBtn = document.getElementById('user-avatar-btn');
-            const sidebarUserAvatar = document.getElementById('sidebar-user-avatar');
-            const userInfoModal = document.getElementById('user-info-modal');
-            const modalContent = document.getElementById('modal-content');
-            const closeModal = document.getElementById('close-modal');
-            const closeModalBtn = document.getElementById('close-modal-btn');
-            
-            function showUserInfoModal() {
-                userInfoModal.classList.remove('hidden');
-                setTimeout(() => {
-                    modalContent.classList.remove('scale-95', 'opacity-0');
-                    modalContent.classList.add('scale-100', 'opacity-100');
-                }, 10);
-            }
-            
-            function hideUserInfoModal() {
-                modalContent.classList.add('scale-95', 'opacity-0');
-                modalContent.classList.remove('scale-100', 'opacity-100');
-                setTimeout(() => {
-                    userInfoModal.classList.add('hidden');
-                }, 300);
-            }
-            
-            // Event listeners for opening modal
-            if (userInfoBtn) {
-                userInfoBtn.addEventListener('click', showUserInfoModal);
-            }
             
             if (userAvatarBtn) {
-                userAvatarBtn.addEventListener('click', showUserInfoModal);
+                userAvatarBtn.addEventListener('click', function() {
+                    // Simple click effect - can be enhanced later if needed
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = 'scale(1)';
+                    }, 150);
+                });
             }
-            
-            if (sidebarUserAvatar) {
-                sidebarUserAvatar.addEventListener('click', showUserInfoModal);
-            }
-            
-            // Event listeners for closing modal
-            if (closeModal) {
-                closeModal.addEventListener('click', hideUserInfoModal);
-            }
-            
-            if (closeModalBtn) {
-                closeModalBtn.addEventListener('click', hideUserInfoModal);
-            }
-            
-            // Close modal when clicking outside
-            userInfoModal.addEventListener('click', function(e) {
-                if (e.target === userInfoModal) {
-                    hideUserInfoModal();
-                }
-            });
-            
-            // Close modal with Escape key
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape' && !userInfoModal.classList.contains('hidden')) {
-                    hideUserInfoModal();
-                }
-            });
         });
     </script>
     

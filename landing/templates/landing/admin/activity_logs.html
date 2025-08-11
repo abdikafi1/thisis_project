@@ -4,140 +4,1080 @@
 {% block page_title %}Activity Logs{% endblock %}
 
 {% block content %}
-<!-- Filter Form -->
-<div class="card mb-4">
-    <div class="card-header">
-        <h5 class="card-title mb-0">
-            <i class="fas fa-filter me-2"></i>Filter Activity Logs
-        </h5>
-    </div>
-    <div class="card-body">
-        <form method="get" class="row g-3">
-            <div class="col-md-3">
-                <label for="activity_type" class="form-label">Activity Type</label>
-                <select name="activity_type" class="form-control">
-                    <option value="">All Activities</option>
-                    <option value="login" {% if request.GET.activity_type == 'login' %}selected{% endif %}>Login</option>
-                    <option value="prediction" {% if request.GET.activity_type == 'prediction' %}selected{% endif %}>Prediction</option>
-                    <option value="report_export" {% if request.GET.activity_type == 'report_export' %}selected{% endif %}>Report Export</option>
-                    <option value="settings_change" {% if request.GET.activity_type == 'settings_change' %}selected{% endif %}>Settings Change</option>
-                    <option value="admin_action" {% if request.GET.activity_type == 'admin_action' %}selected{% endif %}>Admin Action</option>
-                </select>
+<!-- Enhanced Professional Header Section -->
+<div class="enhanced-header mb-5">
+    <div class="row">
+    <div class="col-12">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-4">
+                <div class="header-content flex-1 min-w-0">
+                    <div class="d-flex align-items-center gap-4">
+                        <div class="header-icon-wrapper">
+                            <div class="header-icon">
+                                <i class="fas fa-chart-line"></i>
+                        </div>
+                        </div>
+                        <div class="header-text">
+                            <h1 class="header-title">Activity Logs</h1>
+                            <p class="header-subtitle">Monitor and analyze user activities across the system</p>
+                    </div>
+                </div>
+                </div>
+                <div class="header-actions">
+                    <div class="d-flex gap-3 align-items-center">
+                        <div class="search-wrapper">
+                            <div class="input-group mt-10">
+                                <span class="input-group-text">
+                                    <i class="fas fa-search"></i>
+                        </span>
+                                <input type="search" id="clientSearch" class="form-control enhanced-input" 
+                               placeholder="Quick search logs..." aria-label="Client-side search">
             </div>
-            <div class="col-md-3">
-                <label for="date_from" class="form-label">Date From</label>
-                <input type="date" name="date_from" class="form-control" value="{{ request.GET.date_from }}">
-            </div>
-            <div class="col-md-3">
-                <label for="date_to" class="form-label">Date To</label>
-                <input type="date" name="date_to" class="form-control" value="{{ request.GET.date_to }}">
-            </div>
-            <div class="col-md-3">
-                <label class="form-label">&nbsp;</label>
-                <div class="d-grid">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-search me-2"></i>Filter
-                    </button>
+                            <button class="btn btn-outline-light enhanced-btn mt-11 onclick="window.print()" title="Print logs">
+                    <i class="fas fa-print me-2"></i>Print
+                </button>
+                            <button class="btn btn-outline-light enhanced-btn mt-11" id="exportLogsBtn" type="button" title="Export to CSV">
+                    <i class="fas fa-download me-2"></i>Export
+                </button>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </form>
+        </div>
     </div>
 </div>
 
-<!-- Activity Logs Table -->
-<div class="card">
-    <div class="card-header">
+<!-- Enhanced Filter Form -->
+<div class="filter-section mb-4">
+    <div class="card enhanced-card">
+        <div class="card-header">
         <h5 class="card-title mb-0">
-            <i class="fas fa-list-alt me-2"></i>Activity Logs ({{ page_obj.paginator.count }} total)
+            <i class="fas fa-filter me-2"></i>Filter & Search
         </h5>
     </div>
-    <div class="card-body">
+        <div class="card-body">
+        <form method="get" class="row g-3 align-items-end">
+            <div class="col-lg-3 col-md-6">
+                    <div class="form-group-wrapper">
+                        <label for="activity_type" class="form-label">
+                            <i class="fas fa-tag me-1"></i>Activity Type
+                </label>
+                        <select name="activity_type" class="form-select enhanced-select">
+                    <option value="">All Activities</option>
+                    <option value="login" {% if request.GET.activity_type == 'login' %}selected{% endif %}>
+                        Login
+                    </option>
+                    <option value="prediction" {% if request.GET.activity_type == 'prediction' %}selected{% endif %}>
+                        Prediction
+                    </option>
+                    <option value="report_export" {% if request.GET.activity_type == 'report_export' %}selected{% endif %}>
+                        Report Export
+                    </option>
+                    <option value="settings_change" {% if request.GET.activity_type == 'settings_change' %}selected{% endif %}>
+                        Settings Change
+                    </option>
+                    <option value="admin_action" {% if request.GET.activity_type == 'admin_action' %}selected{% endif %}>
+                        Admin Action
+                    </option>
+                </select>
+                    </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                    <div class="form-group-wrapper">
+                        <label for="date_from" class="form-label">
+                            <i class="fas fa-calendar-alt me-1"></i>Date From
+                </label>
+                        <input type="date" name="date_from" class="form-control enhanced-input" value="{{ request.GET.date_from }}">
+                    </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                    <div class="form-group-wrapper">
+                        <label for="date_to" class="form-label">
+                            <i class="fas fa-calendar-alt me-1"></i>Date To
+                </label>
+                        <input type="date" name="date_to" class="form-control enhanced-input" value="{{ request.GET.date_to }}">
+            </div>
+                </div>
+               
+                <!-- <div class="col-lg-3 col-md-6">
+                    <div class="form-group-wrapper">
+                <label class="form-label">&nbsp;</label>
+                        <button type="submit" class="btn btn-primary w-100" style="border-radius: 0.75rem; padding: 0.875rem 1rem; font-weight: 600;">
+                        <i class="fas fa-search me-2"></i>Apply Filters
+                    </button>
+                </div>
+                </div> -->
+        </form>
+        
+            <div class="filter-actions mt-4 pt-3 border-top">
+                <div class="d-flex flex-wrap gap-3 align-items-center">
+                    <div class="quick-filters">
+                        <span class="filter-label">Quick Filters:</span>
+            <div class="btn-group btn-group-sm" role="group" aria-label="Quick date filters" id="quickRange">
+                <button type="button" class="btn btn-outline-primary" data-range="today">Today</button>
+                <button type="button" class="btn btn-outline-primary" data-range="7">Last 7d</button>
+                <button type="button" class="btn btn-outline-primary" data-range="30">Last 30d</button>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="form-group-wrapper">
+                            <label class="form-label">&nbsp;</label>
+                            <button type="submit" class="btn btn-primary w-100" style="border-radius: 0.75rem; padding: 0.875rem 1rem; font-weight: 600;">
+                                <i class="fas fa-search me-2"></i>Apply Filters
+                            </button>
+                        </div>
+            </div>
+            {% if request.GET.activity_type or request.GET.date_from or request.GET.date_to %}
+                        <div class="active-filters">
+                            <span class="filter-label">Active filters:</span>
+                {% if request.GET.activity_type %}
+                                <span class="filter-badge">
+                        <i class="fas fa-tag me-1"></i>{{ request.GET.activity_type|title }}
+                                    <a href="?{% if request.GET.date_from %}date_from={{ request.GET.date_from }}&{% endif %}{% if request.GET.date_to %}date_to={{ request.GET.date_to }}{% endif %}" class="remove-filter">×</a>
+                                </span>
+                {% endif %}
+                {% if request.GET.date_from or request.GET.date_to %}
+                                <span class="filter-badge">
+                        <i class="fas fa-calendar me-1"></i>Date Range
+                                    <a href="?{% if request.GET.activity_type %}activity_type={{ request.GET.activity_type }}{% endif %}" class="remove-filter">×</a>
+                                </span>
+                {% endif %}
+                            <a href="{% url 'admin_activity_logs' %}" class="filter-badge clear-all">
+                    <i class="fas fa-times me-1"></i>Clear all
+                </a>
+                        </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+                </div>
+            </div>
+<!-- Enhanced Quick Stats Cards -->
+<!-- <div class="stats-section mb-4">
+    <div class="d-flex flex-wrap gap-3">
+        <div class="stat-card total-activities">
+            <div class="stat-icon">
+                <i class="fas fa-list-alt"></i>
+                </div>
+            <div class="stat-content">
+                <h3 class="stat-number">{{ page_obj.paginator.count }}</h3>
+                <p class="stat-label">Total Activities</p>
+            </div>
+                </div>
+        <div class="stat-card showing-activities">
+            <div class="stat-icon">
+                <i class="fas fa-eye"></i>
+            </div>
+            <div class="stat-content">
+                <h3 class="stat-number">{{ activities|length }}</h3>
+                <p class="stat-label">Showing</p>
+                </div>
+            </div>
+        <div class="stat-card current-page">
+            <div class="stat-icon">
+                <i class="fas fa-file-alt"></i>
+                </div>
+            <div class="stat-content">
+                <h3 class="stat-number">{{ page_obj.number }}</h3>
+                <p class="stat-label">Current Page</p>
+            </div>
+                </div>
+        <div class="stat-card total-pages">
+            <div class="stat-icon">
+                <i class="fas fa-layer-group"></i>
+            </div>
+            <div class="stat-content">
+                <h3 class="stat-number">{{ page_obj.paginator.num_pages }}</h3>
+                <p class="stat-label">Total Pages</p>
+                </div>
+            </div>
+        </div>
+</div> -->
+
+<!-- Enhanced Table Section -->
+<div class="table-section">
+    <div class="card enhanced-card">
+        <div class="card-header">
+        <div class="d-flex align-items-center justify-content-between">
+            <h5 class="card-title mb-0">
+                    <i class="fas fa-table me-2"></i>Activity List
+            </h5>
+                <div class="table-controls">
+                    <span class="control-label">Select rows to export:</span>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="selectAllLogs" title="Select all activities">
+                        <label class="form-check-label" for="selectAllLogs">All</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-0">
         <div class="table-responsive">
-            <table class="table table-hover">
-                <thead class="table-light">
+                <table class="table table-hover mb-0 enhanced-table" id="activityTable">
+                    <thead class="table-header">
                     <tr>
-                        <th>User</th>
-                        <th>Activity Type</th>
-                        <th>Description</th>
-                        <th>IP Address</th>
-                        <th>Time</th>
+                            <th scope="col" class="px-4 py-3">
+                                <i class="fas fa-user me-2"></i>User
+                        </th>
+                            <th scope="col" class="px-4 py-3">
+                                <i class="fas fa-tag me-2"></i>Activity Type
+                        </th>
+                            <th scope="col" class="px-4 py-3">
+                                <i class="fas fa-info-circle me-2"></i>Description
+                        </th>
+                            <th scope="col" class="px-4 py-3">
+                                <i class="fas fa-globe me-2"></i>IP Address
+                        </th>
+                            <th scope="col" class="px-4 py-3">
+                                <i class="fas fa-clock me-2"></i>Timestamp
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for activity in activities %}
-                    <tr>
-                        <td>
-                            <strong>{{ activity.user.username }}</strong>
-                            <br>
-                            <small class="text-muted">{{ activity.user.email }}</small>
+                    <tr class="activity-row" data-activity-id="{{ activity.id }}">
+                        <td class="px-4 py-3">
+                            <div class="d-flex align-items-center gap-3">
+                                    <input type="checkbox" class="form-check-input activity-checkbox me-3" 
+                                       data-activity-id="{{ activity.id }}" 
+                                       data-user="{{ activity.user.username }}" 
+                                       data-email="{{ activity.user.email }}" 
+                                       data-type="{{ activity.activity_type }}" 
+                                       data-description="{{ activity.description }}" 
+                                       data-ip="{{ activity.ip_address }}" 
+                                           data-timestamp="{{ activity.created_at|date:'Y-m-d H:i:s' }}">
+                                    <div class="user-avatar">
+                                        <div class="avatar-circle">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                    </div>
+                                    <div class="user-success">
+                                        <div class="username">{{ activity.user.username }}</div>
+                                    <small class="text-muted">{{ activity.user.email }}</small>
+                                </div>
+                            </div>
                         </td>
-                        <td>
+                        <td class="px-4 py-3">
                             {% if activity.activity_type == 'login' %}
-                                <span class="badge bg-success">{{ activity.get_activity_type_display }}</span>
+                                    <span class="badge badge-login">Login</span>
                             {% elif activity.activity_type == 'prediction' %}
-                                <span class="badge bg-primary">{{ activity.get_activity_type_display }}</span>
-                            {% elif activity.activity_type == 'admin_action' %}
-                                <span class="badge bg-danger">{{ activity.get_activity_type_display }}</span>
+                                    <span class="badge badge-prediction">Prediction</span>
+                            {% elif activity.activity_type == 'report_export' %}
+                                    <span class="badge badge-export">Report Export</span>
                             {% elif activity.activity_type == 'settings_change' %}
-                                <span class="badge bg-warning">{{ activity.get_activity_type_display }}</span>
+                                    <span class="badge badge-settings">Settings</span>
+                            {% elif activity.activity_type == 'admin_action' %}
+                                    <span class="badge badge-admin">Admin Action</span>
                             {% else %}
-                                <span class="badge bg-secondary">{{ activity.get_activity_type_display }}</span>
+                                    <span class="badge badge-admin">{{ activity.activity_type|title }}</span>
                             {% endif %}
                         </td>
-                        <td>
-                            <small>{{ activity.description }}</small>
+                        <td class="px-4 py-3">
+                                <div class="description-cell">
+                                    <span class="description-text">{{ activity.description|truncatechars:50 }}</span>
+                                    <button class="btn btn-sm btn-outline-secondary copy-btn" data-description="{{ activity.description }}" title="Copy description">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                            </td>
+                        <td class="px-4 py-3">
+                                <code class="ip-address">{{ activity.ip_address }}</code>
                         </td>
-                        <td>
-                            <small class="text-muted">{{ activity.ip_address|default:"N/A" }}</small>
-                        </td>
-                        <td>
-                            <small>{{ activity.created_at|date:"M d, Y H:i" }}</small>
-                            <br>
-                            <small class="text-muted">{{ activity.created_at|timesince }} ago</small>
+                        <td class="px-4 py-3">
+                                <div class="timestamp-cell">
+                                    <div class="date-main">{{ activity.created_at|date:"M d, Y" }}</div>
+                                    <small class="text-muted">{{ activity.created_at|date:"H:i:s" }}</small>
+                            </div>
                         </td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="5" class="text-center text-muted py-4">
-                            <i class="fas fa-list-alt fa-3x mb-3"></i>
-                            <br>No activity logs found.
+                            <td colspan="5" class="text-center py-5">
+                                <div class="empty-state">
+                                    <div class="empty-icon">
+                                        <i class="fas fa-chart-line"></i>
+                                    </div>
+                                    <h5 class="empty-title">No activities found</h5>
+                                    <p class="empty-text">Try adjusting your filter criteria or check back later.</p>
+                            </div>
                         </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
+            </div>
         </div>
+    </div>
+</div>
 
-        <!-- Pagination -->
-        {% if page_obj.has_other_pages %}
-        <nav aria-label="Activity logs pagination">
-            <ul class="pagination justify-content-center">
+<!-- Enhanced Pagination -->
+{% if page_obj.has_other_pages %}
+<div class="pagination-section mt-5">
+    <div class="d-flex justify-content-between align-items-center">
+        <div class="pagination-info">
+            <span class="text-muted">
+        Showing {{ page_obj.start_index }} to {{ page_obj.end_index }} of {{ page_obj.paginator.count }} activities
+            </span>
+    </div>
+    <nav aria-label="Activity pagination">
+            <ul class="pagination enhanced-pagination mb-0">
                 {% if page_obj.has_previous %}
                     <li class="page-item">
-                        <a class="page-link" href="?page=1{% if request.GET.activity_type %}&activity_type={{ request.GET.activity_type }}{% endif %}{% if request.GET.date_from %}&date_from={{ request.GET.date_from }}{% endif %}{% if request.GET.date_to %}&date_to={{ request.GET.date_to }}{% endif %}">First</a>
+                    <a class="page-link" href="?page=1{% if request.GET.activity_type %}&activity_type={{ request.GET.activity_type }}{% endif %}{% if request.GET.date_from %}&date_from={{ request.GET.date_from }}{% endif %}{% if request.GET.date_to %}&date_to={{ request.GET.date_to }}{% endif %}">
+                        <i class="fas fa-angle-double-left"></i>
+                        </a>
                     </li>
                     <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.activity_type %}&activity_type={{ request.GET.activity_type }}{% endif %}{% if request.GET.date_from %}&date_from={{ request.GET.date_from }}{% endif %}{% if request.GET.date_to %}&date_to={{ request.GET.date_to }}{% endif %}">Previous</a>
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.activity_type %}&activity_type={{ request.GET.activity_type }}{% endif %}{% if request.GET.date_from %}&date_from={{ request.GET.date_from }}{% endif %}{% if request.GET.date_to %}&date_to={{ request.GET.date_to }}{% endif %}">
+                        <i class="fas fa-angle-left"></i>
+                        </a>
                     </li>
                 {% endif %}
 
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
                 <li class="page-item active">
-                    <span class="page-link">
-                        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
-                    </span>
+                        <span class="page-link">{{ num }}</span>
+                    </li>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ num }}{% if request.GET.activity_type %}&activity_type={{ request.GET.activity_type }}{% endif %}{% if request.GET.date_from %}&date_from={{ request.GET.date_from }}{% endif %}{% if request.GET.date_to %}&date_to={{ request.GET.date_to }}{% endif %}">{{ num }}</a>
                 </li>
+                {% endif %}
+            {% endfor %}
 
                 {% if page_obj.has_next %}
                     <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.activity_type %}&activity_type={{ request.GET.activity_type }}{% endif %}{% if request.GET.date_from %}&date_from={{ request.GET.date_from }}{% endif %}{% if request.GET.date_to %}&date_to={{ request.GET.date_to }}{% endif %}">Next</a>
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.activity_type %}&activity_type={{ request.GET.activity_type }}{% endif %}{% if request.GET.date_from %}&date_from={{ request.GET.date_from }}{% endif %}{% if request.GET.date_to %}&date_to={{ request.GET.date_to }}{% endif %}">
+                        <i class="fas fa-angle-right"></i>
+                        </a>
                     </li>
                     <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.activity_type %}&activity_type={{ request.GET.activity_type }}{% endif %}{% if request.GET.date_from %}&date_from={{ request.GET.date_from }}{% endif %}{% if request.GET.date_to %}&date_to={{ request.GET.date_to }}{% endif %}">Last</a>
+                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.activity_type %}&activity_type={{ request.GET.activity_type }}{% endif %}{% if request.GET.date_from %}&date_from={{ request.GET.date_from }}{% endif %}{% if request.GET.date_to %}&date_to={{ request.GET.date_to }}{% endif %}">
+                        <i class="fas fa-angle-double-right"></i>
+                        </a>
                     </li>
                 {% endif %}
             </ul>
         </nav>
-        {% endif %}
     </div>
 </div>
+{% endif %}
+
+<style>
+/* ========================================
+   ENHANCED ACTIVITY LOGS STYLING
+   ======================================== */
+
+/* Enhanced Header Styling */
+.enhanced-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 1rem;
+    padding: 2.5rem;
+    border: none;
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+    margin-bottom: 2rem;
+}
+
+.header-icon-wrapper {
+    position: relative;
+}
+
+.header-icon {
+    width: 60px;
+    height: 60px;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.header-text {
+    color: white;
+}
+
+.header-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-subtitle {
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0.5rem 0 0 0;
+    font-size: 1.1rem;
+    font-weight: 400;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+}
+
+.search-wrapper {
+    position: relative;
+}
+
+.search-wrapper .input-group {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 0.75rem;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    overflow: hidden;
+}
+
+.search-wrapper .input-group-text {
+    background: transparent;
+    border: none;
+    color: white;
+    padding: 0.75rem 1rem;
+}
+
+.enhanced-input {
+    background: rgba(255, 255, 255, 0.95);
+    border: none;
+    color: #495057;
+    padding: 0.75rem 1rem;
+    border-radius: 0;
+    min-width: 250px;
+}
+
+.enhanced-input:focus {
+    background: white;
+    box-shadow: none;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.enhanced-btn {
+    border-radius: 0.75rem;
+    font-weight: 600;
+    padding: 0.75rem 1.25rem;
+    transition: all 0.3s ease;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    backdrop-filter: blur(10px);
+}
+
+.enhanced-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+}
+
+/* Enhanced Filter Section */
+.filter-section {
+    margin-bottom: 2rem;
+}
+
+.enhanced-card {
+    border-radius: 1rem;
+    border: none;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+.enhanced-card .card-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-bottom: none;
+    padding: 1.5rem;
+}
+
+.enhanced-card .card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.form-group-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-label {
+    color: #495057;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.enhanced-select {
+    border: 2px solid #e9ecef;
+    border-radius: 0.75rem;
+    padding: 0.875rem 1rem;
+    background: white;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.enhanced-select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    transform: translateY(-2px);
+}
+
+.filter-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.filter-label {
+    font-weight: 600;
+    color: #495057;
+    font-size: 0.9rem;
+    
+}
+
+.quick-filters {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.quick-filters .btn-group .btn {
+    border-radius: 0.5rem;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border: 2px solid #667eea;
+    color: #667eea;
+    background: white;
+}
+
+.quick-filters .btn-group .btn:hover {
+    background: #667eea;
+    color: white;
+    transform: translateY(-1px);
+}
+
+.active-filters {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.filter-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 0.75rem;
+    background: #e9ecef;
+    border-radius: 2rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #495057;
+    border: 1px solid #dee2e6;
+}
+
+.filter-badge.clear-all {
+    background: #dc3545;
+    color: white;
+    border-color: #dc3545;
+}
+
+.remove-filter {
+    margin-left: 0.5rem;
+    color: inherit;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 0 0.25rem;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.remove-filter:hover {
+    background: rgba(0, 0, 0, 0.1);
+    color: inherit;
+}
+
+/* Enhanced Stats Cards */
+.stats-section {
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid #f8f9fa;
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+.stat-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: white;
+}
+
+.total-activities .stat-icon { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+.showing-activities .stat-icon { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+.current-page .stat-icon { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+.total-pages .stat-icon { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+
+.stat-content {
+    flex: 1;
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0;
+    color: #2d3748;
+}
+
+.stat-label {
+    color: #718096;
+    margin: 0;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+/* Enhanced Table Section */
+.table-section {
+    margin-bottom: 2rem;
+}
+
+.table-header {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.table-header th {
+    font-weight: 600;
+    color: #495057;
+    border-bottom: 2px solid #dee2e6;
+    padding: 1.25rem 1.5rem;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.enhanced-table tbody tr {
+    transition: all 0.2s ease;
+}
+
+.enhanced-table tbody tr:hover {
+    background-color: #f8f9fa;
+    transform: scale(1.001);
+}
+
+.enhanced-table td {
+    padding: 1.25rem 1.5rem;
+    vertical-align: middle;
+    border-bottom: 1px solid #f8f9fa;
+}
+
+/* User Row Styling */
+.user-avatar {
+    display: flex;
+    align-items: center;
+}
+
+.avatar-circle {
+    width: 45px;
+    height: 45px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.username {
+    font-weight: 600;
+    color: #2d3748;
+    font-size: 1rem;
+}
+
+/* Enhanced Badge Styling */
+.badge {
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.badge-login { background: linear-gradient(135deg, #51cf66 0%, #40c057 100%); color: white; }
+.badge-prediction { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; }
+.badge-export { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; }
+.badge-settings { background: linear-gradient(135deg, #ffd43b 0%, #fcc419 100%); color: #495057; }
+.badge-admin { background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%); color: white; }
+.badge-default { background: linear-gradient(135deg, #6c757d 0%, #495057 100%); color: white; }
+
+/* Description Cell */
+.description-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.description-text {
+    flex: 1;
+    color: #4a5568;
+}
+
+.copy-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 2px solid #e9ecef;
+    transition: all 0.2s ease;
+}
+
+.copy-btn:hover {
+    background: #667eea;
+    border-color: #667eea;
+    color: white;
+    transform: translateY(-1px);
+}
+
+/* IP Address */
+.ip-address {
+    background: #f8f9fa;
+    color: #6c757d;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border: 1px solid #e9ecef;
+}
+
+/* Timestamp Cell */
+.timestamp-cell {
+    display: flex;
+    flex-direction: column;
+}
+
+.date-main {
+    font-weight: 600;
+    color: #2d3748;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+}
+
+.action-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    border: 2px solid;
+    padding: 0;
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+}
+
+.empty-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    font-size: 2rem;
+    color: #6c757d;
+}
+
+.empty-title {
+    color: #495057;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.empty-text {
+    color: #6c757d;
+    margin: 0;
+}
+
+/* Enhanced Pagination */
+.pagination-section {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid #f8f9fa;
+}
+
+.pagination-info {
+    font-weight: 500;
+    color: #6c757d;
+}
+
+.enhanced-pagination .page-link {
+    border-radius: 0.75rem;
+    margin: 0 0.25rem;
+    border: 2px solid #e9ecef;
+    padding: 0.75rem 1rem;
+    font-weight: 600;
+    color: #495057;
+    transition: all 0.2s ease;
+}
+
+.enhanced-pagination .page-link:hover {
+    background: #667eea;
+    border-color: #667eea;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.enhanced-pagination .page-item.active .page-link {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-color: #667eea;
+    color: white;
+}
+
+/* Table Controls */
+.table-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.control-label {
+    font-size: 0.9rem;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.form-check {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.form-check-input {
+    width: 1.2rem;
+    height: 1.2rem;
+    border-radius: 0.375rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .enhanced-header {
+        padding: 1.5rem;
+    }
+    
+    .header-title {
+        font-size: 2rem;
+    }
+    
+    .search-wrapper .enhanced-input {
+        min-width: 200px;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+        gap: 0.5rem;
+        justify-content: flex-start;
+    }
+    
+    .filter-actions {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .quick-filters {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .stat-card {
+        padding: 1rem;
+    }
+    
+    .stat-number {
+        font-size: 1.5rem;
+    }
+    
+    .enhanced-table td, .enhanced-table th {
+        padding: 1rem;
+    }
+}
+
+/* Smooth Animations */
+* {
+    transition: all 0.2s ease;
+}
+
+/* Focus States */
+.enhanced-input:focus, .enhanced-select:focus, .enhanced-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const clientSearch = document.getElementById('clientSearch');
+    const selectAllLogs = document.getElementById('selectAllLogs');
+    const activityCheckboxes = document.querySelectorAll('.activity-checkbox');
+    const exportLogsBtn = document.getElementById('exportLogsBtn');
+    const copyButtons = document.querySelectorAll('.copy-description');
+    const quickRange = document.getElementById('quickRange');
+
+    // Client-side search
+    if (clientSearch) {
+        clientSearch.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const rows = document.querySelectorAll('.activity-row');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        });
+    }
+
+    // Select all functionality
+    if (selectAllLogs) {
+        selectAllLogs.addEventListener('change', () => {
+            activityCheckboxes.forEach(cb => {
+                cb.checked = selectAllLogs.checked;
+            });
+        });
+    }
+
+    // Individual checkbox handling
+    activityCheckboxes.forEach(cb => {
+        cb.addEventListener('change', () => {
+            const allChecked = Array.from(activityCheckboxes).every(cb => cb.checked);
+            if (selectAllLogs) selectAllLogs.checked = allChecked;
+        });
+    });
+
+    // Export functionality
+    if (exportLogsBtn) {
+        exportLogsBtn.addEventListener('click', () => {
+            const selected = Array.from(activityCheckboxes).filter(cb => cb.checked);
+            const source = (selected.length ? selected : Array.from(activityCheckboxes));
+            
+            const headers = ['id','user','email','activity_type','description','ip_address','timestamp'];
+            const csv = [headers.join(',')].concat(source.map(cb => {
+                const vals = [
+                    cb.dataset.activityId,
+                    cb.dataset.user,
+                    cb.dataset.email,
+                    cb.dataset.type,
+                    cb.dataset.description,
+                    cb.dataset.ip,
+                    cb.dataset.timestamp
+                ];
+                return vals.map(v => '"' + String(v ?? '').replaceAll('"', '""') + '"').join(',');
+            })).join('\n');
+            
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'activity_logs.csv';
+            a.click();
+            URL.revokeObjectURL(url);
+        });
+    }
+
+    // Copy description functionality
+    copyButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const description = btn.dataset.description;
+            navigator.clipboard.writeText(description).then(() => {
+                const originalHTML = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check"></i>';
+                btn.classList.remove('btn-outline-secondary');
+                btn.classList.add('btn-success');
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalHTML;
+                    btn.classList.remove('btn-success');
+                    btn.classList.add('btn-outline-secondary');
+                }, 2000);
+            });
+        });
+    });
+
+    // Quick date presets
+    if (quickRange) {
+        quickRange.addEventListener('click', (e) => {
+            const btn = e.target.closest('button[data-range]');
+            if (!btn) return;
+            
+            const range = btn.getAttribute('data-range');
+            const params = new URLSearchParams(window.location.search);
+            const today = new Date();
+            const pad = n => String(n).padStart(2,'0');
+            const toStr = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+            const to = toStr(today);
+            let from = to;
+            
+            if (range !== 'today') {
+                const days = parseInt(range, 10);
+                const d = new Date(today);
+                d.setDate(d.getDate() - (days - 1));
+                from = toStr(d);
+            }
+            
+            params.set('date_from', from);
+            params.set('date_to', to);
+            window.location.search = params.toString();
+        });
+    }
+});
+</script>
 {% endblock %}
+

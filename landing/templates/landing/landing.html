@@ -24,7 +24,7 @@
         }
         
         .hero-section {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #60a5fa 100%);
             min-height: 100vh;
             position: relative;
             overflow: hidden;
@@ -36,8 +36,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><radialGradient id="a" cx="50%" cy="50%"><stop offset="0%" stop-color="%23ffffff" stop-opacity="0.1"/><stop offset="100%" stop-color="%23ffffff" stop-opacity="0"/></radialGradient></defs><circle cx="200" cy="200" r="100" fill="url(%23a)"/><circle cx="800" cy="300" r="150" fill="url(%23a)"/><circle cx="400" cy="800" r="120" fill="url(%23a)"/></svg>');
-            opacity: 0.3;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><radialGradient id="a" cx="50%" cy="50%"><stop offset="0%" stop-color="%23ffffff" stop-opacity="0.15"/><stop offset="100%" stop-color="%23ffffff" stop-opacity="0"/></radialGradient></defs><circle cx="200" cy="200" r="100" fill="url(%23a)"/><circle cx="800" cy="300" r="150" fill="url(%23a)"/><circle cx="400" cy="800" r="120" fill="url(%23a)"/></svg>');
+            opacity: 0.4;
         }
         
         .floating-shapes {
@@ -52,7 +52,7 @@
         
         .shape {
             position: absolute;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.15);
             border-radius: 50%;
             animation: float 6s ease-in-out infinite;
         }
@@ -87,9 +87,9 @@
         }
         
         .navbar {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.25);
             position: fixed;
             top: 0;
             left: 0;
@@ -108,7 +108,7 @@
         }
         
         .navbar.scrolled .nav-link:hover {
-            color: #667eea;
+            color: #3b82f6;
         }
         
         .navbar.scrolled .brand-text {
@@ -116,7 +116,7 @@
         }
         
         .navbar.scrolled .brand-icon {
-            color: #667eea;
+            color: #3b82f6;
         }
         
         /* Mobile menu styles */
@@ -132,7 +132,7 @@
             left: 0;
             width: 0;
             height: 2px;
-            background: #667eea;
+            background: #3b82f6;
             transition: width 0.3s ease;
         }
         
@@ -168,23 +168,30 @@
             transition: width 0.3s ease;
         }
         
+        .nav-link:hover {
+            color: #00ffff;
+            transform: translateY(-2px);
+        }
+        
         .nav-link:hover::after {
             width: 100%;
+            background: #00ffff;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
         }
         
         .nav-link.active::after {
             width: 100%;
-            background: #667eea;
+            background: #00ffff;
         }
         
         .nav-link.active {
-            color: #667eea;
+            color: #00ffff;
             font-weight: 600;
         }
         
         .nav-link.active::after {
-            background: #667eea;
-            box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+            background: #00ffff;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
         }
         
         /* Smooth transitions for all navigation elements */
@@ -193,6 +200,174 @@
         }
         
         .nav-link::after {
+            transition: all 0.3s ease;
+        }
+        
+        /* Enhanced CTA Buttons with Cyan Hover */
+        .btn-primary {
+            background: linear-gradient(45deg, #3b82f6, #1e40af);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(0, 255, 255, 0.4);
+            background: linear-gradient(45deg, #00ffff, #3b82f6);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(0, 255, 255, 0.3);
+            border-color: #00ffff;
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
+        }
+        
+        /* Enhanced Mobile Menu with Cyan Hover */
+        .mobile-nav-link {
+            position: relative;
+            transition: all 0.3s ease;
+            color: #1f2937;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .mobile-nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #00ffff;
+            transition: width 0.3s ease;
+        }
+        
+        .mobile-nav-link:hover {
+            color: #00ffff;
+            background: rgba(0, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+        
+        .mobile-nav-link:hover::after {
+            width: 100%;
+        }
+        
+        /* Enhanced Brand Elements with Cyan Hover */
+        .brand-icon {
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .brand-icon:hover {
+            color: #00ffff;
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.5));
+        }
+        
+        .brand-text {
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .brand-text:hover {
+            color: #00ffff;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+        
+        /* Enhanced Mobile Menu Button with Cyan Hover */
+        .mobile-menu-btn {
+            color: white;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 8px 12px;
+        }
+        
+        .mobile-menu-btn:hover {
+            color: #00ffff;
+            background: rgba(0, 255, 255, 0.1);
+            border-color: #00ffff;
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+        }
+        
+        /* Enhanced Floating Shapes with Cyan Hover */
+        .shape {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .shape:hover {
+            background: rgba(0, 255, 255, 0.3);
+            transform: scale(1.2);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+        }
+        
+        /* Enhanced Active States for Navigation */
+        .nav-link.active {
+            color: #00ffff;
+            font-weight: 600;
+            background: rgba(0, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 8px 16px;
+        }
+        
+        /* Enhanced Hover Effects for All Interactive Elements */
+        .nav-link:hover,
+        .btn-primary:hover,
+        .btn-secondary:hover,
+        .mobile-nav-link:hover,
+        .brand-icon:hover,
+        .brand-text:hover,
+        .mobile-menu-btn:hover,
+        .shape:hover {
             transition: all 0.3s ease;
         }
         
@@ -243,58 +418,6 @@
                 opacity: 1;
                 transform: translateY(0);
             }
-        }
-        
-        .btn-primary {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-            padding: 15px 40px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 1.1rem;
-            transition: all 0.3s ease;
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .btn-primary::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s;
-        }
-        
-        .btn-primary:hover::before {
-            left: 100%;
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
-        }
-        
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            padding: 15px 40px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 1.1rem;
-            transition: all 0.3s ease;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            backdrop-filter: blur(10px);
-        }
-        
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-3px);
         }
         
         .features-section {
@@ -349,9 +472,94 @@
         .feature-description {
             color: #666;
             line-height: 1.6;
+            margin-bottom: 15px;
         }
         
-
+        .feature-highlights {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .highlight-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #555;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .highlight-item i {
+            font-size: 0.8rem;
+            color: #10b981;
+        }
+        
+        /* Benefits Section Styling */
+        .benefits-section {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 2rem;
+            padding: 3rem 2rem;
+            margin-top: 4rem;
+        }
+        
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .benefit-item {
+            text-align: center;
+            padding: 2rem 1.5rem;
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+        }
+        
+        .benefit-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            border-color: rgba(102, 126, 234, 0.3);
+        }
+        
+        .benefit-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .benefit-item:hover .benefit-icon {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .benefit-item h4 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 0.75rem;
+        }
+        
+        .benefit-item p {
+            color: #666;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+        /* Remove duplicate rules - keeping the better ones above */
         
         /* Modal Styles */
         .modal {
@@ -490,6 +698,20 @@
                 grid-template-columns: 1fr;
             }
             
+            .benefits-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .benefits-section {
+                padding: 2rem 1rem;
+                margin-top: 3rem;
+            }
+            
+            .feature-highlights {
+                align-items: flex-start;
+            }
+            
             .modal-content {
                 width: 95%;
                 margin: 10% auto;
@@ -542,7 +764,7 @@
                                 <h3 class="text-xl font-bold text-gray-800">Menu</h3>
                                 <button id="mobile-menu-close" class="text-gray-600 hover:text-gray-800">
                                     <i class="fas fa-times text-xl"></i>
-                                </button>
+                    </button>
                             </div>
                             <nav class="p-6">
                                 <div class="space-y-4">
@@ -571,8 +793,8 @@
         <!-- Hero Content -->
         <div class="hero-content">
             {% if user.is_authenticated %}
-                <h1 class="hero-title">Ready to Protect Your Business! 🚀</h1>
-                <p class="hero-subtitle">Keep your business safe with our smart fraud detection. Let's dive back in!</p>
+                <h1 class="hero-title">Ready to Protect Your Insurance Business! 🚀</h1>
+                <p class="hero-subtitle">Keep your insurance company safe with our advanced fraud detection and loss prevention system. Let's dive back in!</p>
                 <div class="cta-buttons">
                     <a href="{% url 'dashboard' %}" class="btn-primary">
                         <i class="fas fa-tachometer-alt mr-2"></i>
@@ -580,18 +802,21 @@
                     </a>
                     <a href="{% url 'predict' %}" class="btn-secondary">
                         <i class="fas fa-search mr-2"></i>
-                        New Prediction
+                        New Fraud Analysis
                     </a>
                 </div>
             {% else %}
-                <h1 class="hero-title">Stop Fraud in Its Tracks! 🛡️</h1>
-                <p class="hero-subtitle">Our super-smart AI catches fraudsters before they can hurt your business. Sleep easy knowing you're protected!</p>
+                <h1 class="hero-title">Stop Insurance Fraud in Its Tracks! 🛡️</h1>
+                <p class="hero-subtitle">Our AI-powered system catches fraudulent insurance claims before they cost you money. Protect your bottom line with 87% accuracy!</p>
                 <div class="cta-buttons">
                     <a href="{% url 'login' %}" class="btn-primary">
-                        <i class="fas fa-rocket mr-2"></i>
+                        <i class="fas fa-shield-alt mr-2"></i>
                         Start Protecting Now
                     </a>
-                    
+                    <a href="{% url 'signup' %}" class="btn-secondary">
+                        <i class="fas fa-rocket mr-2"></i>
+                        Get Started Free
+                    </a>
                 </div>
             {% endif %}
         </div>
@@ -601,59 +826,52 @@
     <section class="features-section" id="features">
         <div class="container mx-auto">
             <div class="text-center mb-16">
-                <h2 class="text-4xl font-bold text-gray-800 mb-4">Why FraudGuard Rocks! 🎯</h2>
-                <p class="text-xl text-gray-600 max-w-600px mx-auto">We make fraud detection super simple and super powerful. No complicated stuff!</p>
+                <h2 class="text-4xl font-bold text-gray-800 mb-4">Why FraudGuard is Your Best Choice! 🎯</h2>
+                <p class="text-xl text-gray-600 max-w-600px mx-auto">We specialize in protecting insurance companies with cutting-edge fraud detection and loss prevention technology.</p>
             </div>
             
             <div class="features-grid">
+                <!-- Feature 1: Advanced Fraud Detection -->
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <i class="fas fa-brain"></i>
+                        <i class="fas fa-shield-virus"></i>
                     </div>
-                    <h3 class="feature-title">Super Smart AI 🧠</h3>
-                    <p class="feature-description">Our AI gets smarter every day, learning new tricks to catch bad guys before they can do damage.</p>
+                    <h3 class="feature-title">Advanced AI Fraud Detection</h3>
+                    <p class="feature-description">
+                        Our machine learning algorithms analyze 17+ risk factors in real-time to catch fraudulent claims before they cost you money. 
+                        <strong>87% accuracy rate</strong> with instant fraud alerts.
+                    </p>
+                   
                 </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-bolt"></i>
-                    </div>
-                    <h3 class="feature-title">Lightning Fast ⚡</h3>
-                    <p class="feature-description">Get fraud alerts in real-time. No waiting around - we catch problems as they happen!</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-shield-alt"></i>
-                    </div>
-                    <h3 class="feature-title">Bank-Level Security 🔒</h3>
-                    <p class="feature-description">Your data is super safe with us. We use the same security that banks trust.</p>
-                </div>
-                
+
+                <!-- Feature 2: Process Loss Monitoring -->
                 <div class="feature-card">
                     <div class="feature-icon">
                         <i class="fas fa-chart-line"></i>
                     </div>
-                    <h3 class="feature-title">Smart Insights 📊</h3>
-                    <p class="feature-description">See exactly what's happening with easy-to-understand reports and charts.</p>
+                    <h3 class="feature-title">Process Loss Monitoring & Prevention</h3>
+                    <p class="feature-description">
+                        Comprehensive monitoring system that tracks every claim, identifies patterns, and prevents losses before they happen. 
+                        <strong>Save up to 40%</strong> on fraudulent payouts.
+                    </p>
+                    
                 </div>
-                
+
+                <!-- Feature 3: Better Insurance Service -->
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <i class="fas fa-mobile-alt"></i>
+                        <i class="fas fa-handshake"></i>
                     </div>
-                    <h3 class="feature-title">Works Everywhere 📱</h3>
-                    <p class="feature-description">Check your fraud alerts from your phone, tablet, or computer. We're everywhere you are!</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-headset"></i>
-                    </div>
-                    <h3 class="feature-title">Always Here for You 🎧</h3>
-                    <p class="feature-description">Got questions? Our friendly team is here 24/7 to help you out!</p>
+                    <h3 class="feature-title">Better Insurance Service & Claims</h3>
+                    <p class="feature-description">
+                        Streamlined claims processing with intelligent automation, faster approvals for legitimate claims, and better customer satisfaction. 
+                        <strong>3x faster</strong> legitimate claim processing.
+                    </p>
+                    
                 </div>
             </div>
+
+            
         </div>
     </section>
 
@@ -682,8 +900,8 @@
                     <path d="M0,30 Q25,5 50,30 T100,30" stroke="url(#lineGradient)" stroke-width="0.3" fill="none"/>
                     <path d="M0,70 Q25,95 50,70 T100,70" stroke="url(#lineGradient)" stroke-width="0.3" fill="none"/>
                 </svg>
-            </div>
-        </div>
+                                </div>
+                            </div>
         
         <!-- Content Container -->
         <div class="relative z-10 container mx-auto px-6 lg:px-8">
@@ -691,17 +909,16 @@
             <div class="text-center mb-20">
                 <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full mb-6 shadow-2xl">
                     <i class="fas fa-users text-3xl text-white"></i>
-                </div>
+                        </div>
                 <h2 class="text-6xl font-bold text-white mb-6 tracking-tight">
                     Meet Our 
                     <span class="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">Amazing Team</span>
                 </h2>
                 <p class="text-xl text-white/80 max-w-4xl mx-auto leading-relaxed">
-                    We're a team of passionate software engineers dedicated to building the most advanced fraud detection system. 
-                    Each member brings unique expertise and innovation to create something extraordinary.
+                    We're a team of passionate software engineers dedicated to building  advanced fraud detection system. 
                 </p>
-            </div>
-            
+                    </div>
+                    
             <!-- Team Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 max-w-6xl mx-auto">
                 
@@ -714,15 +931,15 @@
                             <div class="relative mb-6 lg:mb-8">
                                 <div class="w-24 h-24 lg:w-32 lg:h-32 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full mx-auto flex items-center justify-center shadow-2xl group-hover:shadow-blue-500/50 transition-all duration-500">
                                     <i class="fas fa-graduation-cap text-4xl lg:text-6xl text-white group-hover:scale-110 transition-transform duration-300"></i>
-                                </div>
+                        </div>
                                 <!-- Floating Elements -->
                                 <div class="absolute -top-2 -right-2 w-4 h-4 lg:w-6 lg:h-6 bg-blue-400 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-500 animate-pulse"></div>
                                 <div class="absolute -bottom-2 -left-2 w-3 h-3 lg:w-4 lg:h-4 bg-purple-400 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-500 animate-pulse" style="animation-delay: 0.5s;"></div>
-                            </div>
+                        </div>
                             
                             <!-- Content -->
-                            <h3 class="text-2xl lg:text-3xl font-bold text-white mb-3 lg:mb-4 group-hover:text-blue-200 transition-colors duration-300">Abdikafi Elmi</h3>
-                            <p class="text-blue-200 font-semibold text-lg lg:text-xl mb-3 lg:mb-4">Lead Software Engineer</p>
+                            <h3 class="text-2xl lg:text-3xl font-bold text-white mb-3 lg:mb-4 group-hover:text-blue-200 transition-colors duration-300">Abdikafi Elmi Warsame</h3>
+                            <!-- <p class="text-blue-200 font-semibold text-lg lg:text-xl mb-3 lg:mb-4">Lead Software Engineer</p> -->
                             
                             <!-- Hover Effect Line -->
                             <div class="w-0 h-1 bg-gradient-to-r from-blue-400 to-purple-400 mx-auto group-hover:w-20 lg:group-hover:w-24 transition-all duration-500 rounded-full"></div>
@@ -743,11 +960,11 @@
                                 <!-- Floating Elements -->
                                 <div class="absolute -top-2 -right-2 w-4 h-4 lg:w-6 lg:h-6 bg-green-400 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-500 animate-pulse"></div>
                                 <div class="absolute -bottom-2 -left-2 w-3 h-3 lg:w-4 lg:h-4 bg-teal-400 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-500 animate-pulse" style="animation-delay: 0.5s;"></div>
-                            </div>
-                            
+                    </div>
+                    
                             <!-- Content -->
-                            <h3 class="text-2xl lg:text-3xl font-bold text-white mb-3 lg:mb-4 group-hover:text-green-200 transition-colors duration-300">Abdikafi Ahmed</h3>
-                            <p class="text-green-200 font-semibold text-lg lg:text-xl mb-3 lg:mb-4">Machine Learning Engineer</p>
+                            <h3 class="text-2xl lg:text-3xl font-bold text-white mb-3 lg:mb-4 group-hover:text-green-200 transition-colors duration-300">Abdullahi Ahmed</h3>
+                            <!-- <p class="text-green-200 font-semibold text-lg lg:text-xl mb-3 lg:mb-4">Machine Learning Engineer</p> -->
                             
                             <!-- Hover Effect Line -->
                             <div class="w-0 h-1 bg-gradient-to-r from-green-400 to-teal-400 mx-auto group-hover:w-20 lg:group-hover:w-24 transition-all duration-500 rounded-full"></div>
@@ -768,11 +985,11 @@
                                 <!-- Floating Elements -->
                                 <div class="absolute -top-2 -right-2 w-4 h-4 lg:w-6 lg:h-6 bg-purple-400 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-500 animate-pulse"></div>
                                 <div class="absolute -bottom-2 -left-2 w-3 h-3 lg:w-4 lg:h-4 bg-pink-400 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-500 animate-pulse" style="animation-delay: 0.5s;"></div>
-                            </div>
-                            
+                    </div>
+                    
                             <!-- Content -->
-                            <h3 class="text-2xl lg:text-3xl font-bold text-white mb-3 lg:mb-4 group-hover:text-purple-200 transition-colors duration-300">Abdikafi Hassan</h3>
-                            <p class="text-purple-200 font-semibold text-lg lg:text-xl mb-3 lg:mb-4">Cybersecurity Engineer</p>
+                            <h3 class="text-2xl lg:text-3xl font-bold text-white mb-3 lg:mb-4 group-hover:text-purple-200 transition-colors duration-300">Abdirahman Hassan</h3>
+                            <!-- <p class="text-purple-200 font-semibold text-lg lg:text-xl mb-3 lg:mb-4">Cybersecurity Engineer</p> -->
                             
                             <!-- Hover Effect Line -->
                             <div class="w-0 h-1 bg-gradient-to-r from-purple-400 to-pink-400 mx-auto group-hover:w-20 lg:group-hover:w-24 transition-all duration-500 rounded-full"></div>
@@ -793,16 +1010,16 @@
                                 <!-- Floating Elements -->
                                 <div class="absolute -top-2 -right-2 w-4 h-4 lg:w-6 lg:h-6 bg-orange-400 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-500 animate-pulse"></div>
                                 <div class="absolute -bottom-2 -left-2 w-3 h-3 lg:w-4 lg:h-4 bg-red-400 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-500 animate-pulse" style="animation-delay: 0.5s;"></div>
-                            </div>
-                            
+                    </div>
+                    
                             <!-- Content -->
-                            <h3 class="text-2xl lg:text-3xl font-bold text-white mb-3 lg:mb-4 group-hover:text-orange-200 transition-colors duration-300">Abdikafi Omar</h3>
-                            <p class="text-orange-200 font-semibold text-lg lg:text-xl mb-3 lg:mb-4">Mobile & Frontend Engineer</p>
+                            <h3 class="text-2xl lg:text-3xl font-bold text-white mb-3 lg:mb-4 group-hover:text-orange-200 transition-colors duration-300">Muriidi</h3>
+                            <!-- <p class="text-orange-200 font-semibold text-lg lg:text-xl mb-3 lg:mb-4">Mobile & Frontend Engineer</p> -->
                             
                             <!-- Hover Effect Line -->
                             <div class="w-0 h-1 bg-gradient-to-r from-orange-400 to-red-400 mx-auto group-hover:w-20 lg:group-hover:w-24 transition-all duration-500 rounded-full"></div>
                         </div>
-                    </div>
+                        </div>
                 </div>
             </div>
         </div>
@@ -831,7 +1048,7 @@
             <p class="text-gray-300 mb-6 text-lg">Making fraud detection super easy and super powerful! 🚀</p>
             
 
-
+            
             
             <div class="border-t border-gray-700 mt-8 pt-8">
                 <p class="text-gray-400">&copy; 2025 FraudGuard. All rights reserved.</p>

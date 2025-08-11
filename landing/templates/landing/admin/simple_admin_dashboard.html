@@ -39,18 +39,30 @@
             </div>
         </div>
 
-        <!-- Model Accuracy -->
-        <div class="card hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-emerald-50 to-emerald-100 border border-emerald-200">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-emerald-700 text-sm font-semibold uppercase tracking-wide">Model Accuracy</p>
-                    <h3 class="text-4xl font-black text-emerald-900 mt-2">{{ model_accuracy|default:"85.7" }}%</h3>
-                    <p class="text-emerald-600 text-sm mt-2 flex items-center">
-                        <i class="fas fa-brain mr-1"></i> {{ model_version|default:"BalancedRandomForest" }}
-                    </p>
+        <!-- Model Accuracy (Circular Progress) -->
+        <div class="card hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-emerald-50 to-emerald-100 border border-emerald-200 overflow-hidden p-6">
+            <div class="flex items-center justify-between gap-4">
+                <div class="flex-1 min-w-0">
+                    <p class="text-emerald-700 text-sm font-semibold uppercase tracking-wide mb-4">Model Accuracy</p>
+                    <div class="flex items-center gap-4">
+                        <div class="relative w-20 h-20 flex-shrink-0">
+                            <svg viewBox="0 0 36 36" class="w-20 h-20">
+                                <path class="text-emerald-200" stroke="currentColor" stroke-width="3" fill="none" d="M18 2a16 16 0 1 1 0 32 16 16 0 0 1 0-32"/>
+                                <path class="text-emerald-500" stroke="currentColor" stroke-linecap="round" stroke-width="3" fill="none"
+                                      stroke-dasharray="{{ model_accuracy|default:'85.7' }}, 100" d="M18 2a16 16 0 1 1 0 32 16 16 0 0 1 0-32"/>
+                            </svg>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <span class="text-xl font-extrabold text-emerald-700">{{ model_accuracy|default:"85.7" }}%</span>
+                            </div>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-emerald-600 text-sm font-medium flex items-center gap-2 mb-2">
+                                <i class="fas fa-brain text-emerald-500"></i>
+                                <span class="truncate">{{ model_version|default:"BalancedRandomForest" }}</span>
+                            </p>
+                            <p class="text-gray-500 text-xs leading-relaxed">Current production model performance</p>
+                        </div>
                 </div>
-                <div class="bg-gradient-to-br from-emerald-500 to-emerald-600 p-4 rounded-2xl shadow-lg">
-                    <i class="fas fa-bullseye text-3xl text-white"></i>
                 </div>
             </div>
         </div>

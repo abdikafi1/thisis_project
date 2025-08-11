@@ -168,6 +168,7 @@ def admin_user_management(request):
         search = form.cleaned_data.get('search')
         user_level = form.cleaned_data.get('user_level')
         is_verified = form.cleaned_data.get('is_verified')
+        is_active = form.cleaned_data.get('is_active')
         
         if search:
             users = users.filter(
@@ -182,6 +183,9 @@ def admin_user_management(request):
         if is_verified:
             is_verified_bool = is_verified == 'True'
             users = users.filter(profile__is_verified=is_verified_bool)
+        if is_active:
+            is_active_bool = is_active == 'True'
+            users = users.filter(is_active=is_active_bool)
     
     # Pagination
     paginator = Paginator(users, 20)

@@ -387,6 +387,11 @@ class UserSearchForm(forms.Form):
         required=False,
         widget=forms.Select(attrs={'class': 'form-control'})
     )
+    is_active = forms.ChoiceField(
+        choices=[('', 'All'), ('True', 'Active'), ('False', 'Inactive')],
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
 
 class AdminDashboardForm(forms.Form):
     date_from = forms.DateField(

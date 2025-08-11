@@ -4,208 +4,917 @@
 {% block page_title %}User Management{% endblock %}
 
 {% block content %}
-<!-- Search and Filter Form -->
-<div class="card mb-4">
-    <div class="card-header">
-        <h5 class="card-title mb-0">
-            <i class="fas fa-search me-2"></i>Search and Filter Users
-        </h5>
-    </div>
-    <div class="card-body">
-        <form method="get" class="row g-3">
-            <div class="col-md-4">
-                <label for="{{ form.search.id_for_label }}" class="form-label">Search</label>
-                {{ form.search }}
-            </div>
-            <div class="col-md-3">
-                <label for="{{ form.user_level.id_for_label }}" class="form-label">User Level</label>
-                {{ form.user_level }}
-            </div>
-            <div class="col-md-3">
-                <label for="{{ form.is_verified.id_for_label }}" class="form-label">Verification Status</label>
-                {{ form.is_verified }}
-            </div>
-            <div class="col-md-2">
-                <label class="form-label">&nbsp;</label>
-                <div class="d-grid">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-search me-2"></i>Search
-                    </button>
+<!-- ========================================
+     ENHANCED USER MANAGEMENT PAGE
+     ======================================== -->
+
+<!-- Enhanced Header Section with Better Spacing -->
+<div class="enhanced-header mb-5">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-4">
+                <div class="header-content flex-1 min-w-0">
+                    <div class="d-flex align-items-center gap-4">
+                        <div class="header-icon-wrapper">
+                            <div class="header-icon">
+                                <i class="fas fa-users-cog"></i>
+                            </div>
+                        </div>
+                        <div class="header-text">
+                            <h1 class="header-title">User Management</h1>
+                            <p class="header-subtitle">Manage system users efficiently and securely</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Enhanced Search and Filter Form -->
+                <div class="search-filter-section">
+                    <form method="get" class="d-flex gap-3 align-items-end">
+                        <div class="form-group-wrapper">
+                            <label for="search" class="form-label">Search</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-search input-icon"></i>
+                                <input type="text" name="search" id="search" class="form-control enhanced-input" 
+                                       placeholder="Username or email..." value="{{ request.GET.search|default:'' }}">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group-wrapper">
+                            <label for="user_level" class="form-label">Level</label>
+                            <select name="user_level" id="user_level" class="form-select enhanced-select">
+                                <option value="">All Levels</option>
+                                <option value="basic" {% if request.GET.user_level == 'basic' %}selected{% endif %}>Basic User</option>
+                                <option value="admin" {% if request.GET.user_level == 'admin' %}selected{% endif %}>Administrator</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group-wrapper">
+                            <label for="is_verified" class="form-label">Status</label>
+                            <select name="is_verified" id="is_verified" class="form-select enhanced-select">
+                                <option value="">All Status</option>
+                                <option value="1" {% if request.GET.is_verified == '1' %}selected{% endif %}>Verified</option>
+                                <option value="0" {% if request.GET.is_verified == '0' %}selected{% endif %}>Not Verified</option>
+                            </select>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary enhanced-btn">
+                            <i class="fas fa-search me-2"></i>Search
+                        </button>
+                    </form>
                 </div>
             </div>
-        </form>
+        </div>
     </div>
 </div>
 
-<!-- Users Table -->
-<div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="card-title mb-0">
-            <i class="fas fa-users me-2"></i>Users ({{ page_obj.paginator.count }} total)
-        </h5>
-        <div>
-            <a href="{% url 'signup' %}" class="btn btn-success btn-sm">
-                <i class="fas fa-plus me-2"></i>Add New User
-            </a>
+<!-- Enhanced User Stats Cards -->
+<!-- <div class="stats-section mb-4">
+    <div class="row g-3">
+        <div class="col-md-3">
+            <div class="stat-card total-users">
+                <div class="stat-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 class="stat-number">{{ page_obj.paginator.count }}</h3>
+                    <p class="stat-label">Total Users</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card showing-users">
+                <div class="stat-icon">
+                    <i class="fas fa-eye"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 class="stat-number">{{ page_obj|length }}</h3>
+                    <p class="stat-label">Showing</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card admin-users">
+                <div class="stat-icon">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 class="stat-number" id="adminCount">0</h3>
+                    <p class="stat-label">Admins</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card verified-users">
+                <div class="stat-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 class="stat-number" id="verifiedCount">0</h3>
+                    <p class="stat-label">Verified</p>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-hover">
-                <thead class="table-light">
-                    <tr>
-                        <th>User Info</th>
-                        <th>User Level</th>
-                        <th>Status</th>
-                        <th>Joined</th>
-                        <th>Last Login</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for user in users %}
-                    <tr>
-                        <td>
-                            <div>
-                                <strong>{{ user.username }}</strong>
-                                {% if user.first_name or user.last_name %}
-                                    <br><small class="text-muted">{{ user.first_name }} {{ user.last_name }}</small>
-                                {% endif %}
-                                <br><small class="text-muted">{{ user.email }}</small>
-                                {% if user.profile.company %}
-                                    <br><small class="text-muted"><i class="fas fa-building me-1"></i>{{ user.profile.company }}</small>
-                                {% endif %}
-                            </div>
-                        </td>
-                        <td>
-                            {% if user.profile.user_level == 'admin' %}
-                                <span class="badge bg-danger">{{ user.profile.get_user_level_display }}</span>
-                            
-                            {% else %}
-                                <span class="badge bg-secondary">{{ user.profile.get_user_level_display }}</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if user.is_active %}
-                                <span class="badge bg-success">Active</span>
-                            {% else %}
-                                <span class="badge bg-danger">Inactive</span>
-                            {% endif %}
-                            {% if user.profile.is_verified %}
-                                <br><span class="badge bg-info">Verified</span>
-                            {% else %}
-                                <br><span class="badge bg-warning">Unverified</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            <small>{{ user.date_joined|date:"M d, Y" }}</small>
-                        </td>
-                        <td>
-                            {% if user.last_login %}
-                                <small>{{ user.last_login|timesince }} ago</small>
-                            {% else %}
-                                <small class="text-muted">Never</small>
-                            {% endif %}
-                        </td>
-                        <td>
-                            <div class="btn-group btn-group-sm" role="group">
-                                <a href="{% url 'admin_edit_user' user.id %}" class="btn btn-outline-primary" title="Edit User">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                {% if user != request.user %}
-                                <a href="{% url 'admin_delete_user' user.id %}" class="btn btn-outline-danger" title="Delete User" onclick="return confirm('Are you sure you want to delete this user?')">
-                                    <i class="fas fa-trash"></i>
-                                </a>
-                                {% endif %}
-                            </div>
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="6" class="text-center text-muted py-4">
-                            <i class="fas fa-users fa-3x mb-3"></i>
-                            <br>No users found matching your criteria.
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+</div> -->
 
-        <!-- Pagination -->
-        {% if page_obj.has_other_pages %}
+<!-- Enhanced Controls Section -->
+<div class="controls-section mb-4">
+    <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex gap-4 text-muted">
+            <span class="control-info">
+                <i class="fas fa-info-circle me-2"></i>
+                Use filters above to narrow down results
+            </span>
+        </div>
+        <div class="d-flex gap-3 align-items-center mb-4">
+            <div class="form-check enhanced-checkbox">
+                <input class="form-check-input" type="checkbox" id="selectAll" title="Select all users">
+                <label class="form-check-label mb-4 mt-4" for="selectAll">Select all</label>
+            </div>
+            <button class="btn btn-outline-success enhanced-btn" id="exportBtn" title="Export selected users">
+                <i class="fas fa-download me-2"></i>Export
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Enhanced User Table -->
+<div class="table-section">
+    <div class="card enhanced-card">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0 enhanced-table" id="usersTable">
+                    <thead class="table-header">
+                        <tr>
+                            <th scope="col" class="px-4 py-3">
+                                <i class="fas fa-user me-2"></i>User
+                            </th>
+                            <th scope="col" class="px-4 py-3">
+                                <i class="fas fa-envelope me-2"></i>Email
+                            </th>
+                            <th scope="col" class="px-4 py-3">
+                                <i class="fas fa-layer-group me-2"></i>Level
+                            </th>
+                            <th scope="col" class="px-4 py-3">
+                                <i class="fas fa-shield-alt me-2"></i>Status
+                            </th>
+                            <th scope="col" class="px-4 py-3">
+                                <i class="fas fa-calendar-alt me-2"></i>Joined
+                            </th>
+                            <th scope="col" class="px-4 py-3 text-end">
+                                <i class="fas fa-cogs me-2"></i>Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in page_obj %}
+                        <tr class="user-row" data-user-id="{{ user.id }}">
+                            <td class="px-4 py-3">
+                                <div class="d-flex align-items-center gap-3">
+                                    <input type="checkbox" class="form-check-input user-checkbox me-3" 
+                                           data-user-id="{{ user.id }}" 
+                                           data-username="{{ user.username }}" 
+                                           data-email="{{ user.email }}" 
+                                           data-level="{{ user.profile.user_level }}" 
+                                           data-verified="{{ user.profile.is_verified }}" 
+                                           data-active="{{ user.is_active }}" 
+                                           data-date-joined="{{ user.date_joined|date:'Y-m-d' }}" 
+                                           data-last-login="{{ user.last_login|date:'Y-m-d H:i'|default:'' }}">
+                                    <div class="user-avatar">
+                                        <div class="avatar-circle">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                    </div>
+                                    <div class="user-info">
+                                        <span class="username">{{ user.username }}</span>
+                                        <small class="text-muted d-block">{{ user.get_full_name|default:"No name set" }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="email-cell">
+                                    <i class="fas fa-envelope me-2 text-muted"></i>
+                                    {{ user.email }}
+                                </div>
+                            </td>
+                            <td class="px-4 py-3">
+                                {% if user.profile.user_level == 'admin' %}
+                                    <span class="badge badge-admin">Admin</span>
+                                {% else %}
+                                    <span class="badge badge-basic">Basic User</span>
+                                {% endif %}
+                            </td>
+                            <td class="px-4 py-3">
+                                {% if user.profile.is_verified %}
+                                    <span class="badge badge-verified">
+                                        <i class="fas fa-check me-1"></i>Verified
+                                    </span>
+                                {% else %}
+                                    <span class="badge badge-unverified">
+                                        <i class="fas fa-times me-1"></i>Not Verified
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="date-cell">
+                                    <div class="date-main">{{ user.date_joined|date:"M d, Y H:i" }}</div>
+                                </div>
+                            </td>
+                            <td class="px-4 py-3 text-end">
+                                <div class="action-buttons">
+                                    <a href="{% url 'admin_edit_user' user.id %}" class="btn btn-sm btn-outline-warning action-btn" title="Edit User">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    {% if user != request.user %}
+                                    <a href="{% url 'admin_delete_user' user.id %}" class="btn btn-sm btn-outline-danger action-btn" title="Delete User"
+                                       onclick="return confirm('Are you sure you want to delete this user? This action cannot be undone.')">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center py-5">
+                                <div class="empty-state">
+                                    <div class="empty-icon">
+                                        <i class="fas fa-users"></i>
+                                    </div>
+                                    <h5 class="empty-title">No users found</h5>
+                                    <p class="empty-text">Try adjusting your filter criteria or check back later.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Enhanced Pagination -->
+{% if page_obj.has_other_pages %}
+<div class="pagination-section mt-5">
+    <div class="d-flex justify-content-between align-items-center">
+        <div class="pagination-info">
+            <span class="text-muted">
+                Showing {{ page_obj.start_index }} to {{ page_obj.end_index }} of {{ page_obj.paginator.count }} users
+            </span>
+        </div>
         <nav aria-label="User pagination">
-            <ul class="pagination justify-content-center">
+            <ul class="pagination enhanced-pagination mb-0">
                 {% if page_obj.has_previous %}
                     <li class="page-item">
-                        <a class="page-link" href="?page=1{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.user_level %}&user_level={{ request.GET.user_level }}{% endif %}{% if request.GET.is_verified %}&is_verified={{ request.GET.is_verified }}{% endif %}">First</a>
+                        <a class="page-link" href="?page=1{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.user_level %}&user_level={{ request.GET.user_level }}{% endif %}{% if request.GET.is_verified %}&is_verified={{ request.GET.is_verified }}{% endif %}">
+                            <i class="fas fa-angle-double-left"></i>
+                        </a>
                     </li>
                     <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.user_level %}&user_level={{ request.GET.user_level }}{% endif %}{% if request.GET.is_verified %}&is_verified={{ request.GET.is_verified }}{% endif %}">Previous</a>
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.user_level %}&user_level={{ request.GET.user_level }}{% endif %}{% if request.GET.is_verified %}&is_verified={{ request.GET.is_verified }}{% endif %}">
+                            <i class="fas fa-angle-left"></i>
+                        </a>
                     </li>
                 {% endif %}
 
-                <li class="page-item active">
-                    <span class="page-link">
-                        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
-                    </span>
-                </li>
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ num }}</span>
+                    </li>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ num }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.user_level %}&user_level={{ request.GET.user_level }}{% endif %}{% if request.GET.is_verified %}&is_verified={{ request.GET.is_verified }}{% endif %}">{{ num }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
 
                 {% if page_obj.has_next %}
                     <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.user_level %}&user_level={{ request.GET.user_level }}{% endif %}{% if request.GET.is_verified %}&is_verified={{ request.GET.is_verified }}{% endif %}">Next</a>
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.user_level %}&user_level={{ request.GET.user_level }}{% endif %}{% if request.GET.is_verified %}&is_verified={{ request.GET.is_verified }}{% endif %}">
+                            <i class="fas fa-angle-right"></i>
+                        </a>
                     </li>
                     <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.user_level %}&user_level={{ request.GET.user_level }}{% endif %}{% if request.GET.is_verified %}&is_verified={{ request.GET.is_verified }}{% endif %}">Last</a>
+                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.user_level %}&user_level={{ request.GET.user_level }}{% endif %}{% if request.GET.is_verified %}&is_verified={{ request.GET.is_verified }}{% endif %}">
+                            <i class="fas fa-angle-double-right"></i>
+                        </a>
                     </li>
                 {% endif %}
             </ul>
         </nav>
-        {% endif %}
     </div>
 </div>
+{% endif %}
 
-<!-- User Statistics -->
-<div class="row mt-4">
-    <div class="col-md-3">
-        <div class="card text-center">
-            <div class="card-body">
-                <h5 class="card-title">Total Users</h5>
-                <h2 class="text-primary">{{ page_obj.paginator.count }}</h2>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-center">
-            <div class="card-body">
-                <h5 class="card-title">Active Users</h5>
-                <h2 class="text-success">{{ users|length }}</h2>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-center">
-            <div class="card-body">
-                                    <h5 class="card-title">Admin Users</h5>
-                    <h2 class="text-danger">
-                        {% for user in users %}
-                            {% if user.profile.is_admin %}1{% else %}0{% endif %}
-                        {% empty %}0{% endfor %}
-                    </h2>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-center">
-            <div class="card-body">
-                <h5 class="card-title">Admin Users</h5>
-                <h2 class="text-danger">
-                    {% for user in users %}
-                        {% if user.profile.is_admin %}1{% else %}0{% endif %}
-                    {% empty %}0{% endfor %}
-                </h2>
-            </div>
-        </div>
-    </div>
-</div>
+<style>
+/* ========================================
+   ENHANCED UI STYLING
+   ======================================== */
+
+/* Enhanced Header Styling */
+.enhanced-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 1rem;
+    padding: 2.5rem;
+    border: none;
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+    margin-bottom: 2rem;
+}
+
+.header-icon-wrapper {
+    position: relative;
+}
+
+.header-icon {
+    width: 60px;
+    height: 60px;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.header-text {
+    color: white;
+}
+
+.header-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-subtitle {
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0.5rem 0 0 0;
+    font-size: 1.1rem;
+    font-weight: 400;
+}
+
+/* Enhanced Search and Filter Section */
+.search-filter-section {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 1.5rem;
+    border-radius: 1rem;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.form-group-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-label {
+    color: white;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.input-wrapper {
+    position: relative;
+}
+
+.input-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+    z-index: 2;
+}
+
+.enhanced-input, .enhanced-select {
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 0.75rem;
+    padding: 0.875rem 1rem 0.875rem 2.5rem;
+    background: rgba(255, 255, 255, 0.95);
+    font-weight: 500;
+    transition: all 0.3s ease;
+    min-width: 180px;
+}
+
+.enhanced-input:focus, .enhanced-select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    transform: translateY(-2px);
+    background: white;
+}
+
+.enhanced-btn {
+    border-radius: 0.75rem;
+    font-weight: 600;
+    padding: 0.875rem 1.5rem;
+    transition: all 0.3s ease;
+    border: none;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.enhanced-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+/* Enhanced Stats Cards */
+.stats-section {
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid #f8f9fa;
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+.stat-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: white;
+}
+
+.total-users .stat-icon { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+.showing-users .stat-icon { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+.admin-users .stat-icon { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+.verified-users .stat-icon { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+
+.stat-content {
+    flex: 1;
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0;
+    color: #2d3748;
+}
+
+.stat-label {
+    color: #718096;
+    margin: 0;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+/* Enhanced Controls Section */
+.controls-section {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    border: 1px solid #e9ecef;
+}
+
+.control-info {
+    display: flex;
+    align-items: center;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.enhanced-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.enhanced-checkbox .form-check-input {
+    width: 1.2rem;
+    height: 1.2rem;
+    border-radius: 0.375rem;
+}
+
+/* Enhanced Table Section */
+.table-section {
+    margin-bottom: 2rem;
+}
+
+.enhanced-card {
+    border-radius: 1rem;
+    border: none;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+.table-header {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.table-header th {
+    font-weight: 600;
+    color: #495057;
+    border-bottom: 2px solid #dee2e6;
+    padding: 1.25rem 1.5rem;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.enhanced-table tbody tr {
+    transition: all 0.2s ease;
+}
+
+.enhanced-table tbody tr:hover {
+    background-color: #f8f9fa;
+    transform: scale(1.001);
+}
+
+.enhanced-table td {
+    padding: 1.25rem 1.5rem;
+    vertical-align: middle;
+    border-bottom: 1px solid #f8f9fa;
+}
+
+/* User Row Styling */
+.user-avatar {
+    display: flex;
+    align-items: center;
+}
+
+.avatar-circle {
+    width: 45px;
+    height: 45px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.username {
+    font-weight: 600;
+    color: #2d3748;
+    font-size: 1rem;
+}
+
+.email-cell {
+    display: flex;
+    align-items: center;
+    color: #4a5568;
+}
+
+/* Enhanced Badge Styling */
+.badge {
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.badge-admin {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+    color: white;
+}
+
+.badge-basic {
+    background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+    color: white;
+}
+
+.badge-verified {
+    background: linear-gradient(135deg, #51cf66 0%, #40c057 100%);
+    color: white;
+}
+
+.badge-unverified {
+    background: linear-gradient(135deg, #ffd43b 0%, #fcc419 100%);
+    color: #495057;
+}
+
+/* Date Cell Styling */
+.date-cell {
+    display: flex;
+    flex-direction: column;
+}
+
+.date-main {
+    font-weight: 600;
+    color: #2d3748;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+}
+
+.action-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    border: 2px solid;
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+}
+
+.empty-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    font-size: 2rem;
+    color: #6c757d;
+}
+
+.empty-title {
+    color: #495057;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.empty-text {
+    color: #6c757d;
+    margin: 0;
+}
+
+/* Enhanced Pagination */
+.pagination-section {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid #f8f9fa;
+}
+
+.pagination-info {
+    font-weight: 500;
+    color: #6c757d;
+}
+
+.enhanced-pagination .page-link {
+    border-radius: 0.75rem;
+    margin: 0 0.25rem;
+    border: 2px solid #e9ecef;
+    padding: 0.75rem 1rem;
+    font-weight: 600;
+    color: #495057;
+    transition: all 0.2s ease;
+}
+
+.enhanced-pagination .page-link:hover {
+    background: #667eea;
+    border-color: #667eea;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.enhanced-pagination .page-item.active .page-link {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-color: #667eea;
+    color: white;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .enhanced-header {
+        padding: 1.5rem;
+    }
+    
+    .header-title {
+        font-size: 2rem;
+    }
+    
+    .search-filter-section {
+        padding: 1rem;
+    }
+    
+    .enhanced-input, .enhanced-select {
+        min-width: 140px;
+    }
+    
+    .stat-card {
+        padding: 1rem;
+    }
+    
+    .stat-number {
+        font-size: 1.5rem;
+    }
+    
+    .enhanced-table td, .enhanced-table th {
+        padding: 1rem;
+    }
+}
+
+/* Smooth Animations */
+* {
+    transition: all 0.2s ease;
+}
+
+/* Focus States */
+.enhanced-input:focus, .enhanced-select:focus, .enhanced-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+</style>
+
+<script>
+/**
+ * ========================================
+ * USER MANAGEMENT JAVASCRIPT
+ * ========================================
+ * Clean and efficient functionality
+ */
+
+document.addEventListener('DOMContentLoaded', function() {
+    // ========================================
+    // DOM ELEMENTS
+    // ========================================
+    const elements = {
+        tableView: document.getElementById('usersTable')?.closest('.card'),
+        cardView: document.getElementById('cardView'),
+        toggleTable: document.getElementById('toggleTable'),
+        toggleCards: document.getElementById('toggleCards'),
+        compactToggle: document.getElementById('compactToggle'),
+        selectAll: document.getElementById('selectAll'),
+        userCheckboxes: document.querySelectorAll('.user-checkbox'),
+        exportBtn: document.getElementById('exportBtn'),
+        adminCount: document.getElementById('adminCount'),
+        verifiedCount: document.getElementById('verifiedCount'),
+        copyButtons: document.querySelectorAll('.copy-email'),
+        refreshBtn: document.querySelector('button[title="Refresh data"]')
+    };
+
+    // ========================================
+    // UTILITY FUNCTIONS
+    // ========================================
+    
+    // Simple notification
+    const showNotification = (message, type = 'success') => {
+        const notification = document.createElement('div');
+        notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+        notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+        notification.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.remove();
+        }, 3000);
+    };
+
+    // ========================================
+    // VIEW TOGGLE FUNCTIONALITY
+    // ========================================
+    if (elements.toggleTable && elements.toggleCards) {
+        elements.toggleTable.addEventListener('click', () => {
+            elements.toggleTable.classList.add('active');
+            elements.toggleCards.classList.remove('active');
+        });
+        elements.toggleCards.addEventListener('click', () => {
+            elements.toggleCards.classList.add('active');
+            elements.toggleTable.classList.remove('active');
+        });
+    }
+
+    // ========================================
+    // COMPACT MODE TOGGLE
+    // ========================================
+    if (elements.compactToggle) {
+        elements.compactToggle.addEventListener('click', () => {
+            const isCompact = elements.compactToggle.getAttribute('aria-pressed') === 'true';
+            elements.compactToggle.setAttribute('aria-pressed', !isCompact);
+            
+            if (!isCompact) {
+                document.body.classList.add('compact-mode');
+                elements.compactToggle.innerHTML = '<i class="fas fa-expand-alt"></i>';
+            } else {
+                document.body.classList.remove('compact-mode');
+                elements.compactToggle.innerHTML = '<i class="fas fa-compress-alt"></i>';
+            }
+        });
+    }
+
+    // ========================================
+    // SELECT ALL FUNCTIONALITY
+    // ========================================
+    if (elements.selectAll) {
+        elements.selectAll.addEventListener('change', () => {
+            const isChecked = elements.selectAll.checked;
+            elements.userCheckboxes.forEach(cb => {
+                cb.checked = isChecked;
+            });
+            updateCounts();
+        });
+    }
+
+    // ========================================
+    // INDIVIDUAL CHECKBOX HANDLING
+    // ========================================
+    elements.userCheckboxes.forEach(cb => {
+        cb.addEventListener('change', updateCounts);
+    });
+
+    // ========================================
+    // STATISTICS UPDATE
+    // ========================================
+    function updateCounts() {
+        const rows = Array.from(elements.userCheckboxes);
+        const pageAdminCount = rows.filter(cb => cb.dataset.level === 'admin').length;
+        const pageVerifiedCount = rows.filter(cb => cb.dataset.verified === 'True' || cb.dataset.verified === 'true').length;
+        
+        if (elements.adminCount) {
+            elements.adminCount.textContent = String(pageAdminCount);
+        }
+        if (elements.verifiedCount) {
+            elements.verifiedCount.textContent = String(pageVerifiedCount);
+        }
+    }
+
+    // ========================================
+    // EXPORT FUNCTIONALITY
+    // ========================================
+    if (elements.exportBtn) {
+        elements.exportBtn.addEventListener('click', () => {
+            const selected = Array.from(elements.userCheckboxes).filter(cb => cb.checked);
+            const source = (selected.length ? selected : Array.from(elements.userCheckboxes));
+            
+            const headers = ['id','username','email','user_level','is_verified','is_active','date_joined','last_login'];
+            const csv = [headers.join(',')].concat(source.map(cb => {
+                const vals = [
+                    cb.dataset.userId,
+                    cb.dataset.username,
+                    cb.dataset.email,
+                    cb.dataset.level,
+                    cb.dataset.verified,
+                    cb.dataset.active,
+                    cb.dataset.dateJoined,
+                    cb.dataset.lastLogin || ''
+                ];
+                return vals.map(v => '"' + String(v ?? '').replaceAll('"', '""') + '"').join(',');
+            })).join('\n');
+            
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `users_export_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            showNotification(`Exported ${source.length} users successfully!`);
+        });
+    }
+
+
+
+    // ========================================
+    // INITIALIZATION
+    // ========================================
+    updateCounts();
+});
+</script>
 {% endblock %}
