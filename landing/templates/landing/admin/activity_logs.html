@@ -309,61 +309,141 @@
     </div>
 </div>
 
-<!-- Enhanced Pagination -->
-{% if page_obj.has_other_pages %}
-<div class="pagination-section mt-5">
-    <div class="d-flex justify-content-between align-items-center">
-        <div class="pagination-info">
-            <span class="text-muted">
-        Showing {{ page_obj.start_index }} to {{ page_obj.end_index }} of {{ page_obj.paginator.count }} activities
-            </span>
+<!-- Scrollable Activities List - No Pagination -->
+<div class="scrollable-activities-info mt-5">
+    <div class="activities-summary">
+        <i class="fas fa-info-circle me-2"></i>
+        <span>Total Activities: <strong>{{ activities.count }}</strong></span>
     </div>
-    <nav aria-label="Activity pagination">
-            <ul class="pagination enhanced-pagination mb-0">
-                {% if page_obj.has_previous %}
-                    <li class="page-item">
-                    <a class="page-link" href="?page=1{% if request.GET.activity_type %}&activity_type={{ request.GET.activity_type }}{% endif %}{% if request.GET.date_from %}&date_from={{ request.GET.date_from }}{% endif %}{% if request.GET.date_to %}&date_to={{ request.GET.date_to }}{% endif %}">
-                        <i class="fas fa-angle-double-left"></i>
-                        </a>
-                    </li>
-                    <li class="page-item">
-                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.activity_type %}&activity_type={{ request.GET.activity_type }}{% endif %}{% if request.GET.date_from %}&date_from={{ request.GET.date_from }}{% endif %}{% if request.GET.date_to %}&date_to={{ request.GET.date_to }}{% endif %}">
-                        <i class="fas fa-angle-left"></i>
-                        </a>
-                    </li>
-                {% endif %}
-
-            {% for num in page_obj.paginator.page_range %}
-                {% if page_obj.number == num %}
-                <li class="page-item active">
-                        <span class="page-link">{{ num }}</span>
-                    </li>
-                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ num }}{% if request.GET.activity_type %}&activity_type={{ request.GET.activity_type }}{% endif %}{% if request.GET.date_from %}&date_from={{ request.GET.date_from }}{% endif %}{% if request.GET.date_to %}&date_to={{ request.GET.date_to }}{% endif %}">{{ num }}</a>
-                </li>
-                {% endif %}
-            {% endfor %}
-
-                {% if page_obj.has_next %}
-                    <li class="page-item">
-                    <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.activity_type %}&activity_type={{ request.GET.activity_type }}{% endif %}{% if request.GET.date_from %}&date_from={{ request.GET.date_from }}{% endif %}{% if request.GET.date_to %}&date_to={{ request.GET.date_to }}{% endif %}">
-                        <i class="fas fa-angle-right"></i>
-                        </a>
-                    </li>
-                    <li class="page-item">
-                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.activity_type %}&activity_type={{ request.GET.activity_type }}{% endif %}{% if request.GET.date_from %}&date_from={{ request.GET.date_from }}{% endif %}{% if request.GET.date_to %}&date_to={{ request.GET.date_to }}{% endif %}">
-                        <i class="fas fa-angle-double-right"></i>
-                        </a>
-                    </li>
-                {% endif %}
-            </ul>
-        </nav>
+    
+    <div class="scroll-hint">
+        <i class="fas fa-mouse me-2"></i>
+        <span>Scroll to see all activities</span>
     </div>
 </div>
-{% endif %}
 
 <style>
+/* ========================================
+   ENHANCED ACTIVITY LOGS STYLING
+   ======================================== */
+
+/* ========================================
+   SCROLLABLE ACTIVITIES INFO STYLING
+   ======================================== */
+
+.scrollable-activities-info {
+    margin-top: 3rem;
+    padding: 2rem;
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e9ecef;
+}
+
+.activities-summary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 0.75rem;
+    border: 1px solid #dee2e6;
+}
+
+.activities-summary i {
+    color: #667eea;
+    font-size: 1.2rem;
+}
+
+.activities-summary span {
+    color: #495057;
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-left: 0.5rem;
+}
+
+.scroll-hint {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    border-radius: 0.75rem;
+    border: 1px solid #90caf9;
+}
+
+.scroll-hint i {
+    color: #1976d2;
+    font-size: 1.1rem;
+}
+
+.scroll-hint span {
+    color: #1565c0;
+    font-weight: 500;
+    font-size: 1rem;
+    margin-left: 0.5rem;
+}
+
+/* Make table scrollable for many activities */
+.table-responsive {
+    max-height: 70vh;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e0 #f8f9fa;
+}
+
+.table-responsive::-webkit-scrollbar {
+    width: 8px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+    background: #f8f9fa;
+    border-radius: 4px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background: #cbd5e0;
+    border-radius: 4px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover {
+    background: #a0aec0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .scrollable-activities-info {
+        padding: 1.5rem;
+        margin-top: 2rem;
+    }
+    
+    .activities-summary, .scroll-hint {
+        padding: 0.75rem;
+    }
+    
+    .activities-summary span, .scroll-hint span {
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .scrollable-activities-info {
+        padding: 1rem;
+    }
+    
+    .activities-summary, .scroll-hint {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.5rem;
+    }
+    
+    .activities-summary span, .scroll-hint span {
+        font-size: 0.9rem;
+        margin-left: 0;
+    }
+}
+
 /* ========================================
    ENHANCED ACTIVITY LOGS STYLING
    ======================================== */
@@ -853,33 +933,7 @@
     border: 1px solid #f8f9fa;
 }
 
-.pagination-info {
-    font-weight: 500;
-    color: #6c757d;
-}
 
-.enhanced-pagination .page-link {
-    border-radius: 0.75rem;
-    margin: 0 0.25rem;
-    border: 2px solid #e9ecef;
-    padding: 0.75rem 1rem;
-    font-weight: 600;
-    color: #495057;
-    transition: all 0.2s ease;
-}
-
-.enhanced-pagination .page-link:hover {
-    background: #667eea;
-    border-color: #667eea;
-    color: white;
-    transform: translateY(-2px);
-}
-
-.enhanced-pagination .page-item.active .page-link {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-color: #667eea;
-    color: white;
-}
 
 /* Table Controls */
 .table-controls {

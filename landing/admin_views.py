@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.core.paginator import Paginator
+
 from django.db.models import Q, Count
 from django.db import models
 from django.utils import timezone
@@ -187,8 +188,8 @@ def admin_user_management(request):
             is_active_bool = is_active == 'True'
             users = users.filter(is_active=is_active_bool)
     
-    # Pagination
-    paginator = Paginator(users, 20)
+    # Enhanced pagination - show 25 users per page
+    paginator = Paginator(users, 25)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     
@@ -306,7 +307,7 @@ def admin_activity_logs(request):
     if date_to:
         activities = activities.filter(created_at__date__lte=date_to)
     
-    # Pagination
+    # Enhanced pagination - show 50 activities per page
     paginator = Paginator(activities, 50)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)

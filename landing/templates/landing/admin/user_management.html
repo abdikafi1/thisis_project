@@ -27,7 +27,7 @@
                     </div>
                 </div>
                 
-                <!-- Enhanced Search and Filter Form -->
+                <!-- Enhanced Search and Fbilter Form -->
                 <div class="search-filter-section">
                     <form method="get" class="d-flex gap-3 align-items-end">
                         <div class="form-group-wrapper">
@@ -67,55 +67,6 @@
     </div>
 </div>
 
-<!-- Enhanced User Stats Cards -->
-<!-- <div class="stats-section mb-4">
-    <div class="row g-3">
-        <div class="col-md-3">
-            <div class="stat-card total-users">
-                <div class="stat-icon">
-                    <i class="fas fa-users"></i>
-                </div>
-                <div class="stat-content">
-                    <h3 class="stat-number">{{ page_obj.paginator.count }}</h3>
-                    <p class="stat-label">Total Users</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="stat-card showing-users">
-                <div class="stat-icon">
-                    <i class="fas fa-eye"></i>
-                </div>
-                <div class="stat-content">
-                    <h3 class="stat-number">{{ page_obj|length }}</h3>
-                    <p class="stat-label">Showing</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="stat-card admin-users">
-                <div class="stat-icon">
-                    <i class="fas fa-user-shield"></i>
-                </div>
-                <div class="stat-content">
-                    <h3 class="stat-number" id="adminCount">0</h3>
-                    <p class="stat-label">Admins</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="stat-card verified-users">
-                <div class="stat-icon">
-                    <i class="fas fa-check-circle"></i>
-                </div>
-                <div class="stat-content">
-                    <h3 class="stat-number" id="verifiedCount">0</h3>
-                    <p class="stat-label">Verified</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div> -->
 
 <!-- Enhanced Controls Section -->
 <div class="controls-section mb-4">
@@ -170,8 +121,8 @@
                         {% for user in page_obj %}
                         <tr class="user-row" data-user-id="{{ user.id }}">
                             <td class="px-4 py-3">
-                                <div class="d-flex align-items-center gap-3">
-                                    <input type="checkbox" class="form-check-input user-checkbox me-3" 
+                                <div class="d-flex align-items-center">
+                                    <input type="checkbox" class="form-check-input user-checkbox me-2" 
                                            data-user-id="{{ user.id }}" 
                                            data-username="{{ user.username }}" 
                                            data-email="{{ user.email }}" 
@@ -180,40 +131,60 @@
                                            data-active="{{ user.is_active }}" 
                                            data-date-joined="{{ user.date_joined|date:'Y-m-d' }}" 
                                            data-last-login="{{ user.last_login|date:'Y-m-d H:i'|default:'' }}">
-                                    <div class="user-avatar">
-                                        <div class="avatar-circle">
-                                            <i class="fas fa-user"></i>
+                                    <div class="user-avatar me-3">
+                                        <div class="avatar-circle {% if user.profile.user_level == 'admin' %}bg-admin{% else %}bg-user{% endif %}">
+                                            {% if user.profile.user_level == 'admin' %}
+                                                <i class="fas fa-crown text-white"></i>
+                                            {% else %}
+                                                <i class="fas fa-user text-white"></i>
+                                            {% endif %}
                                         </div>
                                     </div>
                                     <div class="user-info">
-                                        <span class="username">{{ user.username }}</span>
-                                        <small class="text-muted d-block">{{ user.get_full_name|default:"No name set" }}</small>
+                                        <div class="username fw-medium">{{ user.username }}</div>
+                                        <small class="text-muted">{{ user.get_full_name|default:"Nonameconnected" }}</small>
                                     </div>
                                 </div>
                             </td>
                             <td class="px-4 py-3">
                                 <div class="email-cell">
                                     <i class="fas fa-envelope me-2 text-muted"></i>
-                                    {{ user.email }}
+                                    <span>{{ user.email }}</span>
                                 </div>
                             </td>
                             <td class="px-4 py-3">
-                                {% if user.profile.user_level == 'admin' %}
-                                    <span class="badge badge-admin">Admin</span>
-                                {% else %}
-                                    <span class="badge badge-basic">Basic User</span>
-                                {% endif %}
+                                <div class="level-badge-container">
+                                    {% if user.profile.user_level == 'admin' %}
+                                        <span class="badge bg-danger px-3 py-2 rounded-pill">
+                                            <i class="fas fa-crown me-1"></i>ADMIN
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-primary px-3 py-2 rounded-pill">
+                                            <i class="fas fa-user me-1"></i>BASIC USER
+                                        </span>
+                                    {% endif %}
+                                </div>
                             </td>
                             <td class="px-4 py-3">
-                                {% if user.profile.is_verified %}
-                                    <span class="badge badge-verified">
-                                        <i class="fas fa-check me-1"></i>Verified
-                                    </span>
-                                {% else %}
-                                    <span class="badge badge-unverified">
-                                        <i class="fas fa-times me-1"></i>Not Verified
-                                    </span>
-                                {% endif %}
+                                <div class="status-badges">
+                                    {% if user.profile.is_verified and user.is_active %}
+                                        <span class="badge bg-success px-3 py-2 rounded-pill mb-1">
+                                            <i class="fas fa-check-circle me-1"></i>VERIFIED
+                                        </span>
+                                    {% elif user.profile.is_verified and not user.is_active %}
+                                        <span class="badge bg-warning text-dark px-3 py-2 rounded-pill mb-1">
+                                            <i class="fas fa-pause-circle me-1"></i>VERIFIED (INACTIVE)
+                                        </span>
+                                    {% elif not user.profile.is_verified and user.is_active %}
+                                        <span class="badge bg-secondary px-6 py-2 rounded-pill mb-1">
+                                            <i class="fas fa-clock me-1"></i>UNVERIFIED
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-dark px-3 py-2 rounded-pill mb-1">
+                                            <i class="fas fa-times-circle me-1"></i>INACTIVE
+                                        </span>
+                                    {% endif %}
+                                </div>
                             </td>
                             <td class="px-4 py-3">
                                 <div class="date-cell">
@@ -254,59 +225,284 @@
     </div>
 </div>
 
-<!-- Enhanced Pagination -->
-{% if page_obj.has_other_pages %}
-<div class="pagination-section mt-5">
-    <div class="d-flex justify-content-between align-items-center">
-        <div class="pagination-info">
-            <span class="text-muted">
-                Showing {{ page_obj.start_index }} to {{ page_obj.end_index }} of {{ page_obj.paginator.count }} users
-            </span>
-        </div>
-        <nav aria-label="User pagination">
-            <ul class="pagination enhanced-pagination mb-0">
-                {% if page_obj.has_previous %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page=1{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.user_level %}&user_level={{ request.GET.user_level }}{% endif %}{% if request.GET.is_verified %}&is_verified={{ request.GET.is_verified }}{% endif %}">
-                            <i class="fas fa-angle-double-left"></i>
-                        </a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.user_level %}&user_level={{ request.GET.user_level }}{% endif %}{% if request.GET.is_verified %}&is_verified={{ request.GET.is_verified }}{% endif %}">
-                            <i class="fas fa-angle-left"></i>
-                        </a>
-                    </li>
-                {% endif %}
 
-                {% for num in page_obj.paginator.page_range %}
-                    {% if page_obj.number == num %}
+
+<!-- Enhanced Pagination Section -->
+{% if page_obj.has_other_pages %}
+<div class="enhanced-pagination-section">
+    <div class="pagination-info">
+        <div class="results-summary">
+            <i class="fas fa-info-circle me-2"></i>
+            <span>Showing <strong>{{ page_obj.start_index }}</strong> to <strong>{{ page_obj.end_index }}</strong> of <strong>{{ page_obj.paginator.count }}</strong> users</span>
+        </div>
+        
+        <div class="page-jump">
+            <label for="pageJump">Go to page:</label>
+            <input type="number" id="pageJump" min="1" max="{{ page_obj.paginator.num_pages }}" 
+                   value="{{ page_obj.number }}" class="page-input">
+            <span class="total-pages">of {{ page_obj.paginator.num_pages }}</span>
+            <button type="button" class="btn btn-sm btn-primary" onclick="goToPage()">Go</button>
+        </div>
+    </div>
+    
+    <nav class="pagination-nav">
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.user_level %}&user_level={{ request.GET.user_level }}{% endif %}{% if request.GET.is_verified %}&is_verified={{ request.GET.is_verified }}{% endif %}" title="First page">
+                        <i class="fas fa-angle-double-left"></i>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.user_level %}&user_level={{ request.GET.user_level }}{% endif %}{% if request.GET.is_verified %}&is_verified={{ request.GET.is_verified }}{% endif %}" title="Previous page">
+                        <i class="fas fa-angle-left"></i>
+                    </a>
+                </li>
+            {% endif %}
+            
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
                     <li class="page-item active">
                         <span class="page-link">{{ num }}</span>
                     </li>
-                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ num }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.user_level %}&user_level={{ request.GET.user_level }}{% endif %}{% if request.GET.is_verified %}&is_verified={{ request.GET.is_verified }}{% endif %}">{{ num }}</a>
+                    </li>
+                {% elif num == 1 or num == page_obj.paginator.num_pages %}
+                    {% if num != page_obj.number %}
                         <li class="page-item">
                             <a class="page-link" href="?page={{ num }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.user_level %}&user_level={{ request.GET.user_level }}{% endif %}{% if request.GET.is_verified %}&is_verified={{ request.GET.is_verified }}{% endif %}">{{ num }}</a>
                         </li>
                     {% endif %}
-                {% endfor %}
-
-                {% if page_obj.has_next %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.user_level %}&user_level={{ request.GET.user_level }}{% endif %}{% if request.GET.is_verified %}&is_verified={{ request.GET.is_verified }}{% endif %}">
-                            <i class="fas fa-angle-right"></i>
-                        </a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.user_level %}&user_level={{ request.GET.user_level }}{% endif %}{% if request.GET.is_verified %}&is_verified={{ request.GET.is_verified }}{% endif %}">
-                            <i class="fas fa-angle-double-right"></i>
-                        </a>
+                {% elif num == page_obj.number|add:'-4' or num == page_obj.number|add:'4' %}
+                    <li class="page-item disabled">
+                        <span class="page-link">...</span>
                     </li>
                 {% endif %}
-            </ul>
-        </nav>
-    </div>
+            {% endfor %}
+            
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.user_level %}&user_level={{ request.GET.user_level }}{% endif %}{% if request.GET.is_verified %}&is_verified={{ request.GET.is_verified }}{% endif %}" title="Next page">
+                        <i class="fas fa-angle-right"></i>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.user_level %}&user_level={{ request.GET.user_level }}{% endif %}{% if request.GET.is_verified %}&is_verified={{ request.GET.is_verified }}{% endif %}" title="Last page">
+                        <i class="fas fa-angle-double-right"></i>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
 </div>
 {% endif %}
+
+
+
+<style>
+/* ========================================
+   ENHANCED PAGINATION STYLING
+   ======================================== */
+
+.enhanced-pagination-section {
+    margin-top: 3rem;
+    padding: 2rem;
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e9ecef;
+}
+
+.pagination-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.results-summary {
+    display: flex;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 0.75rem;
+    border: 1px solid #dee2e6;
+}
+
+.results-summary i {
+    color: #667eea;
+    font-size: 1.2rem;
+}
+
+.results-summary span {
+    color: #495057;
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-left: 0.5rem;
+}
+
+.page-jump {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.5rem;
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    border-radius: 0.75rem;
+    border: 1px solid #90caf9;
+}
+
+.page-jump label {
+    color: #1565c0;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.page-input {
+    width: 60px;
+    padding: 0.5rem;
+    border: 2px solid #90caf9;
+    border-radius: 0.5rem;
+    text-align: center;
+    font-weight: 600;
+    color: #1565c0;
+    background: white;
+    transition: all 0.2s ease;
+}
+
+.page-input:focus {
+    outline: none;
+    border-color: #1976d2;
+    box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
+}
+
+.total-pages {
+    color: #1565c0;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.pagination-nav {
+    display: flex;
+    justify-content: center;
+}
+
+.pagination {
+    display: flex;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.page-item .page-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    height: 44px;
+    padding: 0.75rem;
+    border: 2px solid transparent;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #6b7280;
+    background: #f8fafc;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.page-item .page-link:hover {
+    color: white;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-color: #667eea;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+.page-item.active .page-link {
+    color: white;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-color: #667eea;
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.page-item.disabled .page-link {
+    color: #cbd5e0;
+    background: #f1f5f9;
+    cursor: not-allowed;
+    border-color: transparent;
+}
+
+.page-item.disabled .page-link:hover {
+    transform: none;
+    box-shadow: none;
+    background: #f1f5f9;
+    color: #cbd5e0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .enhanced-pagination-section {
+        padding: 1.5rem;
+        margin-top: 2rem;
+    }
+    
+    .pagination-info {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+    }
+    
+    .results-summary, .page-jump {
+        padding: 0.75rem;
+    }
+    
+    .results-summary span, .page-jump label, .total-pages {
+        font-size: 0.95rem;
+    }
+    
+    .pagination {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .page-item .page-link {
+        min-width: 36px;
+        height: 36px;
+        padding: 0.5rem;
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .enhanced-pagination-section {
+        padding: 1rem;
+    }
+    
+    .page-jump {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.5rem;
+    }
+    
+    .page-input {
+        width: 80px;
+    }
+    
+    .page-item .page-link {
+        min-width: 32px;
+        height: 32px;
+        padding: 0.375rem;
+    }
+}
+</style>
 
 <style>
 /* ========================================
@@ -522,6 +718,32 @@
     overflow: hidden;
 }
 
+/* Make table scrollable for many users */
+.table-responsive {
+    max-height: 70vh;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e0 #f8f9fa;
+}
+
+.table-responsive::-webkit-scrollbar {
+    width: 8px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+    background: #f8f9fa;
+    border-radius: 4px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background: #cbd5e0;
+    border-radius: 4px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover {
+    background: #a0aec0;
+}
+
 .table-header {
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
 }
@@ -616,6 +838,111 @@
     color: #495057;
 }
 
+/* Enhanced Level and Status Column Styling */
+.level-badge-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+}
+
+.status-badges {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+}
+
+/* Level Badge Styling */
+.level-badge-container .badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    border-radius: 2rem;
+    font-weight: 700;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+    min-width: 120px;
+    text-align: center;
+}
+
+.level-badge-container .badge:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.level-badge-container .badge i {
+    font-size: 0.9rem;
+    margin-right: 0.5rem;
+}
+
+/* Status Badge Styling */
+.status-badges .badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    border-radius: 2rem;
+    font-weight: 700;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+    min-width: 140px;
+    text-align: center;
+    margin: 0.25rem 0;
+}
+
+.status-badges .badge:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.status-badges .badge i {
+    font-size: 0.9rem;
+    margin-right: 0.5rem;
+}
+
+/* Specific Status Badge Colors */
+.status-badges .badge.bg-success {
+    background: linear-gradient(135deg, #51cf66 0%, #40c057 100%) !important;
+    color: white !important;
+}
+
+.status-badges .badge.bg-warning {
+    background: linear-gradient(135deg, #ffd43b 0%, #fcc419 100%) !important;
+    color: #495057 !important;
+}
+
+.status-badges .badge.bg-secondary {
+    background: linear-gradient(135deg, #6c757d 0%, #495057 100%) !important;
+    color: white !important;
+}
+
+.status-badges .badge.bg-dark {
+    background: linear-gradient(135deg, #343a40 0%, #212529 100%) !important;
+    color: white !important;
+}
+
+/* Level Badge Colors */
+.level-badge-container .badge.bg-danger {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%) !important;
+    color: white !important;
+}
+
+.level-badge-container .badge.bg-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+}
+
 /* Date Cell Styling */
 .date-cell {
     display: flex;
@@ -679,42 +1006,7 @@
     margin: 0;
 }
 
-/* Enhanced Pagination */
-.pagination-section {
-    background: white;
-    padding: 1.5rem;
-    border-radius: 1rem;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    border: 1px solid #f8f9fa;
-}
 
-.pagination-info {
-    font-weight: 500;
-    color: #6c757d;
-}
-
-.enhanced-pagination .page-link {
-    border-radius: 0.75rem;
-    margin: 0 0.25rem;
-    border: 2px solid #e9ecef;
-    padding: 0.75rem 1rem;
-    font-weight: 600;
-    color: #495057;
-    transition: all 0.2s ease;
-}
-
-.enhanced-pagination .page-link:hover {
-    background: #667eea;
-    border-color: #667eea;
-    color: white;
-    transform: translateY(-2px);
-}
-
-.enhanced-pagination .page-item.active .page-link {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-color: #667eea;
-    color: white;
-}
 
 /* Responsive Design */
 @media (max-width: 768px) {
@@ -912,9 +1204,42 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
     // ========================================
+    // PAGE JUMP FUNCTIONALITY
+    // ========================================
+    window.goToPage = function() {
+        const pageInput = document.getElementById('pageJump');
+        const pageNum = parseInt(pageInput.value);
+        const maxPages = {{ page_obj.paginator.num_pages }};
+        
+        if (pageNum >= 1 && pageNum <= maxPages) {
+            const currentUrl = new URL(window.location);
+            currentUrl.searchParams.set('page', pageNum);
+            window.location.href = currentUrl.toString();
+        } else {
+            alert('Please enter a valid page number between 1 and ' + maxPages);
+            pageInput.focus();
+        }
+    };
+
+    // Allow Enter key to submit
+    document.addEventListener('DOMContentLoaded', function() {
+        const pageInput = document.getElementById('pageJump');
+        if (pageInput) {
+            pageInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    goToPage();
+                }
+            });
+        }
+    });
+
+    // ========================================
     // INITIALIZATION
     // ========================================
     updateCounts();
+    
+
 });
 </script>
 {% endblock %}
+
