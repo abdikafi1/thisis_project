@@ -812,8 +812,13 @@ def reset_password_view(request, username):
             del request.session[f'reset_token_{username}']
             del request.session[f'reset_user_{username}']
             
-            messages.success(request, 'Password updated successfully! You can now login with your new password.')
-            return redirect('login')
+            # Set success message and render success page
+            context = {
+                'username': username,
+                'success_message': 'Password updated successfully! You can now login with your new password.',
+                'show_success': True
+            }
+            return render(request, 'landing/reset_password.html', context)
             
         except User.DoesNotExist:
             messages.error(request, 'User not found.')
