@@ -109,6 +109,86 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
+        /* User Profile Dropdown Styles */
+        #user-dropdown-menu {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: top right;
+        }
+        
+        #user-dropdown-menu.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1);
+        }
+        
+        #user-dropdown-menu:not(.visible) {
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0.95);
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .user-avatar:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+        
+        #user-avatar-btn .fa-chevron-down {
+            transition: transform 0.2s ease;
+        }
+        
+        /* Dropdown menu items hover effects */
+        #user-dropdown-menu a:hover {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            transform: translateX(4px);
+        }
+        
+        #user-dropdown-menu a {
+            transition: all 0.2s ease;
+        }
+        
+        /* Analytics Overview Styling */
+        .sidebar-section {
+            margin-top: 1.5rem;
+        }
+        
+        .nav-section-title {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .bg-white\/10 {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .backdrop-blur-sm {
+            backdrop-filter: blur(4px);
+        }
+        
+        .text-white\/80 {
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .text-white\/10 {
+            color: rgba(255, 255, 255, 0.1);
+        }
+        
         .sidebar-header {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(20px);
@@ -280,12 +360,83 @@
               
             </ul>
 
+            <!-- Analytics Overview Section -->
+            <!-- <div class="sidebar-section">
+                <h3 class="nav-section-title px-4 py-2">Analytics Overview</h3>
+            </div>
+             -->
+            <!-- <div class="px-4 py-3 space-y-3"> -->
+                <!-- Total Predictions -->
+                <!-- <div class="bg-white/10 rounded-lg p-3 backdrop-blur-sm">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-search text-blue-300 text-sm"></i>
+                            <span class="text-white/80 text-xs">Total Predictions</span>
+                        </div>
+                        <span class="text-white font-semibold text-sm">
+                            {% if user.profile.is_admin %}
+                                {{ sidebar_analytics.total_all_predictions|default:"0" }}
+                            {% else %}
+                                {{ sidebar_analytics.user_predictions|default:"0" }}
+                            {% endif %}
+                        </span>
+                    </div>
+                </div> -->
+                
+                <!-- Fraud Detected -->
+                <!-- <div class="bg-white/10 rounded-lg p-3 backdrop-blur-sm">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-exclamation-triangle text-red-300 text-sm"></i>
+                            <span class="text-white/80 text-xs">Fraud Detected</span>
+                        </div>
+                        <span class="text-white font-semibold text-sm">
+                            {% if user.profile.is_admin %}
+                                {{ sidebar_analytics.total_fraud_detected|default:"0" }}
+                            {% else %}
+                                {{ sidebar_analytics.fraud_predictions|default:"0" }}
+                            {% endif %}
+                        </span>
+                    </div>
+                </div> -->
+                
+                <!-- Accuracy Rate -->
+                <!-- <div class="bg-white/10 rounded-lg p-3 backdrop-blur-sm">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-bullseye text-green-300 text-sm"></i>
+                            <span class="text-white/80 text-xs">Accuracy Rate</span>
+                        </div>
+                        <span class="text-white font-semibold text-sm">
+                            {% if user.profile.is_admin %}
+                                {{ sidebar_analytics.detection_accuracy|default:"0" }}%
+                            {% else %}
+                                {{ sidebar_analytics.accuracy_rate|default:"0" }}%
+                            {% endif %}
+                        </span>
+                    </div>
+                </div> -->
+                
+                <!-- This Month -->
+                <!-- <div class="bg-white/10 rounded-lg p-3 backdrop-blur-sm">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-calendar-alt text-purple-300 text-sm"></i>
+                            <span class="text-white/80 text-xs">This Month</span>
+                        </div>
+                        <span class="text-white font-semibold text-sm">
+                            {{ sidebar_analytics.this_month_predictions|default:"0" }}
+                        </span>
+                    </div>
+                </div> -->
+            <!-- </div> -->
+            
             <!-- Reports Section -->
             <div class="sidebar-section">
                 <h3 class="nav-section-title px-4 py-2">Reports</h3>
             </div>
             
-            <ul class="space-y-1.5">
+            <ul class="space-y-1.5 mt-7 mb-9">
                 <li>
                     <a href="{% url 'user_reports' %}" {% if request.resolver_match.url_name == 'user_reports' %}aria-current="page"{% endif %} class="sidebar-item flex items-center px-4 py-3 text-white hover:text-white {% if request.resolver_match.url_name == 'user_reports' %}active{% endif %}">
                         <i class="fas fa-chart-bar nav-icon"></i>
@@ -302,9 +453,9 @@
         <div class="sidebar-footer p-4">
             {% if user.is_authenticated %}
                 <div class="flex items-center justify-center mb-4">
-                    <button id="sidebar-user-avatar" class="user-avatar hover:scale-110 transition-transform duration-200 cursor-pointer" title="View User Info">
+                    <a href="{% url 'user_profile' %}" class="user-avatar hover:scale-110 transition-transform duration-200 cursor-pointer" title="View User Profile">
                         {{ user.first_name|first|default:user.username|first|upper }}
-                    </button>
+                    </a>
                 </div>
                 <a href="{% url 'logout' %}" class="logout-btn flex items-center justify-center">
                     <i class="fas fa-sign-out-alt mr-2"></i>
@@ -340,13 +491,23 @@
                 
                 <div class="flex items-center space-x-4">
                     {% if user.is_authenticated %}
-                        <div class="relative">
-                            <button id="user-avatar-btn" class="flex items-center space-x-3 text-gray-700 hover:text-gray-900 transition-colors" title="Click to see user info">
-                                <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-sm font-semibold shadow-lg">
+                        <div class="flex items-center space-x-3">
+                            <a href="{% if user.profile.is_admin %}{% url 'admin_profile' %}{% else %}{% url 'user_profile' %}{% endif %}" class="flex items-center space-x-3 text-gray-700 hover:text-gray-900 transition-colors group" title="View Profile">
+                                <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-sm font-semibold shadow-lg hover:scale-110 transition-transform duration-200 cursor-pointer group-hover:shadow-xl">
                                     {{ user.first_name|first|default:user.username|first|upper }}
                                 </div>
-                                <span class="hidden md:block font-medium">{{ user.first_name|default:user.username }}</span>
-                            </button>
+                                <span class="hidden md:block font-medium group-hover:text-blue-600">{{ user.first_name|default:user.username }}</span>
+                            </a>
+                            
+                            <!-- Quick Actions -->
+                            <div class="flex items-center space-x-2">
+                                <!-- <a href="{% url 'user_settings' %}" class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors" title="Settings">
+                                    <i class="fas fa-cog text-lg"></i>
+                                </a> -->
+                                <a href="{% url 'logout' %}" class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Sign Out">
+                                    <i class="fas fa-sign-out-alt text-lg"></i>
+                                </a>
+                            </div>
                         </div>
                     {% endif %}
                 </div>
@@ -403,6 +564,8 @@
         // Initialize toggle visibility on page load
         document.addEventListener('DOMContentLoaded', function() {
             updateToggleVisibility();
+            
+
         });
 
         // Close mobile sidebar when clicking outside

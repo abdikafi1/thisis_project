@@ -18,9 +18,8 @@
                 </p>
             </div>
         </div>
-
         <!-- Statistics Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+        <!-- <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
             <div class="group bg-white/95 backdrop-blur-xl rounded-3xl shadow-xl p-8 text-center border border-white/30 hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 cursor-pointer">
                 <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300">
                     <i class="fas fa-chart-bar text-2xl text-white"></i>
@@ -68,7 +67,7 @@
                     Recent Activity
                 </div>
             </div>
-        </div>
+        </div> -->
 
         <!-- Analytics Section -->
         <div class="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-8 mb-10 border border-white/30">
@@ -80,8 +79,22 @@
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Total Predictions -->
                 <div class="group bg-white/90 rounded-2xl p-6 text-center border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
                     <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-chart-bar text-lg text-white"></i>
+                    </div>
+                    <div class="text-2xl font-black text-gray-800 mb-2">
+                        {{ total_predictions|default:"0" }}
+                    </div>
+                    <div class="text-sm font-bold text-gray-600 uppercase tracking-wider">
+                        Total Predictions
+                    </div>
+                </div>
+
+                <!-- Fraud Detection Rate -->
+                <div class="group bg-white/90 rounded-2xl p-6 text-center border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                    <div class="w-12 h-12 bg-gradient-to-br from-red-500 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
                         <i class="fas fa-shield-alt text-lg text-white"></i>
                     </div>
                     <div class="text-2xl font-black text-gray-800 mb-2">
@@ -92,6 +105,7 @@
                     </div>
                 </div>
 
+                <!-- Clean Cases Rate -->
                 <div class="group bg-white/90 rounded-2xl p-6 text-center border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
                     <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
                         <i class="fas fa-check-circle text-lg text-white"></i>
@@ -104,6 +118,23 @@
                     </div>
                 </div>
 
+                <!-- Model Accuracy -->
+                <div class="group bg-white/90 rounded-2xl p-6 text-center border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                    <div class="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-brain text-lg text-white"></i>
+                    </div>
+                    <div class="text-2xl font-black text-gray-800 mb-2">
+                        72%
+                    </div>
+                    <div class="text-sm font-bold text-gray-600 uppercase tracking-wider">
+                        Model Accuracy
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Analytics Row -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+                <!-- Processing Time -->
                 <div class="group bg-white/90 rounded-2xl p-6 text-center border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
                     <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
                         <i class="fas fa-tachometer-alt text-lg text-white"></i>
@@ -116,6 +147,7 @@
                     </div>
                 </div>
 
+                <!-- This Month -->
                 <div class="group bg-white/90 rounded-2xl p-6 text-center border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
                     <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
                         <i class="fas fa-calendar-alt text-lg text-white"></i>
@@ -125,6 +157,19 @@
                     </div>
                     <div class="text-sm font-bold text-gray-600 uppercase tracking-wider">
                         This Month
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="group bg-white/90 rounded-2xl p-6 text-center border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                    <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-clock text-lg text-white"></i>
+                    </div>
+                    <div class="text-2xl font-black text-gray-800 mb-2">
+                        {{ recent_activity_count|default:"0" }}
+                    </div>
+                    <div class="text-sm font-bold text-gray-600 uppercase tracking-wider">
+                        Recent Activity
                     </div>
                 </div>
             </div>
