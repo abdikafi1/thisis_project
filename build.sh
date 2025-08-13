@@ -12,4 +12,13 @@ python manage.py collectstatic --noinput
 # Run database migrations
 python manage.py migrate
 
+# Import existing data if available
+if [ -f "data_backup.json" ]; then
+    echo "Importing existing data..."
+    python manage.py loaddata data_backup.json
+    echo "Data import completed!"
+else
+    echo "No data backup found, starting with fresh database"
+fi
+
 echo "Build completed successfully!"
