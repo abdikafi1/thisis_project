@@ -1,41 +1,27 @@
 """
-Production settings for myproject
+Production settings for fraud detection system on Render
 """
 import os
 from pathlib import Path
 from .settings import *
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY', 'your-secret-key-here')
-
 # Production hosts
 ALLOWED_HOSTS = [
-    os.environ.get('ALLOWED_HOST', 'localhost'),
-    '.railway.app',
-    '.herokuapp.com',
-    '.digitalocean.app',
-    '.vercel.app',
+    '.onrender.com',
+    'localhost',
+    '127.0.0.1',
 ]
 
-# Database - Use SQLite in production (as requested)
+# Database configuration for PostgreSQL on Render
+import dj_database_url
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
 }
 
-# Static files
-STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-# Security settings
+# Security settings for production
 SECURE_SSL_REDIRECT = True
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
@@ -43,7 +29,11 @@ SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = 'DENY'
 
-# Logging
+# Static files configuration for production
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Logging configuration
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,

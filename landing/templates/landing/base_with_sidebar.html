@@ -75,15 +75,38 @@
         }
         
         .sidebar-item:hover {
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(6px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            color: white !important;
+        }
+        
+        .sidebar-item:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.18);
             transform: translateX(4px);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Ensure all sidebar items have consistent hover effects */
+        .sidebar-item:hover .nav-text,
+        .sidebar-item:hover .nav-icon {
+            color: white !important;
+            transform: scale(1.05);
+        }
+        
+        .sidebar-item:hover .nav-icon {
+            transform: scale(1.1) rotate(5deg);
         }
         
         .sidebar-item.active {
-            background: rgba(255, 255, 255, 0.2);
-            border-right: 3px solid white;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.25);
+            border-right: 4px solid #ffffff;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            transform: translateX(8px);
+            color: #ffffff !important;
+        }
+        
+        .sidebar-item.active::before {
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1), transparent);
         }
         
         .sidebar-item.active::after {
@@ -94,9 +117,16 @@
             transform: translateY(-50%);
             width: 0;
             height: 0;
-            border-left: 8px solid white;
-            border-top: 6px solid transparent;
-            border-bottom: 6px solid transparent;
+            border-left: 10px solid #ffffff;
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+        }
+        
+        .sidebar-item.active .nav-icon,
+        .sidebar-item.active .nav-text {
+            color: #ffffff !important;
+            font-weight: 600;
         }
         
         .gradient-bg {
@@ -212,11 +242,13 @@
             margin-right: 12px;
             text-align: center;
             font-size: 1.1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
         .nav-text {
             font-weight: 500;
             color: white;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
         .sidebar-footer {
@@ -311,6 +343,65 @@
             justify-content: center;
             box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
         }
+        
+        /* Page title animation */
+        .page-title.animate {
+            animation: titleSlideIn 0.6s ease-out;
+        }
+        
+        @keyframes titleSlideIn {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px) scale(0.95);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        /* Welcome Message Styling */
+        .welcome-message {
+            animation: welcomeSlideIn 0.8s ease-out;
+        }
+        
+        .welcome-message p {
+            transition: all 0.3s ease;
+        }
+        
+        .welcome-message:hover p {
+            transform: translateX(5px);
+        }
+        
+        .welcome-message .fas {
+            animation: wave 2s infinite;
+        }
+        
+        @keyframes welcomeSlideIn {
+            0% {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes wave {
+            0%, 20%, 50%, 80%, 100% {
+                transform: rotate(0deg);
+            }
+            10%, 30% {
+                transform: rotate(14deg);
+            }
+            40%, 60% {
+                transform: rotate(-8deg);
+            }
+            70% {
+                transform: rotate(14deg);
+            }
+        }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
@@ -339,7 +430,7 @@
             </div>
             
             <ul class="space-y-1.5">
-                  <li>
+                <li>
                     <a href="{% url 'home' %}" {% if request.resolver_match.url_name == 'home' %}aria-current="page"{% endif %} class="sidebar-item flex items-center px-4 py-3 text-white hover:text-white {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
                         <i class="fas fa-home nav-icon"></i>
                         <span class="nav-text">Home</span>
@@ -354,10 +445,10 @@
                 <li>
                     <a href="{% url 'predict' %}" {% if request.resolver_match.url_name == 'predict' %}aria-current="page"{% endif %} class="sidebar-item flex items-center px-4 py-3 text-white hover:text-white {% if request.resolver_match.url_name == 'predict' %}active{% endif %}">
                         <i class="fas fa-search nav-icon"></i>
-                        <span class="nav-text">New Detection</span>
+                        <span class="nav-text">Analyze New claim</span>
                     </a>
                 </li>
-              
+
             </ul>
 
             <!-- Analytics Overview Section -->
@@ -485,7 +576,16 @@
                 <button id="sidebar-toggle" class="text-gray-600 hover:text-gray-900 transition-all duration-300 p-2 rounded-lg hover:bg-gray-100 border border-gray-200 hover:border-gray-300 shadow-sm" title="Toggle Sidebar">
                     <i class="fas fa-bars text-lg"></i>
                 </button>
-                <h1 class="page-title">{% block page_title %}Dashboard{% endblock %}</h1>
+                <div class="flex flex-col">
+                    <!-- Welcome Message -->
+                   
+                    
+                                    <h1 class="page-title" id="dynamic-page-title">Dashboard</h1>
+                <p class="text-gray-500 mt-1 flex items-center text-sm">
+                    <i class="fas fa-shield-alt text-blue-500 mr-2"></i>
+                    <span id="dynamic-page-description">Your fraud detection dashboard</span>
+                </p>
+                </div>
             </div>
                 </div>
                 
@@ -561,11 +661,55 @@
 
 
 
+        // Function to update page description based on page title
+        function updatePageDescription(pageTitle) {
+            const pageDescriptionElement = document.getElementById('dynamic-page-description');
+            if (!pageDescriptionElement) return;
+            
+            // Define descriptions for each page
+            const descriptions = {
+                'Home': 'Welcome to your fraud detection system',
+                'Dashboard': 'Your fraud detection dashboard',
+                'Analyze New claim': 'Analyze new insurance claims for fraud',
+                'Reports': 'View and export fraud detection reports',
+                'Profile': 'Manage your user profile and settings'
+            };
+            
+            const newDescription = descriptions[pageTitle] || 'Your fraud detection system';
+            pageDescriptionElement.textContent = newDescription;
+        }
+
         // Initialize toggle visibility on page load
         document.addEventListener('DOMContentLoaded', function() {
             updateToggleVisibility();
             
-
+            // Set initial page title based on active sidebar item
+            const activeItem = document.querySelector('.sidebar-item.active');
+            if (activeItem) {
+                const navText = activeItem.querySelector('.nav-text');
+                if (navText) {
+                    const pageTitleElement = document.getElementById('dynamic-page-title');
+                    const pageDescriptionElement = document.getElementById('dynamic-page-description');
+                    if (pageTitleElement && pageDescriptionElement) {
+                        pageTitleElement.textContent = navText.textContent;
+                        updatePageDescription(navText.textContent);
+                    }
+                }
+            }
+            
+            // Also check current URL to set correct title
+            const currentPath = window.location.pathname;
+            if (currentPath.includes('dashboard')) {
+                updateHeaderTitle('Dashboard');
+            } else if (currentPath.includes('profile')) {
+                updateHeaderTitle('Profile');
+            } else if (currentPath.includes('predict')) {
+                updateHeaderTitle('Analyze New claim');
+            } else if (currentPath.includes('reports')) {
+                updateHeaderTitle('Reports');
+            } else if (currentPath.includes('home') || currentPath === '/') {
+                updateHeaderTitle('Home');
+            }
         });
 
         // Close mobile sidebar when clicking outside
@@ -597,7 +741,145 @@
                     item.style.transform = 'translateX(0)';
                 }, index * 100);
             });
+            
+            // Initialize dynamic page titles
+            initializeDynamicTitles();
+            
+            // Add enhanced sidebar interactions
+            enhanceSidebarInteractions();
         });
+        
+        // Dynamic page title functionality
+        function initializeDynamicTitles() {
+            // Get current active sidebar item
+            const activeItem = document.querySelector('.sidebar-item.active');
+            if (activeItem) {
+                updatePageTitle(activeItem);
+            }
+            
+            // Add click listeners to all sidebar items
+            const sidebarItems = document.querySelectorAll('.sidebar-item');
+            sidebarItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    updatePageTitle(this);
+                });
+            });
+            
+            // Add click listeners to profile/user avatar links
+            const profileLinks = document.querySelectorAll('a[href*="profile"], a[href*="user_profile"], a[href*="admin_profile"]');
+            profileLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    updateHeaderTitle('Profile');
+                });
+            });
+        }
+        
+        function updatePageTitle(activeItem) {
+            const pageTitleElement = document.getElementById('dynamic-page-title');
+            const pageDescriptionElement = document.getElementById('dynamic-page-description');
+            if (!pageTitleElement || !pageDescriptionElement) return;
+            
+            const navText = activeItem.querySelector('.nav-text');
+            if (!navText) return;
+            
+            const newTitle = navText.textContent;
+            updateHeaderTitle(newTitle);
+        }
+        
+        function updateHeaderTitle(newTitle) {
+            const pageTitleElement = document.getElementById('dynamic-page-title');
+            const pageDescriptionElement = document.getElementById('dynamic-page-description');
+            if (!pageTitleElement || !pageDescriptionElement) return;
+            
+            const currentTitle = pageTitleElement.textContent;
+            
+            if (newTitle !== currentTitle) {
+                // Add animation class
+                pageTitleElement.classList.add('animate');
+                
+                // Update title with a slight delay for smooth animation
+                setTimeout(() => {
+                    pageTitleElement.textContent = newTitle;
+                    
+                    // Update description based on the page
+                    updatePageDescription(newTitle);
+                }, 200);
+                
+                // Remove animation class after animation completes
+                setTimeout(() => {
+                    pageTitleElement.classList.remove('animate');
+                }, 600);
+            }
+        }
+        
+        // Enhanced sidebar interactions
+        function enhanceSidebarInteractions() {
+            const sidebarItems = document.querySelectorAll('.sidebar-item');
+            
+            sidebarItems.forEach(item => {
+                // Add ripple effect on click
+                item.addEventListener('click', function(e) {
+                    createRippleEffect(e, this);
+                });
+                
+                // Enhanced hover effects
+                item.addEventListener('mouseenter', function() {
+                    if (!this.classList.contains('active')) {
+                        this.style.transform = 'translateX(4px) scale(1.02)';
+                    }
+                });
+                
+                item.addEventListener('mouseleave', function() {
+                    if (!this.classList.contains('active')) {
+                        this.style.transform = 'translateX(0) scale(1)';
+                    }
+                });
+            });
+        }
+        
+        // Ripple effect for sidebar items
+        function createRippleEffect(event, element) {
+            const ripple = document.createElement('div');
+            const rect = element.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = event.clientX - rect.left - size / 2;
+            const y = event.clientY - rect.top - size / 2;
+            
+            ripple.style.cssText = `
+                position: absolute;
+                width: ${size}px;
+                height: ${size}px;
+                left: ${x}px;
+                top: ${y}px;
+                background: rgba(255, 255, 255, 0.3);
+                border-radius: 50%;
+                transform: scale(0);
+                animation: ripple 0.6s linear;
+                pointer-events: none;
+            `;
+            
+            element.style.position = 'relative';
+            element.appendChild(ripple);
+            
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        }
+        
+        // Add ripple animation CSS
+        if (!document.querySelector('#ripple-styles')) {
+            const style = document.createElement('style');
+            style.id = 'ripple-styles';
+            style.textContent = `
+                @keyframes ripple {
+                    to {
+                        transform: scale(4);
+                        opacity: 0;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
 
         // User avatar functionality (simplified)
         document.addEventListener('DOMContentLoaded', function() {

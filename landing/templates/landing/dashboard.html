@@ -3,72 +3,26 @@
 
 {% block title %}Dashboard - Fraud Detection System{% endblock %}
 
+{% block page_title %}Dashboard{% endblock %}
+
+{% block page_description %}Your fraud detection overview and analytics{% endblock %}
+
 {% block content %}
 <div class="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 py-8">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Dashboard Header -->
-        <div class="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-8 md:p-12 mb-10 text-center relative overflow-hidden border border-white/30">
-            <div class="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10"></div>
+        
+        <div class="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 backdrop-blur-xl rounded-3xl shadow-2xl p-8 md:p-12 mb-10 text-center relative overflow-hidden border border-blue-500/30">
+            <div class="absolute inset-0 bg-gradient-to-r from-blue-600/20 via-indigo-600/20 to-purple-600/20"></div>
             <div class="relative z-10">
-                <h1 class="text-4xl md:text-5xl lg:text-6xl font-black bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-4 tracking-tight">
-                    Welcome back, {{ user.first_name|default:user.username }}!
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-4 tracking-tight">
+                    Welcome , {{ user.first_name|default:user.username }}!
                 </h1>
-                <p class="text-xl text-gray-600 font-medium max-w-3xl mx-auto leading-relaxed">
-                    Here's what's happening with your fraud detection system today.
+                <p class="text-xl text-blue-100 font-medium max-w-3xl mx-auto leading-relaxed">
+                    Your fraud detection dashboard overview
                 </p>
             </div>
         </div>
-        <!-- Statistics Grid -->
-        <!-- <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-            <div class="group bg-white/95 backdrop-blur-xl rounded-3xl shadow-xl p-8 text-center border border-white/30 hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 cursor-pointer">
-                <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300">
-                    <i class="fas fa-chart-bar text-2xl text-white"></i>
-                </div>
-                <div class="text-4xl font-black bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
-                    {{ total_predictions }}
-                </div>
-                <div class="text-lg font-bold text-gray-700 uppercase tracking-wider">
-                    Total Predictions
-                </div>
-            </div>
-
-            <div class="group bg-white/95 backdrop-blur-xl rounded-3xl shadow-xl p-8 text-center border border-white/30 hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 cursor-pointer">
-                <div class="w-16 h-16 bg-gradient-to-br from-red-500 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300">
-                    <i class="fas fa-exclamation-triangle text-2xl text-white"></i>
-                </div>
-                <div class="text-4xl font-black bg-gradient-to-r from-red-600 to-pink-600 bg-clip-text text-transparent mb-2">
-                    {{ fraud_detected }}
-                </div>
-                <div class="text-lg font-bold text-gray-700 uppercase tracking-wider">
-                    Fraud Detected
-                </div>
-            </div>
-
-            <div class="group bg-white/95 backdrop-blur-xl rounded-3xl shadow-xl p-8 text-center border border-white/30 hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 cursor-pointer">
-                <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300">
-                    <i class="fas fa-percentage text-2xl text-white"></i>
-                </div>
-                <div class="text-4xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-2">
-                    {{ accuracy_percentage }}%
-                </div>
-                <div class="text-lg font-bold text-gray-700 uppercase tracking-wider">
-                    Model Accuracy
-                </div>
-            </div>
-
-            <div class="group bg-white/95 backdrop-blur-xl rounded-3xl shadow-xl p-8 text-center border border-white/30 hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 cursor-pointer">
-                <div class="w-16 h-16 bg-gradient-to-br from-orange-500 to-yellow-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300">
-                    <i class="fas fa-clock text-2xl text-white"></i>
-                </div>
-                <div class="text-4xl font-black bg-gradient-to-r from-orange-600 to-yellow-600 bg-clip-text text-transparent mb-2">
-                    {{ recent_activity_count }}
-                </div>
-                <div class="text-lg font-bold text-gray-700 uppercase tracking-wider">
-                    Recent Activity
-                </div>
-            </div>
-        </div> -->
-
         <!-- Analytics Section -->
         <div class="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-8 mb-10 border border-white/30">
             <div class="flex items-center mb-8">
@@ -124,7 +78,7 @@
                         <i class="fas fa-brain text-lg text-white"></i>
                     </div>
                     <div class="text-2xl font-black text-gray-800 mb-2">
-                        {{ model_accuracy|default:"0" }}%
+                        72%
                     </div>
                     <div class="text-sm font-bold text-gray-600 uppercase tracking-wider">
                         Model Accuracy

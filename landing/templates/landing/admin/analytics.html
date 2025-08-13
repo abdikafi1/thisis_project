@@ -115,61 +115,8 @@
         </div>
     </div>
 
-    <!-- Feature Importance -->
-    <div class="card">
-        <div class="card-header">
-            <h3 class="card-title flex items-center">
-                <i class="fas fa-chart-bar text-indigo-500 mr-3"></i>
-                Feature Importance (Top Factors)
-            </h3>
-        </div>
-        {% if feature_importance %}
-            <div class="space-y-4">
-                {% for feature, importance in feature_importance.items %}
-                    {% if importance > 0.01 %}
-                        <div class="space-y-2">
-                            <div class="flex justify-between">
-                                <span class="text-sm font-medium text-gray-700">{{ feature|replace_underscore }}</span>
-                                <span class="text-sm text-gray-500">{{ importance|floatformat:3 }}</span>
-                            </div>
-                            <div class="w-full bg-gray-200 rounded-full h-3">
-                                <div class="bg-gradient-to-r from-indigo-500 to-purple-600 h-3 rounded-full" style="width: {{ importance|floatformat:1 }}%"></div>
-                            </div>
-                        </div>
-                    {% endif %}
-                {% endfor %}
-            </div>
-        {% else %}
-            <p class="text-gray-500 text-center py-8">Feature importance data will be available after model training</p>
-        {% endif %}
-    </div>
 
-    <!-- High Risk Patterns -->
-    <div class="card">
-        <div class="card-header">
-            <h3 class="card-title flex items-center">
-                <i class="fas fa-exclamation-triangle text-orange-500 mr-3"></i>
-                High Risk Patterns
-            </h3>
-        </div>
-        {% if high_risk_patterns %}
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {% for pattern, data in high_risk_patterns.items %}
-                    <div class="p-4 bg-orange-50 border border-orange-200 rounded-lg">
-                        <h4 class="font-semibold text-orange-800 mb-2">{{ pattern|replace_underscore }}</h4>
-                        {% if data.fraud_rate %}
-                            <p class="text-sm text-orange-700">Fraud Rate: <span class="font-semibold">{{ data.fraud_rate|floatformat:1 }}%</span></p>
-                        {% endif %}
-                        {% if data.count %}
-                            <p class="text-sm text-orange-600">Occurrences: <span class="font-semibold">{{ data.count }}</span></p>
-                        {% endif %}
-                    </div>
-                {% endfor %}
-            </div>
-        {% else %}
-            <p class="text-gray-500 text-center py-8">No high-risk patterns detected in current dataset</p>
-        {% endif %}
-    </div>
+
 
     <!-- Recent Predictions -->
     <div class="card">
