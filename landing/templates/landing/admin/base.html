@@ -242,10 +242,15 @@
         .section-title {
             font-size: 0.6875rem;
             font-weight: 700;
-            color: rgba(255, 255, 255, 0.7);
+            color: rgba(255, 255, 255, 0.7) !important;
             text-transform: uppercase;
             letter-spacing: 0.1em;
             margin-bottom: 0.75rem;
+        }
+        
+        /* Ensure all section titles in sidebar have white color */
+        .sidebar-section .section-title {
+            color: rgba(255, 255, 255, 0.7) !important;
         }
         
         /* Icon Enhancements */
@@ -339,7 +344,7 @@
                                 <i class="fas fa-file-alt text-white text-sm"></i>
                             </div>
                             <div class="flex-1">
-                                <span class="font-medium">Fraud Reports</span>
+                                <span class="font-medium">Reports</span>
                                 <p class="text-xs text-white/50 mt-1">Generate & view reports</p>
                             </div>
                             <i class="fas fa-chevron-right text-white/40 group-hover:text-white transition-colors"></i>
@@ -377,16 +382,12 @@
                     </div>
 
                     <!-- User Features Section for Admins -->
+                 
                     
             </nav>
             <div class="mt-auto px-4 pb-6">
                     <div class="space-y-2">
-                    <a href="{% url 'user_dashboard' %}" class="nav-item-hover flex items-center px-4 py-3 text-white/80 hover:text-white rounded-xl transition-all duration-200 group">
-                            <div class="w-8 h-8 bg-gradient-to-br from-gray-500 to-gray-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
-                                <i class="fas fa-arrow-left text-white text-sm"></i>
-                            </div>
-                            <span class="font-medium">Back to User Dashboard</span>
-                        </a>
+                    
                     <a href="{% url 'logout' %}" class="nav-item-hover flex items-center px-4 py-3 text-red-300 hover:text-red-200 rounded-xl transition-all duration-200 group">
                             <div class="w-8 h-8 bg-gradient-to-br from-red-500 to-red-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
                                 <i class="fas fa-sign-out-alt text-white text-sm"></i>
@@ -409,7 +410,7 @@
                             <h1 class="text-3xl font-bold text-gray-900">{% block page_title %}Admin Dashboard{% endblock %}</h1>
                             <p class="text-gray-500 mt-1 flex items-center">
                                 <i class="fas fa-shield-alt text-blue-500 mr-2"></i>
-                                Monitor and manage your fraud detection system
+                                {% block page_description %}Monitor and manage your fraud detection system{% endblock %}
                             </p>
                         </div>
                     </div>
