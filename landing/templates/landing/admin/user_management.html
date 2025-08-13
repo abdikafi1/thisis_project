@@ -48,14 +48,6 @@
                             </select>
                         </div>
                         
-                        <div class="form-group-wrapper">
-                            <label for="is_verified" class="form-label">Status</label>
-                            <select name="is_verified" id="is_verified" class="form-select enhanced-select">
-                                <option value="">All Status</option>
-                                <option value="1" {% if request.GET.is_verified == '1' %}selected{% endif %}>Verified</option>
-                                <option value="0" {% if request.GET.is_verified == '0' %}selected{% endif %}>Not Verified</option>
-                            </select>
-                        </div>
                         
                         <button type="submit" class="btn btn-primary enhanced-btn">
                             <i class="fas fa-search me-2"></i>Search
@@ -154,15 +146,15 @@
                             </td>
                             <td class="px-4 py-3">
                                 <div class="level-badge-container">
-                                    {% if user.profile.user_level == 'admin' %}
+                                {% if user.profile.user_level == 'admin' %}
                                         <span class="badge bg-danger px-3 py-2 rounded-pill">
                                             <i class="fas fa-crown me-1"></i>ADMIN
                                         </span>
-                                    {% else %}
+                                {% else %}
                                         <span class="badge bg-primary px-3 py-2 rounded-pill">
                                             <i class="fas fa-user me-1"></i>BASIC USER
                                         </span>
-                                    {% endif %}
+                                {% endif %}
                                 </div>
                             </td>
                             <td class="px-4 py-3">
@@ -178,12 +170,12 @@
                                     {% elif not user.profile.is_verified and user.is_active %}
                                         <span class="badge bg-secondary px-6 py-2 rounded-pill mb-1">
                                             <i class="fas fa-clock me-1"></i>UNVERIFIED
-                                        </span>
-                                    {% else %}
+                                    </span>
+                                {% else %}
                                         <span class="badge bg-dark px-3 py-2 rounded-pill mb-1">
                                             <i class="fas fa-times-circle me-1"></i>INACTIVE
-                                        </span>
-                                    {% endif %}
+                                    </span>
+                                {% endif %}
                                 </div>
                             </td>
                             <td class="px-4 py-3">
@@ -483,12 +475,12 @@
 
 @media (max-width: 480px) {
     .enhanced-pagination-section {
-        padding: 1rem;
+    padding: 1rem;
     }
     
     .page-jump {
         flex-direction: column;
-        text-align: center;
+    text-align: center;
         gap: 0.5rem;
     }
     

@@ -4,10 +4,13 @@
 {% block title %}User Profile - Fraud Detection System{% endblock %}
 
 {% block content %}
-<!-- Clean User Profile Display -->
+<!-- Main container with responsive padding and max width -->
 <div class="max-w-7xl mx-auto px-6 py-8">
-    <!-- Page Title and Navigation -->
+    
+    <!-- Page Header Section -->
+    <!-- Contains the main title and description for the user profile page -->
     <div class="mb-8">
+        <!-- Breadcrumb navigation (commented out but available for future use) -->
         <!-- <div class="flex items-center space-x-4 text-gray-600 mb-4">
             <a href="{% url 'dashboard' %}" class="flex items-center space-x-2 hover:text-blue-600 transition-colors">
                 <i class="fas fa-home text-lg"></i>
@@ -19,21 +22,33 @@
                 <span class="text-xl">My Profile</span>
             </span>
         </div> -->
+        
+        <!-- Main page title and subtitle -->
         <h1 class="text-4xl font-bold text-gray-900">User Profile</h1>
         <p class="text-gray-600 mt-2">Manage your account and view your fraud detection statistics</p>
     </div>
 
-    <!-- User Profile Card -->
+    <!-- User Profile Header Card -->
+    <!-- Displays user's basic information with gradient background and status badges -->
     <div class="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden mb-8">
+        <!-- Gradient background header with user avatar and info -->
         <div class="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-700 p-8 text-white">
             <div class="flex items-center space-x-8">
+                <!-- User avatar placeholder with backdrop blur effect -->
                 <div class="w-24 h-24 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border-2 border-white/30 shadow-xl">
                     <i class="fas fa-user text-4xl"></i>
                 </div>
+                
+                <!-- User information and status badges -->
                 <div class="flex-1">
+                    <!-- User's display name (first name or username as fallback) -->
                     <h2 class="text-3xl font-bold mb-2">{{ user.first_name|default:user.username }}</h2>
+                    <!-- User's email address -->
                     <p class="text-white/90 text-lg mb-4">{{ user.email }}</p>
+                    
+                    <!-- Status badges showing user level, verification status, and membership date -->
                     <div class="flex items-center space-x-3">
+                        <!-- Admin or Basic User badge -->
                         {% if user.profile.user_level == 'admin' %}
                             <span class="bg-red-500/20 text-white px-4 py-2 rounded-full text-sm font-semibold border border-white/30">
                                 <i class="fas fa-crown mr-2"></i>System Administrator
@@ -44,12 +59,14 @@
                             </span>
                         {% endif %}
                         
+                        <!-- Verified account badge (only shown if user is verified) -->
                         {% if user.profile.is_verified %}
                             <span class="bg-green-500/20 text-white px-4 py-2 rounded-full text-sm font-semibold border border-white/30">
                                 <i class="fas fa-check-circle mr-2"></i>Verified Account
                             </span>
                         {% endif %}
                         
+                        <!-- Membership date badge -->
                         <span class="bg-blue-500/20 text-white px-4 py-2 rounded-full text-sm font-semibold border border-white/30">
                             <i class="fas fa-calendar mr-2"></i>Member since {{ user.date_joined|date:"M Y" }}
                         </span>
@@ -59,69 +76,269 @@
         </div>
     </div>
 
-    <!-- User Statistics Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
-            <div class="flex items-center">
-                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
-                    <i class="fas fa-search text-blue-600 text-xl"></i>
+    <!-- Account Information Display Section -->
+    <div class="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 p-10 relative overflow-hidden mb-8">
+        <!-- Decorative background elements -->
+        <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-green-100/50 to-blue-100/50 rounded-full -translate-y-16 translate-x-16"></div>
+        <div class="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-br from-emerald-100/50 to-green-100/50 rounded-full translate-y-12 -translate-x-12"></div>
+        
+        <div class="relative">
+            <!-- Section header -->
+            <div class="flex items-center mb-10">
+                <div class="w-16 h-16 bg-gradient-to-r from-green-500 to-blue-600 rounded-2xl flex items-center justify-center mr-6 shadow-xl">
+                    <i class="fas fa-user-circle text-white text-2xl"></i>
                 </div>
                 <div>
-                    <p class="text-sm text-gray-600">Total Predictions</p>
-                    <p class="text-2xl font-bold text-gray-900">{{ total_predictions|default:"0" }}</p>
+                    <h2 class="text-4xl font-bold text-gray-900 mb-2">Account Information</h2>
+                    <p class="text-gray-600 text-lg">View your current account details and profile information</p>
                 </div>
             </div>
-        </div>
-        
-        <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
-            <div class="flex items-center">
-                <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mr-4">
-                    <i class="fas fa-exclamation-triangle text-red-600 text-xl"></i>
+            
+            <!-- Account Information Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Personal Information -->
+                <div class="space-y-6">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                        <i class="fas fa-user mr-4 text-blue-500"></i>Personal Details
+                    </h3>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-center p-4 bg-gray-50 rounded-xl">
+                            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
+                                <i class="fas fa-user text-blue-600"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500">Full Name</p>
+                                <p class="text-lg font-semibold text-gray-800">{{ user.first_name }} {{ user.last_name }}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center p-4 bg-gray-50 rounded-xl">
+                            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
+                                <i class="fas fa-at text-purple-600"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500">Username</p>
+                                <p class="text-lg font-semibold text-gray-800">{{ user.username }}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center p-4 bg-gray-50 rounded-xl">
+                            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
+                                <i class="fas fa-envelope text-green-600"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500">Email Address</p>
+                                <p class="text-lg font-semibold text-gray-800">{{ user.email }}</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <p class="text-sm text-gray-600">Fraud Detected</p>
-                    <p class="text-2xl font-bold text-gray-900">{{ fraud_predictions|default:"0" }}</p>
+                
+                <!-- Account Statistics -->
+                <div class="space-y-6">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                        <i class="fas fa-chart-bar mr-4 text-indigo-500"></i>Account Statistics
+                    </h3>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-center p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200">
+                            <div class="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center mr-4">
+                                <i class="fas fa-calendar-alt text-white"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600">Account Age</p>
+                                <p class="text-lg font-bold text-blue-800">{{ account_age }} days</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
+                            <div class="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center mr-4">
+                                <i class="fas fa-sign-in-alt text-white"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600">Last Login</p>
+                                <p class="text-lg font-bold text-green-800">
+                                    {% if last_login_days == 0 %}
+                                        Today
+                                    {% elif last_login_days == 1 %}
+                                        Yesterday
+                                    {% else %}
+                                        {{ last_login_days }} days ago
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border border-purple-200">
+                            <div class="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center mr-4">
+                                <i class="fas fa-shield-alt text-white"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600">User Level</p>
+                                <p class="text-lg font-bold text-purple-800">{{ profile.get_user_level_display }}</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        
-        <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
-            <div class="flex items-center">
-                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
-                    <i class="fas fa-check-circle text-green-600 text-xl"></i>
-                </div>
-                <div>
-                    <p class="text-sm text-gray-600">Clean Cases</p>
-                    <p class="text-2xl font-bold text-gray-900">{{ clean_predictions|default:"0" }}</p>
+            
+            <!-- Activity Summary -->
+            <div class="mt-10 p-6 bg-gradient-to-r from-gray-50 to-blue-50 rounded-2xl border border-gray-200">
+                <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-activity mr-3 text-blue-600"></i>Activity Summary
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="text-center p-4 bg-white rounded-xl shadow-sm">
+                        <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-search text-blue-600 text-xl"></i>
+                        </div>
+                        <p class="text-2xl font-bold text-gray-800">{{ total_predictions }}</p>
+                        <p class="text-sm text-gray-600">Total Predictions</p>
+                    </div>
+                    
+                    <div class="text-center p-4 bg-white rounded-xl shadow-sm">
+                        <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-exclamation-triangle text-red-600 text-xl"></i>
+                        </div>
+                        <p class="text-2xl font-bold text-gray-800">{{ fraud_predictions }}</p>
+                        <p class="text-sm text-gray-600">Fraud Detected</p>
+                    </div>
+                    
+                    <div class="text-center p-4 bg-white rounded-xl shadow-sm">
+                        <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                        </div>
+                        <p class="text-2xl font-bold text-gray-800">{{ clean_predictions }}</p>
+                        <p class="text-sm text-gray-600">Clean Cases</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Profile Management Section -->
+    <!-- Edit Account Information Section -->
     <div class="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 p-10 relative overflow-hidden mb-8">
-        <!-- Enhanced Background Pattern -->
+        <!-- Decorative background elements for visual appeal -->
         <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-100/50 to-purple-100/50 rounded-full -translate-y-16 translate-x-16"></div>
         <div class="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-br from-indigo-100/50 to-blue-100/50 rounded-full translate-y-12 -translate-x-12"></div>
         
         <div class="relative">
+            <!-- Section header with icon and description -->
             <div class="flex items-center mb-10">
                 <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mr-6 shadow-xl">
                     <i class="fas fa-user-edit text-white text-2xl"></i>
                 </div>
                 <div>
-                    <h2 class="text-4xl font-bold text-gray-900 mb-2">Edit Profile Information</h2>
+                    <h2 class="text-4xl font-bold text-gray-900 mb-2">Edit Account Information</h2>
                     <p class="text-gray-600 text-lg">Update your personal and professional details to keep your profile current</p>
                 </div>
             </div>
+            
+            <!-- Account update form -->
             <form method="post" class="space-y-8">
                 {% csrf_token %}
                 
-                <!-- Personal Information -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-                    <div class="space-y-6">
-                        <label for="{{ form.phone_number.id_for_label }}" class="block text-xl font-bold text-gray-800 mb-4">
-                            <i class="fas fa-phone mr-4 text-blue-500"></i>Phone Number
+                <!-- Personal Information Fields -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- First Name Field -->
+                    <div class="space-y-4">
+                        <label for="{{ form.first_name.id_for_label }}" class="block text-lg font-bold text-gray-800">
+                            <i class="fas fa-user mr-3 text-blue-500"></i>First Name
+                        </label>
+                        <div class="relative group">
+                            <div class="relative border-2 border-gray-200 rounded-xl focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-100 transition-all duration-300 bg-white shadow-sm hover:shadow-lg group-hover:border-blue-300">
+                                {{ form.first_name }}
+                                <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                                    <i class="fas fa-user text-gray-400 text-lg group-focus-within:text-blue-500 transition-colors duration-300"></i>
+                                </div>
+                            </div>
+                            {% if form.first_name.errors %}
+                                <div class="border border-red-300 bg-red-50 rounded-lg p-3 mt-2 animate-pulse">
+                                    <p class="text-sm text-red-600 flex items-center">
+                                        <i class="fas fa-exclamation-circle mr-2"></i>{{ form.first_name.errors.0 }}
+                                    </p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- Last Name Field -->
+                    <div class="space-y-4">
+                        <label for="{{ form.last_name.id_for_label }}" class="block text-lg font-bold text-gray-800">
+                            <i class="fas fa-user mr-3 text-purple-500"></i>Last Name
+                        </label>
+                        <div class="relative group">
+                            <div class="relative border-2 border-gray-200 rounded-xl focus-within:border-purple-500 focus-within:ring-4 focus-within:ring-purple-100 transition-all duration-300 bg-white shadow-sm hover:shadow-lg group-hover:border-purple-300">
+                                {{ form.last_name }}
+                                <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                                    <i class="fas fa-user text-gray-400 text-lg group-focus-within:text-purple-500 transition-colors duration-300"></i>
+                                </div>
+                            </div>
+                            {% if form.last_name.errors %}
+                                <div class="border border-red-300 bg-red-50 rounded-lg p-3 mt-2 animate-pulse">
+                                    <p class="text-sm text-red-600 flex items-center">
+                                        <i class="fas fa-exclamation-circle mr-2"></i>{{ form.last_name.errors.0 }}
+                                    </p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Username and Email Fields -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Username Field -->
+                    <div class="space-y-4">
+                        <label for="{{ form.username.id_for_label }}" class="block text-lg font-bold text-gray-800">
+                            <i class="fas fa-at mr-3 text-green-500"></i>Username
+                        </label>
+                        <div class="relative group">
+                            <div class="relative border-2 border-gray-200 rounded-xl focus-within:border-green-500 focus-within:ring-4 focus-within:ring-green-100 transition-all duration-300 bg-white shadow-sm hover:shadow-lg group-hover:border-green-300">
+                                {{ form.username }}
+                                <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                                    <i class="fas fa-at text-gray-400 text-lg group-focus-within:text-green-500 transition-colors duration-300"></i>
+                                </div>
+                            </div>
+                            {% if form.username.errors %}
+                                <div class="border border-red-300 bg-red-50 rounded-lg p-3 mt-2 animate-pulse">
+                                    <p class="text-sm text-red-600 flex items-center">
+                                        <i class="fas fa-exclamation-circle mr-2"></i>{{ form.username.errors.0 }}
+                                    </p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- Email Field -->
+                    <div class="space-y-4">
+                        <label for="{{ form.email.id_for_label }}" class="block text-lg font-bold text-gray-800">
+                            <i class="fas fa-envelope mr-3 text-indigo-500"></i>Email Address
+                        </label>
+                        <div class="relative group">
+                            <div class="relative border-2 border-gray-200 rounded-xl focus-within:border-indigo-500 focus-within:ring-4 focus-within:ring-indigo-100 transition-all duration-300 bg-white shadow-sm hover:shadow-lg group-hover:border-indigo-300">
+                                {{ form.email }}
+                                <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                                    <i class="fas fa-envelope text-gray-400 text-lg group-focus-within:text-indigo-500 transition-colors duration-300"></i>
+                                </div>
+                            </div>
+                            {% if form.email.errors %}
+                                <div class="border border-red-300 bg-red-50 rounded-lg p-3 mt-2 animate-pulse">
+                                    <p class="text-sm text-red-600 flex items-center">
+                                        <i class="fas fa-exclamation-circle mr-2"></i>{{ form.email.errors.0 }}
+                                    </p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Professional Information Fields -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Phone Number Field -->
+                    <div class="space-y-4">
+                        <label for="{{ form.phone_number.id_for_label }}" class="block text-lg font-bold text-gray-800">
+                            <i class="fas fa-phone mr-3 text-blue-500"></i>Phone Number
                         </label>
                         <div class="relative group">
                             <div class="relative border-2 border-gray-200 rounded-xl focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-100 transition-all duration-300 bg-white shadow-sm hover:shadow-lg group-hover:border-blue-300">
@@ -130,20 +347,20 @@
                                     <i class="fas fa-phone text-gray-400 text-lg group-focus-within:text-blue-500 transition-colors duration-300"></i>
                                 </div>
                             </div>
-                            <div class="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+                            {% if form.phone_number.errors %}
+                                <div class="border border-red-300 bg-red-50 rounded-lg p-3 mt-2 animate-pulse">
+                                    <p class="text-sm text-red-600 flex items-center">
+                                        <i class="fas fa-exclamation-circle mr-2"></i>{{ form.phone_number.errors.0 }}
+                                    </p>
+                                </div>
+                            {% endif %}
                         </div>
-                        {% if form.phone_number.errors %}
-                            <div class="border border-red-300 bg-red-50 rounded-lg p-3 mt-3 animate-pulse">
-                                <p class="text-base text-red-600 flex items-center">
-                                    <i class="fas fa-exclamation-circle mr-3"></i>{{ form.phone_number.errors.0 }}
-                                </p>
-                            </div>
-                        {% endif %}
                     </div>
                     
-                    <div class="space-y-6">
-                        <label for="{{ form.company.id_for_label }}" class="block text-xl font-bold text-gray-800 mb-4">
-                            <i class="fas fa-building mr-4 text-purple-500"></i>Company
+                    <!-- Company Field -->
+                    <div class="space-y-4">
+                        <label for="{{ form.company.id_for_label }}" class="block text-lg font-bold text-gray-800">
+                            <i class="fas fa-building mr-3 text-purple-500"></i>Company
                         </label>
                         <div class="relative group">
                             <div class="relative border-2 border-gray-200 rounded-xl focus-within:border-purple-500 focus-within:ring-4 focus-within:ring-purple-100 transition-all duration-300 bg-white shadow-sm hover:shadow-lg group-hover:border-purple-300">
@@ -152,146 +369,52 @@
                                     <i class="fas fa-building text-gray-400 text-lg group-focus-within:text-purple-500 transition-colors duration-300"></i>
                                 </div>
                             </div>
-                            <div class="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+                            {% if form.company.errors %}
+                                <div class="border border-red-300 bg-red-50 rounded-lg p-3 mt-2 animate-pulse">
+                                    <p class="text-sm text-red-600 flex items-center">
+                                        <i class="fas fa-exclamation-circle mr-2"></i>{{ form.company.errors.0 }}
+                                    </p>
+                                </div>
+                            {% endif %}
                         </div>
-                        {% if form.company.errors %}
-                            <div class="border border-red-300 bg-red-50 rounded-lg p-3 mt-3 animate-pulse">
-                                <p class="text-base text-red-600 flex items-center">
-                                    <i class="fas fa-exclamation-circle mr-3"></i>{{ form.company.errors.0 }}
-                                </p>
-                            </div>
-                        {% endif %}
                     </div>
-                </div>
-                
-                <div class="space-y-6">
-                    <label for="{{ form.position.id_for_label }}" class="block text-xl font-bold text-gray-800 mb-4">
-                        <i class="fas fa-briefcase mr-4 text-green-500"></i>Position
-                    </label>
-                    <div class="relative group">
-                        <div class="relative border-2 border-gray-200 rounded-xl focus-within:border-green-500 focus-within:ring-4 focus-within:ring-green-100 transition-all duration-300 bg-white shadow-sm hover:shadow-lg group-hover:border-green-300">
-                            {{ form.position }}
-                            <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
-                                <i class="fas fa-briefcase text-gray-400 text-lg group-focus-within:text-green-500 transition-colors duration-300"></i>
+                    
+                    <!-- Position Field -->
+                    <div class="space-y-4">
+                        <label for="{{ form.position.id_for_label }}" class="block text-lg font-bold text-gray-800">
+                            <i class="fas fa-briefcase mr-3 text-green-500"></i>Position
+                        </label>
+                        <div class="relative group">
+                            <div class="relative border-2 border-gray-200 rounded-xl focus-within:border-green-500 focus-within:ring-4 focus-within:ring-green-100 transition-all duration-300 bg-white shadow-sm hover:shadow-lg group-hover:border-green-300">
+                                {{ form.position }}
+                                <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                                    <i class="fas fa-briefcase text-gray-400 text-lg group-focus-within:text-green-500 transition-colors duration-300"></i>
+                                </div>
                             </div>
+                            {% if form.position.errors %}
+                                <div class="border border-red-300 bg-red-50 rounded-lg p-3 mt-2 animate-pulse">
+                                    <p class="text-sm text-red-600 flex items-center">
+                                        <i class="fas fa-exclamation-circle mr-2"></i>{{ form.position.errors.0 }}
+                                    </p>
+                                </div>
+                            {% endif %}
                         </div>
-                        <div class="absolute inset-0 bg-gradient-to-r from-green-500/10 to-emerald-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
                     </div>
-                    {% if form.position.errors %}
-                        <div class="border border-red-300 bg-red-50 rounded-lg p-3 mt-3 animate-pulse">
-                            <p class="text-base text-red-600 flex items-center">
-                                <i class="fas fa-exclamation-circle mr-3"></i>{{ form.position.errors.0 }}
-                            </p>
-                        </div>
-                    {% endif %}
                 </div>
                         
+                <!-- Submit Button -->
                 <div class="flex justify-end pt-8">
+                    <!-- Enhanced submit button with multiple hover effects and animations -->
                     <button type="submit" class="group relative inline-flex items-center px-12 py-6 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 hover:from-blue-700 hover:via-purple-700 hover:to-indigo-700 text-white font-bold text-lg rounded-2xl transition-all duration-500 shadow-2xl hover:shadow-3xl transform hover:-translate-y-3 hover:scale-105 overflow-hidden">
+                        <!-- Multiple layered effects for button -->
                         <div class="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                        <div class="absolute inset-y-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
                         <i class="fas fa-save mr-4 group-hover:rotate-12 transition-transform duration-300"></i>
-                        <span class="relative z-10">Update Profile</span>
+                        <span class="relative z-10">Update Account Information</span>
                         <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-600 to-purple-600 opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
                     </button>
                 </div>
             </form>
-        </div>
-    </div>
-
-    <!-- Account Information Section -->
-    <div class="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 p-10 relative overflow-hidden mb-8">
-        <!-- Background Pattern -->
-        <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-green-100/50 to-emerald-100/50 rounded-full -translate-y-12 translate-x-12"></div>
-        
-        <div class="relative">
-            <div class="flex items-center mb-10">
-                <div class="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mr-6 shadow-xl">
-                    <i class="fas fa-info-circle text-white text-2xl"></i>
-                </div>
-                <div>
-                    <h2 class="text-4xl font-bold text-gray-900 mb-2">Account Information</h2>
-                    <p class="text-gray-600 text-lg">Your account details and membership information</p>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-gray-50 rounded-lg p-4">
-                    <div class="flex items-center mb-2">
-                        <i class="fas fa-user mr-2 text-blue-500"></i>
-                        <span class="font-semibold text-gray-700">Full Name</span>
-                    </div>
-                    <p class="text-gray-900">{{ user.first_name }} {{ user.last_name|default:"" }}</p>
-                </div>
-                
-                <div class="bg-gray-50 rounded-lg p-4">
-                    <div class="flex items-center mb-2">
-                        <i class="fas fa-envelope mr-2 text-blue-500"></i>
-                        <span class="font-semibold text-gray-700">Email Address</span>
-                    </div>
-                    <p class="text-gray-900">{{ user.email }}</p>
-                </div>
-                        
-                <div class="bg-gray-50 rounded-lg p-4">
-                    <div class="flex items-center mb-2">
-                        <i class="fas fa-calendar mr-2 text-blue-500"></i>
-                        <span class="font-semibold text-gray-700">Member Since</span>
-                    </div>
-                    <p class="text-gray-900">{{ user.date_joined|date:"M d, Y" }}</p>
-                </div>
-                
-                <div class="bg-gray-50 rounded-lg p-4">
-                    <div class="flex items-center mb-2">
-                        <i class="fas fa-clock mr-2 text-blue-500"></i>
-                        <span class="font-semibold text-gray-700">Last Login</span>
-                    </div>
-                    <p class="text-gray-900">{{ user.last_login|date:"M d, Y H:i"|default:"Never" }}</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Account Statistics Section -->
-    <div class="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 p-10 relative overflow-hidden">
-        <!-- Background Pattern -->
-        <div class="absolute top-0 right-0 w-28 h-28 bg-gradient-to-br from-purple-100/50 to-pink-100/50 rounded-full -translate-y-14 translate-x-14"></div>
-        
-        <div class="relative">
-            <div class="flex items-center mb-10">
-                <div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center mr-6 shadow-xl">
-                    <i class="fas fa-chart-bar text-white text-2xl"></i>
-                </div>
-                <div>
-                    <h2 class="text-4xl font-bold text-gray-900 mb-2">Account Statistics</h2>
-                    <p class="text-gray-600 text-lg">Your fraud detection performance and activity metrics</p>
-                </div>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="text-center bg-blue-50 rounded-xl p-6">
-                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-search text-blue-600"></i>
-                    </div>
-                    <h3 class="font-semibold text-gray-900 mb-2">Total Predictions</h3>
-                    <p class="text-2xl font-bold text-blue-600">{{ total_predictions }}</p>
-                </div>
-                
-                <div class="text-center bg-red-50 rounded-xl p-6">
-                    <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-exclamation-triangle text-red-600"></i>
-                    </div>
-                    <h3 class="font-semibold text-gray-900 mb-2">Fraud Detected</h3>
-                    <p class="text-2xl font-bold text-red-600">{{ fraud_predictions }}</p>
-                </div>
-                
-                <div class="text-center bg-green-50 rounded-xl p-6">
-                    <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-check-circle text-green-600"></i>
-                    </div>
-                    <h3 class="font-semibold text-gray-900 mb-2">Clean Cases</h3>
-                    <p class="text-2xl font-bold text-green-600">{{ clean_predictions }}</p>
-                </div>
-            </div>
         </div>
     </div>
 </div>

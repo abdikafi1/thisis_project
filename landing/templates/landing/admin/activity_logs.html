@@ -4,47 +4,7 @@
 {% block page_title %}Activity Logs{% endblock %}
 
 {% block content %}
-<!-- Enhanced Professional Header Section -->
-<div class="enhanced-header mb-5">
-    <div class="row">
-    <div class="col-12">
-            <div class="d-flex align-items-center justify-content-between flex-wrap gap-4">
-                <div class="header-content flex-1 min-w-0">
-                    <div class="d-flex align-items-center gap-4">
-                        <div class="header-icon-wrapper">
-                            <div class="header-icon">
-                                <i class="fas fa-chart-line"></i>
-                        </div>
-                        </div>
-                        <div class="header-text">
-                            <h1 class="header-title">Activity Logs</h1>
-                            <p class="header-subtitle">Monitor and analyze user activities across the system</p>
-                    </div>
-                </div>
-                </div>
-                <div class="header-actions">
-                    <div class="d-flex gap-3 align-items-center">
-                        <div class="search-wrapper">
-                            <div class="input-group mt-10">
-                                <span class="input-group-text">
-                                    <i class="fas fa-search"></i>
-                        </span>
-                                <input type="search" id="clientSearch" class="form-control enhanced-input" 
-                               placeholder="Quick search logs..." aria-label="Client-side search">
-            </div>
-                            <button class="btn btn-outline-light enhanced-btn mt-11 onclick="window.print()" title="Print logs">
-                    <i class="fas fa-print me-2"></i>Print
-                </button>
-                            <button class="btn btn-outline-light enhanced-btn mt-11" id="exportLogsBtn" type="button" title="Export to CSV">
-                    <i class="fas fa-download me-2"></i>Export
-                </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+
 
 <!-- Enhanced Filter Form -->
 <div class="filter-section mb-4">
@@ -55,102 +15,100 @@
         </h5>
     </div>
         <div class="card-body">
-        <form method="get" class="row g-3 align-items-end">
-            <div class="col-lg-3 col-md-6">
-                    <div class="form-group-wrapper">
-                        <label for="activity_type" class="form-label">
-                            <i class="fas fa-tag me-1"></i>Activity Type
-                </label>
-                        <select name="activity_type" class="form-select enhanced-select">
-                    <option value="">All Activities</option>
-                    <option value="login" {% if request.GET.activity_type == 'login' %}selected{% endif %}>
-                        Login
-                    </option>
-                    <option value="prediction" {% if request.GET.activity_type == 'prediction' %}selected{% endif %}>
-                        Prediction
-                    </option>
-                    <option value="report_export" {% if request.GET.activity_type == 'report_export' %}selected{% endif %}>
-                        Report Export
-                    </option>
-                    <option value="settings_change" {% if request.GET.activity_type == 'settings_change' %}selected{% endif %}>
-                        Settings Change
-                    </option>
-                    <option value="admin_action" {% if request.GET.activity_type == 'admin_action' %}selected{% endif %}>
-                        Admin Action
-                    </option>
-                </select>
-                    </div>
-            </div>
-            <div class="col-lg-3 col-md-6">
-                    <div class="form-group-wrapper">
-                        <label for="date_from" class="form-label">
-                            <i class="fas fa-calendar-alt me-1"></i>Date From
-                </label>
-                        <input type="date" name="date_from" class="form-control enhanced-input" value="{{ request.GET.date_from }}">
-                    </div>
-            </div>
-            <div class="col-lg-3 col-md-6">
-                    <div class="form-group-wrapper">
-                        <label for="date_to" class="form-label">
-                            <i class="fas fa-calendar-alt me-1"></i>Date To
-                </label>
-                        <input type="date" name="date_to" class="form-control enhanced-input" value="{{ request.GET.date_to }}">
-            </div>
+        <form method="get" class="row g-3 align-items-end" id="filterForm">
+            <div class="col-12 mb-3">
+                <div class="filter-description">
+                    <i class="fas fa-info-circle me-2 text-primary"></i>
+                    <span class="text-muted">Filter activities by type and date range. Leave filters empty to see all activities.</span>
                 </div>
-               
-                <!-- <div class="col-lg-3 col-md-6">
-                    <div class="form-group-wrapper">
-                <label class="form-label">&nbsp;</label>
-                        <button type="submit" class="btn btn-primary w-100" style="border-radius: 0.75rem; padding: 0.875rem 1rem; font-weight: 600;">
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="form-group-wrapper">
+                    <label for="activity_type" class="form-label">
+                        <i class="fas fa-tag me-1"></i>Activity Type
+                    </label>
+                    <select name="activity_type" id="activity_type" class="form-select enhanced-select admin-select">
+                        <option value="" {% if not request.GET.activity_type %}selected{% endif %}>📊 All Activities</option>
+                        <option value="login" {% if request.GET.activity_type == 'login' %}selected{% endif %}>
+                            🔐 Login
+                        </option>
+                        <option value="prediction" {% if request.GET.activity_type == 'prediction' %}selected{% endif %}>
+                            🔍 Prediction
+                        </option>
+                        <option value="report_export" {% if request.GET.activity_type == 'report_export' %}selected{% endif %}>
+                            📄 Report Export
+                        </option>
+                        <option value="settings_change" {% if request.GET.activity_type == 'settings_change' %}selected{% endif %}>
+                            ⚙️ Settings Change
+                        </option>
+                        <option value="admin_action" {% if request.GET.activity_type == 'admin_action' %}selected{% endif %}>
+                            👑 AdminAction
+                        </option>
+                    </select>
+                    <small class="form-text text-muted">Select specific activity type or leave as "All Activities" to see everything</small>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="form-group-wrapper">
+                    <label for="date_from" class="form-label">
+                        <i class="fas fa-calendar-alt me-1"></i>Date From
+                    </label>
+                    <input type="date" name="date_from" id="date_from" class="form-control enhanced-input" 
+                           value="{{ request.GET.date_from }}" max="{{ today_date }}">
+                    <div class="invalid-feedback" id="date_from_error"></div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="form-group-wrapper">
+                    <label for="date_to" class="form-label">
+                        <i class="fas fa-calendar-alt me-1"></i>Date To
+                    </label>
+                    <input type="date" name="date_to" id="date_to" class="form-control enhanced-input" 
+                           value="{{ request.GET.date_to }}" max="{{ today_date }}">
+                    <div class="invalid-feedback" id="date_to_error"></div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="form-group-wrapper">
+                    <label class="form-label">&nbsp;</label>
+                    <button type="submit" class="btn btn-primary w-100 enhanced-btn" id="applyFiltersBtn">
                         <i class="fas fa-search me-2"></i>Apply Filters
                     </button>
                 </div>
-                </div> -->
+            </div>
         </form>
         
-            <div class="filter-actions mt-4 pt-3 border-top">
-                <div class="d-flex flex-wrap gap-3 align-items-center">
-                    <div class="quick-filters">
-                        <span class="filter-label">Quick Filters:</span>
-            <div class="btn-group btn-group-sm" role="group" aria-label="Quick date filters" id="quickRange">
-                <button type="button" class="btn btn-outline-primary" data-range="today">Today</button>
-                <button type="button" class="btn btn-outline-primary" data-range="7">Last 7d</button>
-                <button type="button" class="btn btn-outline-primary" data-range="30">Last 30d</button>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-6">
-                        <div class="form-group-wrapper">
-                            <label class="form-label">&nbsp;</label>
-                            <button type="submit" class="btn btn-primary w-100" style="border-radius: 0.75rem; padding: 0.875rem 1rem; font-weight: 600;">
-                                <i class="fas fa-search me-2"></i>Apply Filters
-                            </button>
-                        </div>
-            </div>
             {% if request.GET.activity_type or request.GET.date_from or request.GET.date_to %}
-                        <div class="active-filters">
-                            <span class="filter-label">Active filters:</span>
-                {% if request.GET.activity_type %}
-                                <span class="filter-badge">
-                        <i class="fas fa-tag me-1"></i>{{ request.GET.activity_type|title }}
-                                    <a href="?{% if request.GET.date_from %}date_from={{ request.GET.date_from }}&{% endif %}{% if request.GET.date_to %}date_to={{ request.GET.date_to }}{% endif %}" class="remove-filter">×</a>
-                                </span>
-                {% endif %}
-                {% if request.GET.date_from or request.GET.date_to %}
-                                <span class="filter-badge">
-                        <i class="fas fa-calendar me-1"></i>Date Range
-                                    <a href="?{% if request.GET.activity_type %}activity_type={{ request.GET.activity_type }}{% endif %}" class="remove-filter">×</a>
-                                </span>
-                {% endif %}
-                            <a href="{% url 'admin_activity_logs' %}" class="filter-badge clear-all">
-                    <i class="fas fa-times me-1"></i>Clear all
-                </a>
-                        </div>
+                <div class="active-filters mt-4 pt-3 border-top">
+                    <div class="d-flex flex-wrap gap-3 align-items-center">
+                        <span class="filter-label">Active filters:</span>
+                        {% if request.GET.activity_type %}
+                            <span class="filter-badge">
+                                <i class="fas fa-tag me-1"></i>{{ request.GET.activity_type|title }}
+                                <a href="?{% if request.GET.date_from %}date_from={{ request.GET.date_from }}&{% endif %}{% if request.GET.date_to %}date_to={{ request.GET.date_to }}{% endif %}" class="remove-filter">×</a>
+                            </span>
+                        {% endif %}
+                        {% if request.GET.date_from or request.GET.date_to %}
+                            <span class="filter-badge">
+                                <i class="fas fa-calendar me-1"></i>
+                                {% if request.GET.date_from and request.GET.date_to %}
+                                    {{ request.GET.date_from }} to {{ request.GET.date_to }}
+                                {% elif request.GET.date_from %}
+                                    From {{ request.GET.date_from }}
+                                {% elif request.GET.date_to %}
+                                    Until {{ request.GET.date_to }}
+                                {% endif %}
+                                <a href="?{% if request.GET.activity_type %}activity_type={{ request.GET.activity_type }}{% endif %}" class="remove-filter">×</a>
+                            </span>
+                        {% endif %}
+                        <a href="{% url 'admin_activity_logs' %}" class="filter-badge clear-all">
+                            <i class="fas fa-times me-1"></i>Clear all
+                        </a>
+                    </div>
+                </div>
             {% endif %}
         </div>
     </div>
-</div>
-                </div>
-            </div>
 <!-- Enhanced Quick Stats Cards -->
 <!-- <div class="stats-section mb-4">
     <div class="d-flex flex-wrap gap-3">
@@ -202,7 +160,7 @@
                     <i class="fas fa-table me-2"></i>Activity List
             </h5>
                 <div class="table-controls">
-                    <span class="control-label">Select rows to export:</span>
+                    <span class="control-label color-black">Select rows to export:</span>
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" id="selectAllLogs" title="Select all activities">
                         <label class="form-check-label" for="selectAllLogs">All</label>
@@ -245,15 +203,17 @@
                                        data-description="{{ activity.description }}" 
                                        data-ip="{{ activity.ip_address }}" 
                                            data-timestamp="{{ activity.created_at|date:'Y-m-d H:i:s' }}">
-                                    <div class="user-avatar">
-                                        <div class="avatar-circle">
-                                    <i class="fas fa-user"></i>
-                                </div>
+                                    <div class="user-info">
+                                        <div class="user-avatar">
+                                            <div class="avatar-circle">
+                                                <i class="fas fa-user"></i>
+                                            </div>
+                                        </div>
+                                        <div class="user-details">
+                                            <div class="username">{{ activity.user.username }}</div>
+                                            <small class="text-muted">{{ activity.user.email }}</small>
+                                        </div>
                                     </div>
-                                    <div class="user-success">
-                                        <div class="username">{{ activity.user.username }}</div>
-                                    <small class="text-muted">{{ activity.user.email }}</small>
-                                </div>
                             </div>
                         </td>
                         <td class="px-4 py-3">
@@ -266,7 +226,7 @@
                             {% elif activity.activity_type == 'settings_change' %}
                                     <span class="badge badge-settings">Settings</span>
                             {% elif activity.activity_type == 'admin_action' %}
-                                    <span class="badge badge-admin">Admin Action</span>
+                                    <span class="badge badge-admin">AdminAction</span>
                             {% else %}
                                     <span class="badge badge-admin">{{ activity.activity_type|title }}</span>
                             {% endif %}
@@ -311,10 +271,10 @@
 
 <!-- Scrollable Activities List - No Pagination -->
 <div class="scrollable-activities-info mt-5">
-    <div class="activities-summary">
-        <i class="fas fa-info-circle me-2"></i>
-        <span>Total Activities: <strong>{{ activities.count }}</strong></span>
-    </div>
+    <!-- <div class="activities-summary"> -->
+        <!-- <i class="fas fa-info-circle me-2"></i> -->
+        <!-- <span>Total Activities: <strong>{{ activities.count }}</strong></span> -->
+    <!-- </div> -->
     
     <div class="scroll-hint">
         <i class="fas fa-mouse me-2"></i>
@@ -557,6 +517,100 @@
 /* Enhanced Filter Section */
 .filter-section {
     margin-bottom: 2rem;
+}
+
+.filter-description {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border: 1px solid #dee2e6;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    text-align: center;
+    font-size: 0.95rem;
+}
+
+.filter-description i {
+    color: #667eea;
+}
+
+.form-text {
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+    color: #6c757d;
+    font-style: italic;
+}
+
+/* Form Validation Styling */
+.form-control.is-invalid {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+.form-control.is-valid {
+    border-color: #28a745;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+
+.invalid-feedback {
+    display: block;
+    width: 100%;
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    color: #dc3545;
+}
+
+.valid-feedback {
+    display: block;
+    width: 100%;
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    color: #28a745;
+}
+
+/* Enhanced Form Controls */
+.enhanced-input {
+    border: 2px solid #e9ecef;
+    border-radius: 0.75rem;
+    padding: 0.875rem 1rem;
+    background: white;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    min-width: 180px;
+}
+
+.enhanced-input:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    transform: translateY(-2px);
+}
+
+.enhanced-input:hover {
+    border-color: #667eea;
+}
+
+/* Enhanced Button Styling */
+.enhanced-btn {
+    border-radius: 0.75rem;
+    font-weight: 600;
+    padding: 0.875rem 1.5rem;
+    transition: all 0.3s ease;
+    border: none;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.enhanced-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+.enhanced-btn:active {
+    transform: translateY(0);
+}
+
+.enhanced-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
 }
 
 .enhanced-card {
@@ -1015,16 +1069,216 @@
     outline: none;
     box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
 }
+
+/* Admin Select Dropdown Styling */
+.admin-select {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+    border: 2px solid #ff6b6b;
+    border-radius: 0.75rem;
+    color: black;
+    font-weight: 600;
+    padding: 0.875rem 1rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+}
+
+.admin-select:hover {
+    background: linear-gradient(135deg, #ff5252 0%, #e64a19 100%);
+    border-color: #ff5252;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+    color: black;
+}
+
+.admin-select:focus {
+    background: linear-gradient(135deg, #ff5252 0%, #e64a19 100%);
+    border-color: #ff5252;
+    box-shadow: 0 0 0 0.2rem rgba(255, 107, 107, 0.25);
+    transform: translateY(-2px);
+    color: black;
+}
+
+.admin-select option {
+    background: white;
+    color: black;
+    font-weight: 500;
+    padding: 0.5rem;
+}
+
+.admin-select option:hover {
+    background: #f8f9fa;
+    color: black;
+}
+
+/* Custom dropdown arrow - changed to black for better visibility */
+.admin-select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23000000' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1.5em;
+    padding-right: 2.5rem;
+}
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const clientSearch = document.getElementById('clientSearch');
+    // ========================================
+    // DOM ELEMENTS
+    // ========================================
+    const filterForm = document.getElementById('filterForm');
+    const dateFrom = document.getElementById('date_from');
+    const dateTo = document.getElementById('date_to');
+    const activityType = document.getElementById('activity_type');
+    const applyFiltersBtn = document.getElementById('applyFiltersBtn');
     const selectAllLogs = document.getElementById('selectAllLogs');
     const activityCheckboxes = document.querySelectorAll('.activity-checkbox');
-    const exportLogsBtn = document.getElementById('exportLogsBtn');
-    const copyButtons = document.querySelectorAll('.copy-description');
-    const quickRange = document.getElementById('quickRange');
+    const copyButtons = document.querySelectorAll('.copy-btn');
+    
+    // ========================================
+    // DATE VALIDATION & FILTERING
+    // ========================================
+    
+    // Set max date to today for both date inputs
+    const today = new Date().toISOString().split('T')[0];
+    if (dateFrom) dateFrom.max = today;
+    if (dateTo) dateTo.max = today;
+    
+    // Date validation function
+    function validateDates() {
+        let isValid = true;
+        
+        // Clear previous validation states
+        dateFrom.classList.remove('is-invalid', 'is-valid');
+        dateTo.classList.remove('is-invalid', 'is-valid');
+        document.getElementById('date_from_error').textContent = '';
+        document.getElementById('date_to_error').textContent = '';
+        
+        const fromDate = dateFrom.value;
+        const toDate = dateTo.value;
+        
+        // Check if both dates are provided
+        if (fromDate && toDate) {
+            if (fromDate > toDate) {
+                dateFrom.classList.add('is-invalid');
+                dateTo.classList.add('is-invalid');
+                document.getElementById('date_from_error').textContent = 'Start date cannot be after end date';
+                document.getElementById('date_to_error').textContent = 'End date cannot be before start date';
+                isValid = false;
+            } else {
+                dateFrom.classList.add('is-valid');
+                dateTo.classList.add('is-valid');
+            }
+        } else if (fromDate || toDate) {
+            // If only one date is provided, mark it as valid
+            if (fromDate) dateFrom.classList.add('is-valid');
+            if (toDate) dateTo.classList.add('is-valid');
+        }
+        
+        return isValid;
+    }
+    
+    // Add validation on date input change
+    if (dateFrom) {
+        dateFrom.addEventListener('change', validateDates);
+    }
+    if (dateTo) {
+        dateTo.addEventListener('change', validateDates);
+    }
+    
+    // ========================================
+    // FORM SUBMISSION & VALIDATION
+    // ========================================
+    
+    if (filterForm) {
+        filterForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (validateDates()) {
+                // Build query parameters
+                const params = new URLSearchParams();
+                
+                if (activityType.value) {
+                    params.append('activity_type', activityType.value);
+                }
+                if (dateFrom.value) {
+                    params.append('date_from', dateFrom.value);
+                }
+                if (dateTo.value) {
+                    params.append('date_to', dateTo.value);
+                }
+                
+                // Redirect with filters
+                const url = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
+                window.location.href = url;
+            } else {
+                // Show error message
+                showNotification('Please fix the date validation errors before applying filters.', 'error');
+            }
+        });
+    }
+    
+    // ========================================
+    // QUICK DATE FILTERS
+    // ========================================
+    
+  
+    // Insert quick filters after the form
+    if (filterForm) {
+        filterForm.parentNode.insertBefore(quickFiltersContainer, filterForm.nextSibling);
+    }
+    
+    // Quick filter functionality
+    quickFiltersContainer.addEventListener('click', function(e) {
+        const btn = e.target.closest('button[data-range]');
+        if (!btn) return;
+        
+        const range = btn.getAttribute('data-range');
+        const today = new Date();
+        const pad = n => String(n).padStart(2, '0');
+        const toStr = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+        
+        let fromDate, toDate;
+        
+        if (range === 'today') {
+            fromDate = toDate = toStr(today);
+        } else {
+            const days = parseInt(range, 10);
+            toDate = toStr(today);
+            const from = new Date(today);
+            from.setDate(from.getDate() - (days - 1));
+            fromDate = toStr(from);
+        }
+        
+        // Set the date inputs
+        if (dateFrom) dateFrom.value = fromDate;
+        if (dateTo) dateTo.value = toDate;
+        
+        // Validate and submit
+        if (validateDates()) {
+            filterForm.submit();
+        }
+    });
+    
+    // ========================================
+    // UTILITY FUNCTIONS
+    // ========================================
+    
+    function showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `alert alert-${type === 'error' ? 'danger' : type} alert-dismissible fade show position-fixed`;
+        notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+        notification.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.remove();
+        }, 5000);
+    }
 
     // Client-side search
     if (clientSearch) {

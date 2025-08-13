@@ -27,7 +27,9 @@ urlpatterns = [
     path('dashboard/', dashboard_view, name='dashboard'),
     path('user-dashboard/', user_dashboard_view, name='user_dashboard'),
     path('profile/', user_profile_view, name='user_profile'),
-    path('admin/profile/', admin_profile_view, name='admin_profile'),
+    path('manage/profile/', admin_profile_view, name='admin_profile'),
+    # Temporary redirect for old admin profile URL
+    path('admin/profile/', lambda request: redirect('admin_profile'), name='admin_profile_redirect'),
     
     # Prediction and Analysis
     path('predict/', prediction_view, name='predict'),

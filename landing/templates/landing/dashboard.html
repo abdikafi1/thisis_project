@@ -92,29 +92,29 @@
                     </div>
                 </div>
 
-                <!-- Fraud Detection Rate -->
+                <!-- Fraud Count -->
                 <div class="group bg-white/90 rounded-2xl p-6 text-center border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
                     <div class="w-12 h-12 bg-gradient-to-br from-red-500 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
-                        <i class="fas fa-shield-alt text-lg text-white"></i>
+                        <i class="fas fa-exclamation-triangle text-lg text-white"></i>
                     </div>
                     <div class="text-2xl font-black text-gray-800 mb-2">
-                        {{ fraud_detection_rate|default:"0" }}%
+                        {{ fraud_detected|default:"0" }}
                     </div>
                     <div class="text-sm font-bold text-gray-600 uppercase tracking-wider">
-                        Fraud Detection Rate
+                        Fraud Count
                     </div>
                 </div>
 
-                <!-- Clean Cases Rate -->
+                <!-- Non-Fraud Count -->
                 <div class="group bg-white/90 rounded-2xl p-6 text-center border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
                     <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
                         <i class="fas fa-check-circle text-lg text-white"></i>
                     </div>
                     <div class="text-2xl font-black text-gray-800 mb-2">
-                        {{ clean_rate|default:"0" }}%
+                        {{ not_fraud_count|default:"0" }}
                     </div>
                     <div class="text-sm font-bold text-gray-600 uppercase tracking-wider">
-                        Clean Cases Rate
+                        Non-Fraud Count
                     </div>
                 </div>
 
@@ -124,7 +124,7 @@
                         <i class="fas fa-brain text-lg text-white"></i>
                     </div>
                     <div class="text-2xl font-black text-gray-800 mb-2">
-                        72%
+                        {{ model_accuracy|default:"0" }}%
                     </div>
                     <div class="text-sm font-bold text-gray-600 uppercase tracking-wider">
                         Model Accuracy
@@ -133,49 +133,8 @@
             </div>
 
             <!-- Additional Analytics Row -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-                <!-- Processing Time -->
-                <div class="group bg-white/90 rounded-2xl p-6 text-center border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                    <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
-                        <i class="fas fa-tachometer-alt text-lg text-white"></i>
-                    </div>
-                    <div class="text-2xl font-black text-gray-800 mb-2">
-                        {{ avg_processing_time|default:"2.5" }}s
-                    </div>
-                    <div class="text-sm font-bold text-gray-600 uppercase tracking-wider">
-                        Avg Processing Time
-                    </div>
-                </div>
-
-                <!-- This Month -->
-                <div class="group bg-white/90 rounded-2xl p-6 text-center border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                    <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
-                        <i class="fas fa-calendar-alt text-lg text-white"></i>
-                    </div>
-                    <div class="text-2xl font-black text-gray-800 mb-2">
-                        {{ this_month_predictions|default:"0" }}
-                    </div>
-                    <div class="text-sm font-bold text-gray-600 uppercase tracking-wider">
-                        This Month
-                    </div>
-                </div>
-
-                <!-- Recent Activity -->
-                <div class="group bg-white/90 rounded-2xl p-6 text-center border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                    <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
-                        <i class="fas fa-clock text-lg text-white"></i>
-                    </div>
-                    <div class="text-2xl font-black text-gray-800 mb-2">
-                        {{ recent_activity_count|default:"0" }}
-                    </div>
-                    <div class="text-sm font-bold text-gray-600 uppercase tracking-wider">
-                        Recent Activity
-                    </div>
-                </div>
-            </div>
+            
         </div>
-
-        <!-- Cases Section -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
             <!-- Fraud Cases -->
             <div class="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-8 border border-white/30 hover:shadow-3xl hover:-translate-y-2 transition-all duration-500">
@@ -193,18 +152,13 @@
                 
                 {% if fraud_cases %}
                     <div class="space-y-4">
-                        {% for case in fraud_cases|slice:":10" %}
+                        {% for case in fraud_cases %}
                         <div class="group flex items-center p-4 rounded-2xl hover:bg-red-50 hover:shadow-lg transition-all duration-300 cursor-pointer">
                             <div class="w-12 h-12 bg-gradient-to-br from-red-500 to-pink-600 rounded-full flex items-center justify-center mr-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
                                 <i class="fas fa-exclamation-triangle text-white"></i>
                             </div>
                             <div class="flex-1">
                                 <div class="font-bold text-gray-800 mb-1">Fraud Case #{{ case.id }}</div>
-                                <div class="text-sm text-gray-600 mb-1">
-                                    {% with case_data=case.input_dict %}
-                                        Age: {{ case_data.Age|default:"N/A" }} | Vehicle: {{ case_data.VehicleCategory|default:"N/A" }} | Claims: {{ case_data.PastNumberOfClaims|default:"N/A" }}
-                                    {% endwith %}
-                                </div>
                                 <div class="text-xs text-gray-500 font-medium">{{ case.created_at|timesince }} ago</div>
                             </div>
                         </div>
@@ -228,27 +182,22 @@
                         <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center mr-4 shadow-lg">
                             <i class="fas fa-check-circle text-xl text-white"></i>
                         </div>
-                        <h3 class="text-2xl font-black text-gray-800">Recent Clean Cases</h3>
+                        <h3 class="text-2xl font-black text-gray-800">Recent Non-Fraud Cases</h3>
                     </div>
                     <span class="text-sm font-bold text-gray-500 bg-green-50 px-3 py-1 rounded-full">
-                        {{ clean_cases.count }} cases
+                        {{ non_fraud_cases.count }} cases
                     </span>
                 </div>
                 
-                {% if clean_cases %}
+                {% if non_fraud_cases %}
                     <div class="space-y-4">
-                        {% for case in clean_cases|slice:":10" %}
+                        {% for case in non_fraud_cases %}
                         <div class="group flex items-center p-4 rounded-2xl hover:bg-green-50 hover:shadow-lg transition-all duration-300 cursor-pointer">
                             <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center mr-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
                                 <i class="fas fa-check-circle text-white"></i>
                             </div>
                             <div class="flex-1">
-                                <div class="font-bold text-gray-800 mb-1">Clean Case #{{ case.id }}</div>
-                                <div class="text-sm text-gray-600 mb-1">
-                                    {% with case_data=case.input_dict %}
-                                        Age: {{ case_data.Age|default:"N/A" }} | Vehicle: {{ case_data.VehicleCategory|default:"N/A" }} | Claims: {{ case_data.PastNumberOfClaims|default:"N/A" }}
-                                    {% endwith %}
-                                </div>
+                                <div class="font-bold text-gray-800 mb-1">Non-Fraud Case #{{ case.id }}</div>
                                 <div class="text-xs text-gray-500 font-medium">{{ case.created_at|timesince }} ago</div>
                             </div>
                         </div>
@@ -259,12 +208,15 @@
                         <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                             <i class="fas fa-inbox text-3xl text-gray-600"></i>
                         </div>
-                        <h3 class="text-xl font-bold text-gray-800 mb-2">No Clean Cases</h3>
-                        <p class="text-gray-600">No clean cases found recently.</p>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">No Non-Fraud Cases</h3>
+                        <p class="text-gray-600">No non-fraud cases found recently.</p>
                     </div>
                 {% endif %}
             </div>
         </div>
+
+        <!-- Cases Section -->
+        
 
         <!-- Quick Actions -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">

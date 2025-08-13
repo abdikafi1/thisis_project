@@ -377,42 +377,7 @@
                     </div>
 
                     <!-- User Features Section for Admins -->
-                    <div class="sidebar-section">
-                        <div class="flex items-center justify-between mb-4 px-4">
-                            <p class="section-title">User Features</p>
-                            <div class="w-8 h-8 bg-emerald-500/20 rounded-full flex items-center justify-center glass-effect">
-                                <i class="fas fa-user text-emerald-400 text-xs"></i>
-                            </div>
-                        </div>
-                        <a href="{% url 'user_profile' %}" class="nav-item-hover flex items-center px-4 py-3 text-white/80 hover:text-white rounded-xl transition-all duration-200 group">
-                            <div class="w-8 h-8 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
-                                <i class="fas fa-user-circle text-white text-sm"></i>
-                            </div>
-                            <div class="flex-1">
-                                <span class="font-medium">My Profile</span>
-                                <p class="text-xs text-white/50 mt-1">View & edit profile</p>
-                            </div>
-                        </a>
-                        <a href="{% url 'user_dashboard' %}" class="nav-item-hover flex items-center px-4 py-3 text-white/80 hover:text-white rounded-xl transition-all duration-200 group">
-                            <div class="w-8 h-8 bg-gradient-to-br from-cyan-500 to-cyan-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
-                                <i class="fas fa-chart-bar text-white text-sm"></i>
-                            </div>
-                            <div class="flex-1">
-                                <span class="font-medium">User Dashboard</span>
-                                <p class="text-xs text-white/50 mt-1">Personal analytics</p>
-                            </div>
-                        </a>
-                        <a href="{% url 'predict' %}" class="nav-item-hover flex items-center px-4 py-3 text-white/80 hover:text-white rounded-xl transition-all duration-200 group">
-                            <div class="w-8 h-8 bg-gradient-to-br from-violet-500 to-violet-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
-                                <i class="fas fa-search text-white text-sm"></i>
-                            </div>
-                            <div class="flex-1">
-                                <span class="font-medium">New Prediction</span>
-                                <p class="text-xs text-white/50 mt-1">Start fraud analysis</p>
-                            </div>
-                        </a>
-                    </div>
-                    </div>
+                    
             </nav>
             <div class="mt-auto px-4 pb-6">
                     <div class="space-y-2">
@@ -449,21 +414,25 @@
                         </div>
                     </div>
                     <div class="flex items-center space-x-4">
-                        <div class="flex items-center space-x-3 bg-gray-50 px-3 py-2 rounded-lg">
-                            <div class="text-right">
-                                <p class="text-sm font-semibold text-gray-900">{{ user.get_full_name|default:user.username }}</p>
-                                <div class="flex items-center space-x-2">
-                                    <span class="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full font-medium">Admin</span>
-                                    <span class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-medium">User</span>
+                        <div class="flex items-center space-x-3 bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 px-4 py-3 rounded-xl shadow-sm">
+                            <div class="flex items-center space-x-3">
+                                <div class="text-left">
+                                    <p class="text-sm font-semibold text-gray-900">{{ user.get_full_name|default:user.username }}</p>
+                                    <span class="text-xs bg-gradient-to-r from-purple-500 to-purple-600 text-white px-3 py-1 rounded-full font-medium tracking-wide shadow-sm flex items-center">
+                                        <i class="fas fa-crown mr-1"></i>Administrator
+                                    </span>
                                 </div>
                             </div>
                             <div class="flex items-center space-x-2">
-                                <a href="{% url 'admin_profile' %}" class="w-8 h-8 bg-gradient-to-br from-red-500 to-red-600 rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform duration-200 cursor-pointer" title="Admin Profile">
-                                    <i class="fas fa-shield-alt text-white text-sm"></i>
-                                </a>
-                                <a href="{% url 'user_profile' %}" class="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform duration-200 cursor-pointer" title="User Profile">
-                                    <i class="fas fa-user text-white text-sm"></i>
-                                </a>
+                                {% if user.profile.user_level == 'admin' %}
+                                    <a href="{% url 'admin_profile' %}" class="w-8 h-8 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform duration-200 cursor-pointer" title="Admin Profile">
+                                        <i class="fas fa-crown text-white text-sm"></i>
+                                    </a>
+                                {% else %}
+                                    <a href="{% url 'user_profile' %}" class="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform duration-200 cursor-pointer" title="User Profile">
+                                        <i class="fas fa-user text-white text-sm"></i>
+                                    </a>
+                                {% endif %}
                             </div>
                         </div>
                         <a href="{% url 'logout' %}" class="p-3 text-gray-400 hover:text-gray-600 bg-gray-50 hover:bg-gray-100 rounded-lg" title="Logout">

@@ -6,7 +6,7 @@
 {% block content %}
 <div class="p-0">
     <!-- Header Stats -->
-    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
         <!-- Total Predictions -->
         <div class="card hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200">
             <div class="flex items-center justify-between">
@@ -23,46 +23,18 @@
             </div>
         </div>
 
-        <!-- Fraud Cases -->
-        <div class="card hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-red-50 to-red-100 border border-red-200">
+        <!-- Model Accuracy -->
+        <div class="card hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-emerald-50 to-emerald-100 border border-emerald-200">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-red-700 text-sm font-semibold uppercase tracking-wide">Fraud Cases Detected</p>
-                    <h3 class="text-4xl font-black text-red-900 mt-2">{{ fraud_cases|default:"0" }}</h3>
-                    <p class="text-red-600 text-sm mt-2 flex items-center">
-                        <i class="fas fa-exclamation-triangle mr-1"></i> {{ fraud_rate|default:"0" }}% Detection Rate
+                    <p class="text-emerald-700 text-sm font-semibold uppercase tracking-wide">Model Accuracy</p>
+                    <h3 class="text-4xl font-black text-emerald-900 mt-2">{{ model_accuracy|default:"85.7" }}%</h3>
+                    <p class="text-emerald-600 text-sm mt-2 flex items-center">
+                        <i class="fas fa-brain mr-1"></i> {{ model_version|default:"BalancedRandomForest" }}
                     </p>
                 </div>
-                <div class="bg-gradient-to-br from-red-500 to-red-600 p-4 rounded-2xl shadow-lg">
-                    <i class="fas fa-shield-alt text-3xl text-white"></i>
-                </div>
-            </div>
-        </div>
-
-        <!-- Model Accuracy (Circular Progress) -->
-        <div class="card hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-emerald-50 to-emerald-100 border border-emerald-200 overflow-hidden p-6">
-            <div class="flex items-center justify-between gap-4">
-                <div class="flex-1 min-w-0">
-                    <p class="text-emerald-700 text-sm font-semibold uppercase tracking-wide mb-4">Model Accuracy</p>
-                    <div class="flex items-center gap-4">
-                        <div class="relative w-20 h-20 flex-shrink-0">
-                            <svg viewBox="0 0 36 36" class="w-20 h-20">
-                                <path class="text-emerald-200" stroke="currentColor" stroke-width="3" fill="none" d="M18 2a16 16 0 1 1 0 32 16 16 0 0 1 0-32"/>
-                                <path class="text-emerald-500" stroke="currentColor" stroke-linecap="round" stroke-width="3" fill="none"
-                                      stroke-dasharray="{{ model_accuracy|default:'85.7' }}, 100" d="M18 2a16 16 0 1 1 0 32 16 16 0 0 1 0-32"/>
-                            </svg>
-                            <div class="absolute inset-0 flex items-center justify-center">
-                                <span class="text-xl font-extrabold text-emerald-700">{{ model_accuracy|default:"85.7" }}%</span>
-                            </div>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <p class="text-emerald-600 text-sm font-medium flex items-center gap-2 mb-2">
-                                <i class="fas fa-brain text-emerald-500"></i>
-                                <span class="truncate">{{ model_version|default:"BalancedRandomForest" }}</span>
-                            </p>
-                            <p class="text-gray-500 text-xs leading-relaxed">Current production model performance</p>
-                        </div>
-                </div>
+                <div class="bg-gradient-to-br from-emerald-500 to-emerald-600 p-4 rounded-2xl shadow-lg">
+                    <i class="fas fa-brain text-3xl text-white"></i>
                 </div>
             </div>
         </div>
@@ -84,46 +56,7 @@
         </div>
     </div>
 
-    <!-- Quick User Access Section -->
-    <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
-        <div class="mb-6">
-            <h5 class="text-lg font-semibold text-gray-900 mb-1">
-                <i class="fas fa-user text-blue-500 mr-2"></i>Quick User Access
-            </h5>
-            <p class="text-gray-500 text-sm">Access user features and manage your own account</p>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <a href="{% url 'user_profile' %}" class="flex items-center p-4 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors group">
-                <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
-                    <i class="fas fa-user text-white"></i>
-                </div>
-                <div>
-                    <h6 class="font-semibold text-blue-900">My Profile</h6>
-                    <p class="text-sm text-blue-600">View & edit profile</p>
-                </div>
-            </a>
-            
-            <a href="{% url 'user_dashboard' %}" class="flex items-center p-4 bg-green-50 hover:bg-green-100 rounded-lg transition-colors group">
-                <div class="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
-                    <i class="fas fa-chart-bar text-white"></i>
-                </div>
-                <div>
-                    <h6 class="font-semibold text-green-900">User Dashboard</h6>
-                    <p class="text-sm text-green-600">Personal analytics</p>
-                </div>
-            </a>
-            
-            <a href="{% url 'predict' %}" class="flex items-center p-4 bg-purple-50 hover:bg-purple-100 rounded-lg transition-colors group">
-                <div class="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
-                    <i class="fas fa-search text-white"></i>
-                </div>
-                <div>
-                    <h6 class="font-semibold text-purple-900">New Prediction</h6>
-                    <p class="text-sm text-purple-600">Start fraud analysis</p>
-                </div>
-            </a>
-        </div>
-    </div>
+ 
 
     <!-- Charts Section -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
@@ -168,253 +101,174 @@
         </div>
     </div>
 
-    <!-- ML Model Insights -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        <!-- High Risk Patterns -->
-        <div class="bg-white rounded-xl shadow-lg p-6">
-            <h5 class="text-lg font-semibold text-gray-900 mb-4">
-                <i class="fas fa-exclamation-triangle text-red-500 mr-2"></i>High Risk Patterns
-            </h5>
-            <div class="space-y-3">
-                {% if high_risk_patterns %}
-                    {% for pattern, count in high_risk_patterns.items %}
-                    <div class="flex justify-between items-center p-3 bg-red-50 rounded-lg">
-                        <span class="text-sm text-red-700">{{ pattern|title }}</span>
-                        <span class="text-sm font-semibold text-red-800">{{ count }} cases</span>
-                    </div>
-                    {% endfor %}
-                {% else %}
-                    <p class="text-gray-500 text-center py-4">No high-risk patterns detected</p>
-                {% endif %}
-            </div>
-        </div>
 
-        <!-- Feature Importance -->
-        <div class="bg-white rounded-xl shadow-lg p-6">
-            <h5 class="text-lg font-semibold text-gray-900 mb-4">
-                <i class="fas fa-chart-bar text-blue-500 mr-2"></i>Top Feature Importance
-            </h5>
-            <div class="space-y-3">
-                {% if feature_importance %}
-                    {% for feature, importance in feature_importance.items|slice:":5" %}
-                    <div class="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
-                        <span class="text-sm text-blue-700">{{ feature|title }}</span>
-                        <span class="text-sm font-semibold text-blue-800">{{ importance|floatformat:3 }}</span>
-                    </div>
-                    {% endfor %}
-                {% else %}
-                    <p class="text-gray-500 text-center py-4">Feature importance data unavailable</p>
-                {% endif %}
-            </div>
-        </div>
-    </div>
 
     <!-- Real Database Statistics -->
-    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-6 mb-6">
         <!-- Comprehensive User Stats -->
-        <div class="bg-white rounded-xl shadow-lg p-6">
-            <h5 class="text-lg font-semibold text-gray-900 mb-4">
-                <i class="fas fa-users-cog text-blue-500 mr-2"></i>User Status & Levels
+        <div class="bg-white rounded-xl shadow-lg p-4 lg:p-6 hover:shadow-xl transition-shadow duration-300">
+            <h5 class="text-base lg:text-lg font-semibold text-gray-900 mb-3 lg:mb-4 flex items-center">
+                <i class="fas fa-users-cog text-blue-500 mr-2 text-sm lg:text-base"></i>
+                <span class="truncate">User Status & Levels</span>
             </h5>
-            <div class="space-y-3">
+            <div class="space-y-2 lg:space-y-3">
                 <div class="flex justify-between items-center">
-                    <span class="text-sm text-gray-600">Active Users</span>
-                    <span class="text-sm font-semibold text-green-600">{{ user_stats.active_users|default:"0" }}</span>
+                    <span class="text-xs lg:text-sm text-gray-600 truncate">Basic Users</span>
+                    <span class="text-xs lg:text-sm font-semibold text-green-600 ml-2">{{ user_stats.active_users|default:"0" }}</span>
                 </div>
+                
                 <div class="flex justify-between items-center">
-                    <span class="text-sm text-gray-600">Inactive Users</span>
-                    <span class="text-sm font-semibold text-red-600">{{ user_stats.inactive_users|default:"0" }}</span>
-                </div>
-                <div class="flex justify-between items-center">
-                    <span class="text-sm text-gray-600">Staff Users</span>
-                    <span class="text-sm font-semibold text-purple-600">{{ user_stats.staff_users|default:"0" }}</span>
-                </div>
-                <div class="flex justify-between items-center">
-                    <span class="text-sm text-gray-600">Admin Users</span>
-                    <span class="text-sm font-semibold text-blue-600">{{ user_stats.admin_users|default:"0" }}</span>
-                </div>
-                <div class="flex justify-between items-center">
-                    <span class="text-sm text-gray-600">Verified Users</span>
-                    <span class="text-sm font-semibold text-orange-600">{{ user_stats.verified_users|default:"0" }}</span>
-                </div>
-                <div class="flex justify-between items-center border-t pt-2">
-                    <span class="text-sm font-semibold text-gray-700">With Email</span>
-                    <span class="text-sm font-bold text-teal-600">{{ user_stats.users_with_email|default:"0" }}</span>
+                    <span class="text-xs lg:text-sm text-gray-600 truncate">Administrator</span>
+                    <span class="text-xs lg:text-sm font-semibold text-blue-600 ml-2">{{ user_stats.admin_users|default:"0" }}</span>
                 </div>
             </div>
         </div>
 
         <!-- Recent Predictions -->
-        <div class="bg-white rounded-xl shadow-lg p-6">
-            <h5 class="text-lg font-semibold text-gray-900 mb-4">
-                <i class="fas fa-search text-red-500 mr-2"></i>Recent Predictions (30d)
+        <div class="bg-white rounded-xl shadow-lg p-4 lg:p-6 hover:shadow-xl transition-shadow duration-300">
+            <h5 class="text-base lg:text-lg font-semibold text-gray-900 mb-3 lg:mb-4 flex items-center">
+                <i class="fas fa-search text-red-500 mr-2 text-sm lg:text-base"></i>
+                <span class="truncate">Recent Predictions (30d)</span>
             </h5>
-            <div class="space-y-3">
+            <div class="space-y-2 lg:space-y-3">
                 <div class="flex justify-between items-center">
-                    <span class="text-sm text-gray-600">Fraud Detected</span>
-                    <span class="text-sm font-semibold text-red-600">{{ fraud_predictions_recent|default:"0" }}</span>
+                    <span class="text-xs lg:text-sm text-gray-600 truncate">Fraud Detected</span>
+                    <span class="text-xs lg:text-sm font-semibold text-red-600 ml-2">{{ fraud_predictions_recent|default:"0" }}</span>
                 </div>
                 <div class="flex justify-between items-center">
-                    <span class="text-sm text-gray-600">Safe Transactions</span>
-                    <span class="text-sm font-semibold text-green-600">{{ safe_predictions_recent|default:"0" }}</span>
+                    <span class="text-xs lg:text-sm text-gray-600 truncate">Safe Transactions</span>
+                    <span class="text-xs lg:text-sm font-semibold text-green-600 ml-2">{{ safe_predictions_recent|default:"0" }}</span>
                 </div>
                 <div class="flex justify-between items-center border-t pt-2">
-                    <span class="text-sm font-semibold text-gray-700">Total Recent</span>
-                    <span class="text-sm font-bold text-blue-600">{{ fraud_predictions_recent|add:safe_predictions_recent|default:"0" }}</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- System Health -->
-        <div class="bg-white rounded-xl shadow-lg p-6">
-            <h5 class="text-lg font-semibold text-gray-900 mb-4">
-                <i class="fas fa-heartbeat text-green-500 mr-2"></i>System Health
-            </h5>
-            <div class="space-y-3">
-                <div class="flex justify-between items-center">
-                    <span class="text-sm text-gray-600">Database</span>
-                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
-                        <i class="fas fa-check mr-1"></i>Online
-                    </span>
-                </div>
-                <div class="flex justify-between items-center">
-                    <span class="text-sm text-gray-600">ML Model</span>
-                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
-                        <i class="fas fa-brain mr-1"></i>Active
-                    </span>
-                </div>
-                <div class="flex justify-between items-center">
-                    <span class="text-sm text-gray-600">API Status</span>
-                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
-                        <i class="fas fa-plug mr-1"></i>Ready
-                    </span>
+                    <span class="text-xs lg:text-sm font-semibold text-gray-700 truncate">Total Recent</span>
+                    <span class="text-xs lg:text-sm font-bold text-blue-600 ml-2">{{ fraud_predictions_recent|add:safe_predictions_recent|default:"0" }}</span>
                 </div>
             </div>
         </div>
 
         <!-- Data Summary -->
-        <div class="bg-white rounded-xl shadow-lg p-6">
-            <h5 class="text-lg font-semibold text-gray-900 mb-4">
-                <i class="fas fa-database text-purple-500 mr-2"></i>Data Summary
+        <div class="bg-white rounded-xl shadow-lg p-4 lg:p-6 hover:shadow-xl transition-shadow duration-300">
+            <h5 class="text-base lg:text-lg font-semibold text-gray-900 mb-3 lg:mb-4 flex items-center">
+                <i class="fas fa-database text-purple-500 mr-2 text-sm lg:text-base"></i>
+                <span class="truncate">Data Summary</span>
             </h5>
-            <div class="space-y-3">
+            <div class="space-y-2 lg:space-y-3">
                 <div class="flex justify-between items-center">
-                    <span class="text-sm text-gray-600">Training Data Size</span>
-                    <span class="text-sm font-semibold text-gray-800">{{ training_data_size|default:"4925" }} records</span>
+                    <span class="text-xs lg:text-sm text-gray-600 truncate">Training Data</span>
+                    <span class="text-xs lg:text-sm font-semibold text-gray-800 ml-2">{{ training_data_size|default:"4925" }}</span>
                 </div>
                 <div class="flex justify-between items-center">
-                    <span class="text-sm text-gray-600">Fraud Rate</span>
-                    <span class="text-sm font-semibold text-red-600">{{ fraud_rate|default:"0" }}%</span>
+                    <span class="text-xs lg:text-sm text-gray-600 truncate">Fraud Rate</span>
+                    <span class="text-xs lg:text-sm font-semibold text-red-600 ml-2">{{ fraud_rate|default:"0" }}%</span>
                 </div>
                 <div class="flex justify-between items-center">
-                    <span class="text-sm text-gray-600">Model Type</span>
-                    <span class="text-xs font-semibold text-blue-600">{{ model_version|default:"BalancedRandomForest" }}</span>
-                </div>
-                <div class="flex justify-between items-center border-t pt-2">
-                    <span class="text-sm text-gray-600">Last Trained</span>
-                    <span class="text-xs font-semibold text-green-600">{{ last_trained|default:"2024-01-15" }}</span>
+                    <span class="text-xs lg:text-sm text-gray-600 truncate">Model Type</span>
+                    <span class="text-xs font-semibold text-blue-600 ml-2 truncate" title="{{ model_version|default:'BalancedRandomForest' }}">{{ model_version|default:"BalancedRandomForest"|truncatechars:15 }}</span>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Detailed User Information Table -->
-    <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
-        <h5 class="text-lg font-semibold text-gray-900 mb-6">
-            <i class="fas fa-table text-indigo-500 mr-2"></i>Recent Users - Detailed Information
+    <div class="bg-white rounded-xl shadow-lg p-4 lg:p-6 mb-6">
+        <h5 class="text-base lg:text-lg font-semibold text-gray-900 mb-4 lg:mb-6 flex items-center">
+            <i class="fas fa-table text-indigo-500 mr-2 text-sm lg:text-base"></i>
+            Recent Users - Detailed Information
         </h5>
         <div class="overflow-x-auto">
-            <table class="table w-full text-left">
+            <table class="w-full text-left min-w-full">
                 <thead>
                     <tr class="bg-gray-50">
-                        <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase">ID</th>
-                        <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase">Username</th>
-                        <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase">Email</th>
-                        <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase">Full Name</th>
-                        <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase">Level</th>
-                        <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase">Status</th>
-                        <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase">Staff</th>
-                        <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase">Last Login</th>
-                        <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase">Joined</th>
-                        <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase">Predictions</th>
+                        <th class="px-2 lg:px-4 py-2 lg:py-3 text-xs font-semibold text-gray-600 uppercase tracking-wide">ID</th>
+                        <th class="px-2 lg:px-4 py-2 lg:py-3 text-xs font-semibold text-gray-600 uppercase tracking-wide">Username</th>
+                        <th class="px-2 lg:px-4 py-2 lg:py-3 text-xs font-semibold text-gray-600 uppercase tracking-wide hidden md:table-cell">Email</th>
+                        <th class="px-2 lg:px-4 py-2 lg:py-3 text-xs font-semibold text-gray-600 uppercase tracking-wide hidden lg:table-cell">Full Name</th>
+                        <th class="px-2 lg:px-4 py-2 lg:py-3 text-xs font-semibold text-gray-600 uppercase tracking-wide">Level</th>
+                        <th class="px-2 lg:px-4 py-2 lg:py-3 text-xs font-semibold text-gray-600 uppercase tracking-wide hidden md:table-cell">Status</th>
+                        <th class="px-2 lg:px-4 py-2 lg:py-3 text-xs font-semibold text-gray-600 uppercase tracking-wide hidden lg:table-cell">Staff</th>
+                        <th class="px-2 lg:px-4 py-2 lg:py-3 text-xs font-semibold text-gray-600 uppercase tracking-wide hidden xl:table-cell">Last Login</th>
+                        <th class="px-2 lg:px-4 py-2 lg:py-3 text-xs font-semibold text-gray-600 uppercase tracking-wide hidden xl:table-cell">Joined</th>
+                        <th class="px-2 lg:px-4 py-2 lg:py-3 text-xs font-semibold text-gray-600 uppercase tracking-wide hidden 2xl:table-cell">Predictions</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">
                     {% for user in recent_users %}
-                    <tr class="hover:bg-gray-50 transition-colors">
-                        <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ user.id }}</td>
-                        <td class="px-4 py-3">
+                    <tr class="hover:bg-gray-50 transition-colors duration-200">
+                        <td class="px-2 lg:px-4 py-2 lg:py-3 text-xs lg:text-sm font-medium text-gray-900">{{ user.id }}</td>
+                        <td class="px-2 lg:px-4 py-2 lg:py-3">
                             <div class="flex items-center">
-                                <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mr-3">
+                                <div class="w-6 h-6 lg:w-8 lg:h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mr-2 lg:mr-3 flex-shrink-0">
                                     <span class="text-white text-xs font-bold">{{ user.username|first|upper }}</span>
                                 </div>
-                                <span class="text-sm font-medium text-gray-900">{{ user.username }}</span>
+                                <span class="text-xs lg:text-sm font-medium text-gray-900 truncate max-w-20 lg:max-w-32">{{ user.username }}</span>
                             </div>
                         </td>
-                        <td class="px-4 py-3 text-sm text-gray-600">
+                        <td class="px-2 lg:px-4 py-2 lg:py-3 text-xs lg:text-sm text-gray-600 hidden md:table-cell">
                             {% if user.email %}
-                                <i class="fas fa-envelope text-green-500 mr-1"></i>{{ user.email|truncatechars:25 }}
+                                <div class="flex items-center">
+                                    <i class="fas fa-envelope text-green-500 mr-1 text-xs"></i>
+                                    <span class="truncate max-w-24 lg:max-w-32" title="{{ user.email }}">{{ user.email|truncatechars:20 }}</span>
+                                </div>
                             {% else %}
-                                <span class="text-gray-400"><i class="fas fa-envelope-slash mr-1"></i>No email</span>
+                                <span class="text-gray-400 text-xs"><i class="fas fa-envelope-slash mr-1"></i>No email</span>
                             {% endif %}
                         </td>
-                        <td class="px-4 py-3 text-sm text-gray-600">
+                        <td class="px-2 lg:px-4 py-2 lg:py-3 text-xs lg:text-sm text-gray-600 hidden lg:table-cell">
                             {% if user.first_name or user.last_name %}
-                                {{ user.first_name }} {{ user.last_name }}
+                                <span class="truncate max-w-24" title="{{ user.first_name }} {{ user.last_name }}">{{ user.first_name }} {{ user.last_name }}</span>
                             {% else %}
-                                <span class="text-gray-400">Not provided</span>
+                                <span class="text-gray-400 text-xs">Not provided</span>
                             {% endif %}
                         </td>
-                        <td class="px-4 py-3">
+                        <td class="px-2 lg:px-4 py-2 lg:py-3">
                             {% if user.profile.user_level == 'admin' %}
-                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800">
+                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800 whitespace-nowrap">
                                     <i class="fas fa-crown mr-1"></i>Admin
                                 </span>
-
                             {% else %}
-                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">
+                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800 whitespace-nowrap">
                                     <i class="fas fa-user mr-1"></i>Basic
                                 </span>
                             {% endif %}
                         </td>
-                        <td class="px-4 py-3">
+                        <td class="px-2 lg:px-4 py-2 lg:py-3 hidden md:table-cell">
                             {% if user.is_active %}
-                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800 whitespace-nowrap">
                                     <i class="fas fa-check-circle mr-1"></i>Active
                                 </span>
                             {% else %}
-                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
+                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800 whitespace-nowrap">
                                     <i class="fas fa-times-circle mr-1"></i>Inactive
                                 </span>
                             {% endif %}
                         </td>
-                        <td class="px-4 py-3">
+                        <td class="px-2 lg:px-4 py-2 lg:py-3 hidden lg:table-cell">
                             {% if user.is_staff %}
-                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-indigo-100 text-indigo-800">
+                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-indigo-100 text-indigo-800 whitespace-nowrap">
                                     <i class="fas fa-user-tie mr-1"></i>Staff
                                 </span>
                             {% else %}
                                 <span class="text-gray-400 text-xs">User</span>
                             {% endif %}
                         </td>
-                        <td class="px-4 py-3 text-sm text-gray-600">
+                        <td class="px-2 lg:px-4 py-2 lg:py-3 text-xs lg:text-sm text-gray-600 hidden xl:table-cell">
                             {% if user.last_login %}
                                 <div class="flex items-center">
-                                    <i class="fas fa-clock text-blue-500 mr-1"></i>
-                                    <span title="{{ user.last_login }}">{{ user.last_login|timesince }} ago</span>
+                                    <i class="fas fa-clock text-blue-500 mr-1 text-xs"></i>
+                                    <span class="truncate max-w-20" title="{{ user.last_login }}">{{ user.last_login|timesince }} ago</span>
                                 </div>
                             {% else %}
-                                <span class="text-gray-400"><i class="fas fa-question-circle mr-1"></i>Never</span>
+                                <span class="text-gray-400 text-xs"><i class="fas fa-question-circle mr-1"></i>Never</span>
                             {% endif %}
                         </td>
-                        <td class="px-4 py-3 text-sm text-gray-600">
+                        <td class="px-2 lg:px-4 py-2 lg:py-3 text-xs lg:text-sm text-gray-600 hidden xl:table-cell">
                             <div class="flex items-center">
-                                <i class="fas fa-calendar text-green-500 mr-1"></i>
-                                <span title="{{ user.date_joined }}">{{ user.date_joined|date:"M d, Y" }}</span>
+                                <i class="fas fa-calendar text-green-500 mr-1 text-xs"></i>
+                                <span class="truncate max-w-20" title="{{ user.date_joined }}">{{ user.date_joined|date:"M d, Y" }}</span>
                             </div>
                         </td>
-                        <td class="px-4 py-3 text-sm text-center">
-                            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                        <td class="px-2 lg:px-4 py-2 lg:py-3 text-xs lg:text-sm text-center hidden 2xl:table-cell">
+                            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800 whitespace-nowrap">
                                 {{ user.predictions.count }} predictions
                             </span>
                         </td>
@@ -432,124 +286,33 @@
         </div>
         
         <!-- User Activity Summary -->
-        <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div class="bg-blue-50 rounded-lg p-4">
+        <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="bg-blue-50 rounded-lg p-4 hover:shadow-md transition-shadow duration-200">
                 <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-blue-700">Users with Predictions</p>
+                    <div class="min-w-0 flex-1">
+                        <p class="text-sm font-medium text-blue-700 truncate">Users with Predictions</p>
                         <p class="text-2xl font-bold text-blue-900">{{ user_activity_summary.users_with_predictions|default:"0" }}</p>
                     </div>
-                    <i class="fas fa-brain text-blue-500 text-2xl"></i>
+                    <i class="fas fa-brain text-blue-500 text-2xl ml-2 flex-shrink-0"></i>
                 </div>
             </div>
-            <div class="bg-green-50 rounded-lg p-4">
+            <div class="bg-green-50 rounded-lg p-4 hover:shadow-md transition-shadow duration-200">
                 <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-green-700">Users with Activities</p>
+                    <div class="min-w-0 flex-1">
+                        <p class="text-sm font-medium text-green-700 truncate">Users with Activities</p>
                         <p class="text-2xl font-bold text-green-900">{{ user_activity_summary.users_with_activities|default:"0" }}</p>
                     </div>
-                    <i class="fas fa-chart-line text-green-500 text-2xl"></i>
+                    <i class="fas fa-chart-line text-green-500 text-2xl ml-2 flex-shrink-0"></i>
                 </div>
             </div>
-            <div class="bg-orange-50 rounded-lg p-4">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-orange-700">Never Logged In</p>
-                        <p class="text-2xl font-bold text-orange-900">{{ user_activity_summary.never_logged_in|default:"0" }}</p>
-                    </div>
-                    <i class="fas fa-user-clock text-orange-500 text-2xl"></i>
-                </div>
-            </div>
+            
         </div>
     </div>
 
-    <!-- Admin Actions -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- System Management -->
-        <div class="bg-white rounded-xl shadow-lg p-6">
-            <h5 class="text-lg font-semibold text-gray-900 mb-4">
-                <i class="fas fa-cogs text-blue-500 mr-2"></i>System Management
-            </h5>
-            <div class="space-y-3">
-                <a href="{% url 'admin_user_management' %}" class="flex items-center w-full p-3 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors text-blue-700">
-                    <i class="fas fa-users mr-3"></i>
-                    <span>Manage Users</span>
-                </a>
-                <a href="{% url 'admin_activity_logs' %}" class="flex items-center w-full p-3 bg-green-50 hover:bg-green-100 rounded-lg transition-colors text-green-700">
-                    <i class="fas fa-list-alt mr-3"></i>
-                    <span>Activity Logs</span>
-                </a>
 
-            </div>
-        </div>
+   
 
-        <!-- Real ML Model Info -->
-        <div class="bg-white rounded-xl shadow-lg p-6">
-            <h5 class="text-lg font-semibold text-gray-900 mb-4">
-                <i class="fas fa-brain text-orange-500 mr-2"></i>ML Model Performance
-            </h5>
-            <div class="space-y-4">
-                <div class="flex justify-between items-center">
-                    <span class="text-sm text-gray-600">Model Accuracy</span>
-                    <span class="text-sm font-semibold text-green-600">{{ model_accuracy|default:"72.0" }}%</span>
-                </div>
-                <div class="flex justify-between items-center">
-                    <span class="text-sm text-gray-600">Precision</span>
-                    <span class="text-sm font-semibold text-blue-600">{{ model_precision|default:"68.5" }}%</span>
-                </div>
-                <div class="flex justify-between items-center">
-                    <span class="text-sm text-gray-600">Recall</span>
-                    <span class="text-sm font-semibold text-purple-600">{{ model_recall|default:"75.2" }}%</span>
-                </div>
-                <div class="flex justify-between items-center">
-                    <span class="text-sm text-gray-600">F1-Score</span>
-                    <span class="text-sm font-semibold text-indigo-600">{{ model_f1|default:"71.7" }}%</span>
-                </div>
-                <div class="flex justify-between items-center">
-                    <span class="text-sm text-gray-600">Training Data</span>
-                    <span class="text-sm font-semibold">{{ training_data_size|default:"4925" }} records</span>
-                </div>
-                <div class="flex justify-between items-center">
-                    <span class="text-sm text-gray-600">Model Type</span>
-                    <span class="text-sm font-semibold">{{ model_version|default:"BalancedRandomForest" }}</span>
-                </div>
-                <div class="flex justify-between items-center">
-                    <span class="text-sm text-gray-600">Status</span>
-                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
-                        <i class="fas fa-check-circle mr-1"></i>Active & Trained
-                    </span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Recent Activity -->
-        <div class="bg-white rounded-xl shadow-lg p-6">
-            <h5 class="text-lg font-semibold text-gray-900 mb-4">
-                <i class="fas fa-clock text-indigo-500 mr-2"></i>Recent Activity
-            </h5>
-            <div class="space-y-3">
-                {% for activity in recent_activities|slice:":5" %}
-                <div class="flex items-center space-x-3 p-2 bg-gray-50 rounded-lg">
-                    <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                        <i class="fas fa-user text-blue-600 text-xs"></i>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <p class="text-sm font-medium text-gray-900 truncate">{{ activity.user.username|default:"Unknown User" }}</p>
-                        <p class="text-xs text-gray-500">{{ activity.get_activity_type_display|default:"Admin Action" }}</p>
-                    </div>
-                    <div class="text-xs text-gray-400">
-                        {% if activity.created_at %}{{ activity.created_at|timesince }} ago{% else %}Recently{% endif %}
-                    </div>
-                </div>
-                {% empty %}
-                <div class="text-center py-4 text-gray-500">
-                    <i class="fas fa-inbox text-2xl mb-2 opacity-50"></i>
-                    <p class="text-sm">No recent activity found</p>
-                    <p class="text-xs text-gray-400 mt-1">Activity tracking will appear here as users interact with the system</p>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
+    
     </div>
 </div>
 
@@ -559,8 +322,8 @@
     const fraudCanvas = document.getElementById('fraudChart');
     if (fraudCanvas) {
         const fraudCtx = fraudCanvas.getContext('2d');
-        const legitimateCases = parseInt('{{ legitimate_cases|default:"0" }}');
-        const fraudCases = parseInt('{{ fraud_cases|default:"0" }}');
+        const legitimateCases = parseInt('{{ total_legitimate_cases|default:"0" }}');
+        const fraudCases = parseInt('{{ total_fraud_cases|default:"0" }}');
         
         new Chart(fraudCtx, {
             type: 'doughnut',

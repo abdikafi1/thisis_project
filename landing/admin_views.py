@@ -98,13 +98,13 @@ def admin_dashboard(request):
     # User level distribution
     user_levels = UserProfile.objects.values('user_level').annotate(count=Count('user_level'))
     
-    # Recent activities (ensure we have current user's activity)
-    recent_activities = activities.order_by('-created_at')[:10]
+    # Recent activities (ensure we have current user's activity) - only last 5
+    recent_activities = activities.order_by('-created_at')[:5]
     
     # If no recent activities, make sure current user activity is created
     if not recent_activities.exists() and request.user.is_authenticated:
         # The activity was already created above, so fetch it
-        recent_activities = UserActivity.objects.filter(user=request.user).order_by('-created_at')[:10]
+        recent_activities = UserActivity.objects.filter(user=request.user).order_by('-created_at')[:5]
     
     # Activity type distribution
     activity_types = activities.values('activity_type').annotate(count=Count('activity_type'))
@@ -116,6 +116,31 @@ def admin_dashboard(request):
     ).extra(
         select={'day': 'date(created_at)'}
     ).values('day').annotate(count=Count('id')).order_by('day')
+    
+    # Get real fraud and non-fraud cases from database for dashboard display (only last 2 of each)
+    fraud_cases = Prediction.objects.filter(result='Fraud').order_by('-created_at')[:2]
+    non_fraud_cases = Prediction.objects.filter(result='Not Fraud').order_by('-created_at')[:2]
+    
+    # Get real data for fraud detection chart
+    total_fraud_cases = Prediction.objects.filter(result='Fraud').count()
+    total_legitimate_cases = Prediction.objects.filter(result='Not Fraud').count()
+    
+    # Get real-time fraud detection trends for the last 30 days
+    thirty_days_ago = timezone.now() - timedelta(days=30)
+    daily_fraud_stats = Prediction.objects.filter(
+        created_at__gte=thirty_days_ago
+    ).extra(
+        select={'day': 'date(created_at)'}
+    ).values('day', 'result').annotate(count=Count('id')).order_by('day')
+    
+    # Convert to JSON for chart
+    daily_fraud_data = []
+    for stat in daily_fraud_stats:
+        daily_fraud_data.append({
+            'day': stat['day'].strftime('%Y-%m-%d') if hasattr(stat['day'], 'strftime') else str(stat['day']),
+            'result': stat['result'],
+            'count': stat['count']
+        })
     
     context = {
         'form': form,
@@ -139,8 +164,11 @@ def admin_dashboard(request):
         # Real fraud detection analytics from ML model
         'fraud_analytics': fraud_analytics,
         'ml_insights': ml_insights,
-        'fraud_cases': fraud_analytics.get('fraud_cases', 0),
-        'legitimate_cases': fraud_analytics.get('legitimate_cases', 0),
+        'fraud_cases': fraud_cases,
+        'non_fraud_cases': non_fraud_cases,
+        'total_fraud_cases': total_fraud_cases,
+        'total_legitimate_cases': total_legitimate_cases,
+        'daily_fraud_data': json.dumps(daily_fraud_data),
         'fraud_rate': fraud_analytics.get('fraud_rate', 0),
         'model_accuracy': fraud_analytics.get('model_performance', {}).get('accuracy', 72.0),
         'model_precision': fraud_analytics.get('model_performance', {}).get('precision', 68.5),
