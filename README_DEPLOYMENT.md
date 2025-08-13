@@ -1,3 +1,42 @@
+# Fraud Detection System - Deployment Guide
+
+## Timezone Configuration
+
+The system is configured to use **East Africa Time (EAT)** which is `Africa/Nairobi` timezone. This covers:
+- Kenya (UTC+3)
+- Uganda (UTC+3) 
+- Tanzania (UTC+3)
+- Ethiopia (UTC+3)
+- Somalia (UTC+3)
+- And other East African countries
+
+### Timezone Settings
+
+In `myproject/settings.py`:
+```python
+TIME_ZONE = 'Africa/Nairobi'
+USE_TZ = True
+```
+
+### What This Affects
+
+1. **Database Timestamps**: All `created_at`, `updated_at`, and other datetime fields in SQLite
+2. **User Activity Logs**: Login times, prediction timestamps
+3. **Reports**: Date/time displays in analytics and exports
+4. **Dashboard**: All time-based calculations and displays
+
+### Changing Timezone
+
+If you need to use a different timezone, update the `TIME_ZONE` setting in `myproject/settings.py`:
+
+```python
+# Examples:
+TIME_ZONE = 'UTC'                    # Universal Coordinated Time
+TIME_ZONE = 'America/New_York'       # Eastern Time
+TIME_ZONE = 'Europe/London'          # British Time
+TIME_ZONE = 'Asia/Tokyo'             # Japan Time
+```
+
 # 🚀 Quick Deployment Guide
 
 ## 🎯 **Your System is Complete!**

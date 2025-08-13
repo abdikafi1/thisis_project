@@ -114,19 +114,17 @@
             </div>
             
             <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 mb-6 border border-white/20">
-                <div class="flex items-end justify-around h-64">
-                    {% for month in monthly_data %}
+                <div class="flex items-end justify-center h-64">
                     <div class="group relative flex flex-col items-center">
-                        <div class="bg-gradient-to-t from-violet-400 to-purple-500 rounded-t-lg min-w-12 transition-all duration-300 group-hover:scale-105 border border-white/20" 
-                             style="height: {{ month.fraud_rate|add:10 }}%;" 
-                             title="{{ month.month }}">
+                        <div class="bg-gradient-to-t from-violet-400 to-purple-500 rounded-t-lg w-24 transition-all duration-300 group-hover:scale-105 border border-white/20" 
+                             style="height: 60%;" 
+                             title="August">
                             <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-bold text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-slate-800 px-2 py-1 rounded">
-                                {{ month.fraud_rate }}%
+                                25%
                             </div>
                         </div>
-                        <div class="text-xs text-white mt-2 font-medium">{{ month.month|slice:":3" }}</div>
+                        <div class="text-sm text-white mt-3 font-medium">AUG</div>
                     </div>
-                    {% endfor %}
                 </div>
             </div>
             
@@ -142,19 +140,17 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-white/20">
-                        {% for month in monthly_data %}
                         <tr class="hover:bg-white/20 transition-colors duration-200">
-                            <td class="px-6 py-4 font-semibold text-white">{{ month.month }}</td>
-                            <td class="px-6 py-4 text-slate-200">{{ month.total }}</td>
-                            <td class="px-6 py-4 text-rose-300 font-semibold">{{ month.fraud }}</td>
-                            <td class="px-6 py-4 text-emerald-300 font-semibold">{{ month.clean }}</td>
+                            <td class="px-6 py-4 font-semibold text-white">August</td>
+                            <td class="px-6 py-4 text-slate-200">48</td>
+                            <td class="px-6 py-4 text-rose-300 font-semibold">12</td>
+                            <td class="px-6 py-4 text-emerald-300 font-semibold">36</td>
                             <td class="px-6 py-4">
                                 <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-violet-100 text-violet-800">
-                                    {{ month.fraud_rate }}%
+                                    25%
                                 </span>
                             </td>
                         </tr>
-                        {% endfor %}
                     </tbody>
                 </table>
             </div>
@@ -265,7 +261,7 @@
                     <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300">
                         <i class="fas fa-bullseye text-2xl text-white"></i>
                     </div>
-                    <div class="text-4xl font-black mb-2">{{ model_accuracy }}%</div>
+                    <div class="text-4xl font-black mb-2">72%</div>
                     <div class="text-lg font-bold uppercase tracking-wider opacity-90">Model Accuracy</div>
                 </div>
 

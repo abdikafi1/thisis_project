@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib import messages
+from django.utils import timezone
 from .forms import PredictionForm, CustomUserCreationForm, UserProfileForm, UserAccountForm
 from .decorators import admin_required, admin_or_basic_required, verified_user_required, track_activity
 import pandas as pd
@@ -12,6 +13,7 @@ import os
 from .models import Prediction, UserProfile, UserActivity
 import json
 from django.db.models import Q
+from datetime import timedelta
 
 MODEL_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'ml_model')
 MODEL_PATH = os.path.join(MODEL_DIR, 'model.pkl')
@@ -548,8 +550,7 @@ def dashboard_view_old(request):
         avg_processing_time = 0
     
     # Get this month's predictions
-    from datetime import datetime, timedelta
-    this_month_start = datetime.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    this_month_start = timezone.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
     this_month_predictions = user_predictions.filter(created_at__gte=this_month_start).count()
     
     # Get overall statistics (all predictions)
@@ -984,8 +985,6 @@ def user_dashboard_view(request):
         avg_processing_time = 2.5
     
     # Get this month's predictions from database
-    from datetime import datetime, timedelta
-    from django.utils import timezone
     this_month_start = timezone.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
     this_month_predictions = user_predictions.filter(created_at__gte=this_month_start).count()
     
@@ -1035,9 +1034,7 @@ def user_dashboard_view(request):
 @login_required
 def user_reports_view(request):
     """Enhanced view for user reports dashboard with comprehensive analytics"""
-    from datetime import datetime, timedelta
     from django.db.models import Count, Q
-    from django.utils import timezone
     import json
     
     # Get user-specific statistics
@@ -1209,8 +1206,7 @@ def fraud_analytics_view(request):
     fraud_detection_rate = round((fraud_cases_count / total_predictions * 100) if total_predictions > 0 else 0, 1)
     
     # Get this month's predictions
-    from datetime import datetime
-    this_month_start = datetime.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    this_month_start = timezone.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
     this_month_predictions = user_predictions.filter(created_at__gte=this_month_start).count()
     
     # Analyze patterns from actual data
@@ -1250,8 +1246,6 @@ def performance_metrics_view(request):
     
     # Get monthly trends
     from django.db.models import Count
-    from django.utils import timezone
-    from datetime import timedelta
     
     # Get last 6 months of data
     six_months_ago = timezone.now() - timedelta(days=180)
@@ -1371,14 +1365,13 @@ def export_pdf_report(request):
     from reportlab.lib.units import inch
     from reportlab.lib import colors
     import json
-    from datetime import datetime
     
     # Get user predictions
     user_predictions = Prediction.objects.filter(user=request.user).order_by('-created_at')
     
     # Create the HttpResponse object with PDF headers
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="fraud_detection_report_{datetime.now().strftime("%Y%m%d_%H%M%S")}.pdf"'
+    response['Content-Disposition'] = f'attachment; filename="fraud_detection_report_{timezone.now().strftime("%Y%m%d_%H%M%S")}.pdf"'
     
     # Create the PDF object
     doc = SimpleDocTemplate(response, pagesize=A4)
@@ -1408,7 +1401,7 @@ def export_pdf_report(request):
         ['Fraud Detected', str(fraud_count)],
         ['Clean Cases', str(clean_count)],
         ['Fraud Detection Rate', f"{fraud_rate:.1f}%"],
-        ['Report Generated', datetime.now().strftime("%B %d, %Y at %H:%M")],
+        ['Report Generated', timezone.now().strftime("%B %d, %Y at %H:%M")],
     ]
     
     summary_table = Table(summary_data, colWidths=[2*inch, 2*inch])
@@ -1475,14 +1468,13 @@ def export_csv_report(request):
     from django.http import HttpResponse
     import csv
     import json
-    from datetime import datetime
     
     # Get user predictions
     user_predictions = Prediction.objects.filter(user=request.user).order_by('-created_at')
     
     # Create the HttpResponse object with CSV headers
     response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = f'attachment; filename="fraud_detection_data_{datetime.now().strftime("%Y%m%d_%H%M%S")}.csv"'
+    response['Content-Disposition'] = f'attachment; filename="fraud_detection_data_{timezone.now().strftime("%Y%m%d_%H%M%S")}.csv"'
     
     # Create CSV writer
     writer = csv.writer(response)
