@@ -21,4 +21,8 @@ else
     echo "No data backup found, starting with fresh database"
 fi
 
+# Create superuser if it doesn't exist
+echo "Creating superuser..."
+python manage.py create_superuser --username admin --email admin@frauddetection.com --password Admin123!
+
 echo "Build completed successfully!"
