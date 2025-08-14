@@ -26,14 +26,10 @@ python manage.py collectstatic --noinput
 echo "Running migrations..."
 python manage.py migrate --verbosity=2
 
-echo "Checking if tables exist..."
-python manage.py dbshell -c "\dt" || echo "Cannot check tables, proceeding with syncdb"
-
-echo "Forcing table creation with syncdb..."
-python manage.py migrate --run-syncdb --verbosity=2
-
-echo "Verifying tables were created..."
+echo "Verifying database tables..."
 python manage.py dbshell -c "\dt" || echo "Table verification failed"
+
+echo "Database setup completed!"
 
 echo "Loading data..."
 python manage.py loaddata data_backup.json || echo "Data import failed, continuing with fresh database"

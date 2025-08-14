@@ -60,24 +60,10 @@ if database_url:
     except Exception as e:
         print(f"Error parsing DATABASE_URL: {e}")
         print(f"DATABASE_URL value: {repr(database_url)}")
-        
-        # Fallback to SQLite if parsing fails
-        DATABASES = {
-            'default': {
-                'ENGINE': 'django.db.backends.sqlite3',
-                'NAME': BASE_DIR / 'db.sqlite3',
-            }
-        }
-        print("Using SQLite fallback due to parsing error")
+        raise Exception("Failed to configure PostgreSQL database. Please check your DATABASE_URL.")
 else:
-    print("No DATABASE_URL found, using SQLite fallback")
-    # Fallback to default SQLite if no DATABASE_URL is provided
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
+    print("No DATABASE_URL found!")
+    raise Exception("DATABASE_URL environment variable is required for production deployment.")
 
 # Security settings for production
 SECURE_SSL_REDIRECT = True
