@@ -4,25 +4,24 @@
 echo "Starting build process..."
 
 # Install dependencies
+echo "Installing Python dependencies..."
 pip install -r requirements.txt
 
 # Collect static files
+echo "Collecting static files..."
 python manage.py collectstatic --noinput
 
 # Run database migrations
+echo "Running database migrations..."
 python manage.py migrate
 
 # Import existing data if available
 if [ -f "data_backup.json" ]; then
     echo "Importing existing data..."
-    python manage.py loaddata data_backup.json
+    python manage.py loaddata data_backup.json || echo "Data import failed, continuing with fresh database"
     echo "Data import completed!"
 else
     echo "No data backup found, starting with fresh database"
 fi
-
-# Create superuser if it doesn't exist
-echo "Creating superuser..."
-python manage.py create_superuser --username admin --email admin@frauddetection.com --password Admin123!
 
 echo "Build completed successfully!"

@@ -78,11 +78,15 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 # Check if we're in production (Render) or development
-if config('DATABASE_URL', default=''):
+database_url = config('DATABASE_URL', default='')
+if database_url:
     # Production: Use PostgreSQL from DATABASE_URL
     import dj_database_url
+    # Ensure the DATABASE_URL is properly decoded if it's bytes
+    if isinstance(database_url, bytes):
+        database_url = database_url.decode('utf-8')
     DATABASES = {
-        'default': dj_database_url.parse(config('DATABASE_URL'))
+        'default': dj_database_url.parse(database_url)
     }
 else:
     # Development: Use SQLite
