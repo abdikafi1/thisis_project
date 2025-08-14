@@ -49,13 +49,24 @@ if database_url:
     print(f"Cleaned DATABASE_URL: {repr(database_url)}")
     
     try:
+        # Parse the database URL
+        db_config = dj_database_url.parse(database_url)
+        
+        # Add SSL requirements for Render PostgreSQL
+        db_config['OPTIONS'] = {
+            'sslmode': 'require',
+        }
+        
         # Configure PostgreSQL database
         DATABASES = {
-            'default': dj_database_url.parse(database_url)
+            'default': db_config
         }
         print(f"Successfully configured PostgreSQL database")
         print(f"Database engine: {DATABASES['default']['ENGINE']}")
         print(f"Database name: {DATABASES['default']['NAME']}")
+        print(f"Database host: {DATABASES['default']['HOST']}")
+        print(f"Database port: {DATABASES['default']['PORT']}")
+        print(f"SSL mode: {DATABASES['default']['OPTIONS']['sslmode']}")
         
     except Exception as e:
         print(f"Error parsing DATABASE_URL: {e}")
