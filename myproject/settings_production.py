@@ -35,6 +35,16 @@ for key, value in os.environ.items():
     if 'DATABASE' in key.upper() or 'DB' in key.upper():
         print(f"  {key}: {repr(value)}")
 
+# Also check for any environment variables that might contain the database URL
+print("Checking for database-related environment variables:")
+for key, value in os.environ.items():
+    if any(db_key in key.upper() for db_key in ['DATABASE', 'DB', 'POSTGRES', 'PSQL']):
+        print(f"  {key}: {repr(value)}")
+        print(f"    Type: {type(value)}")
+        print(f"    Length: {len(str(value)) if value else 0}")
+        if isinstance(value, bytes):
+            print(f"    Decoded: {value.decode('utf-8', errors='ignore')}")
+
 # Method 1: Try using decouple config
 try:
     from decouple import config
@@ -73,11 +83,60 @@ if database_url:
         print(f"Successfully configured PostgreSQL database")
         print(f"Database engine: {DATABASES['default']['ENGINE']}")
         print(f"Database name: {DATABASES['default']['NAME']}")
+        
+        # Additional validation
+        if 'ENGINE' in DATABASES['default']:
+            print(f"Database configuration looks valid")
+        else:
+            raise Exception("Database configuration missing ENGINE")
+            
     except Exception as e:
         print(f"Error parsing DATABASE_URL: {e}")
         print(f"DATABASE_URL value: {repr(database_url)}")
         print(f"Error type: {type(e)}")
         print(f"Error details: {str(e)}")
+        
+        # Try to manually construct the database configuration
+        if database_url and 'postgres' in database_url.lower():
+            print("Attempting manual PostgreSQL configuration...")
+            try:
+                # Extract components manually
+                if '://' in database_url:
+                    parts = database_url.split('://')
+                    if len(parts) == 2:
+                        scheme, rest = parts
+                        if '@' in rest:
+                            auth, host_part = rest.split('@')
+                            if ':' in auth:
+                                user, password = auth.split(':')
+                            else:
+                                user, password = auth, ''
+                            
+                            if ':' in host_part:
+                                host_port, db_name = host_part.split('/')
+                                if ':' in host_port:
+                                    host, port = host_port.split(':')
+                                else:
+                                    host, port = host_port, '5432'
+                            else:
+                                host, port = host_part.split('/')[0], '5432'
+                                db_name = host_part.split('/')[1] if '/' in host_part else 'postgres'
+                            
+                            DATABASES = {
+                                'default': {
+                                    'ENGINE': 'django.db.backends.postgresql',
+                                    'NAME': db_name,
+                                    'USER': user,
+                                    'PASSWORD': password,
+                                    'HOST': host,
+                                    'PORT': port,
+                                }
+                            }
+                            print("Manual PostgreSQL configuration successful")
+                            # Continue with the rest of the settings
+            except Exception as manual_error:
+                print(f"Manual configuration failed: {manual_error}")
+        
         # Fallback to SQLite if parsing fails
         DATABASES = {
             'default': {
