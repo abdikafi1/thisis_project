@@ -1,27 +1,27 @@
-#!/usr/bin/env bash
-# Build script for Render deployment
+#!/bin/bash
+set -e
 
 echo "Starting build process..."
+echo "Python version: $(python --version)"
+echo "Python path: $(which python)"
+echo "Pip version: $(pip --version)"
+echo "Current directory: $(pwd)"
+echo "Files in current directory: $(ls -la)"
 
-# Install dependencies
-echo "Installing Python dependencies..."
-pip install -r requirements.txt
+echo "Installing requirements..."
+pip install -r requirements_deploy.txt
 
-# Collect static files
+echo "Verifying gunicorn installation..."
+pip list | grep gunicorn || echo "Gunicorn not found in pip list"
+which gunicorn || echo "Gunicorn not found in PATH"
+
 echo "Collecting static files..."
 python manage.py collectstatic --noinput
 
-# Run database migrations
-echo "Running database migrations..."
+echo "Running migrations..."
 python manage.py migrate
 
-# Import existing data if available
-if [ -f "data_backup.json" ]; then
-    echo "Importing existing data..."
-    python manage.py loaddata data_backup.json || echo "Data import failed, continuing with fresh database"
-    echo "Data import completed!"
-else
-    echo "No data backup found, starting with fresh database"
-fi
+echo "Loading data..."
+python manage.py loaddata data_backup.json || echo "Data import failed, continuing with fresh database"
 
 echo "Build completed successfully!"
