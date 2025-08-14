@@ -14,7 +14,7 @@ services:
       - key: DEBUG
         value: "false"
       - key: DATABASE_URL
-        value: "postgresql://ae:GabpfWUndScU8vhX1gEFm9DU5ijYlqs1@dpg-d2ede4ali9vc73dtrj60-a/fraud_guird"
+        value: "postgresql://ae:GabpfWUndScU8vhX1gEFm9DU5ijYlqs1@dpg-d2ede4ali9vc73dtrj60-a:5432/fraud_guird"
       - key: ALLOWED_HOSTS
         value: ".onrender.com"
       - key: PORT
