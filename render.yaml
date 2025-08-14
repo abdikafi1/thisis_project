@@ -14,11 +14,9 @@ services:
       - key: DEBUG
         value: "false"
       - key: DATABASE_URL
-        fromDatabase:
-          name: fraud_guird
-          property: connectionString
-        # Fallback: manually set if automatic linking fails
-        value: "postgresql://ae:GabpfWUndScU8vhXlgEFm9DU5ijYlqs1@dpg-d2ede4ali9vc73dtrj60-a.singapore-postgres.render.com:5432/fraud_guird"
+        value: "postgresql://ae:GabpfWUndScU8vhX1gEFm9DU5ijYlqs1@dpg-d2ede4ali9vc73dtrj60-a.singapore-postgres.render.com:5432/fraud_guird"
+        # Alternative: internal connection if external fails
+        # value: "postgresql://ae:GabpfWUndScU8vhX1gEFm9DU5ijYlqs1@dpg-d2ede4ali9vc73dtrj60-a/fraud_guird"
       - key: ALLOWED_HOSTS
         value: ".onrender.com"
       - key: PORT
