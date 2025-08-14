@@ -67,12 +67,12 @@ if database_url:
         print(f"Database host: {DATABASES['default']['HOST']}")
         print(f"Database port: {DATABASES['default']['PORT']}")
         print(f"SSL mode: {DATABASES['default']['OPTIONS']['sslmode']}")
-        
+            
     except Exception as e:
         print(f"Error parsing DATABASE_URL: {e}")
         print(f"DATABASE_URL value: {repr(database_url)}")
         raise Exception("Failed to configure PostgreSQL database. Please check your DATABASE_URL.")
-else:
+                            else:
     print("No DATABASE_URL found!")
     raise Exception("DATABASE_URL environment variable is required for production deployment.")
 
