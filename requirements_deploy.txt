@@ -19,7 +19,18 @@ python-decouple==3.8
 numpy==2.2.6
 pandas==2.3.1
 scikit-learn==1.6.1
+imbalanced-learn==0.13.0
 
 # Other essential packages
 pillow==11.3.0
 reportlab==4.0.4
+
+# Additional ML dependencies
+catboost==1.2.8
+lightgbm==4.6.0
+xgboost==3.0.2
+shap==0.48.0
+
+# Additional ML support libraries
+joblib==1.5.1
+scipy==1.16.0
