@@ -18,7 +18,7 @@ services:
           name: fraud_guird
           property: connectionString
         # Fallback: manually set if automatic linking fails
-        # value: "postgresql://username:password@host:port/database_name"
+        # value: "postgresql://ae:NEW_PASSWORD_HERE@dpg-d2ede4ali9vc73dtrj60-a.singapore-postgres.render.com:5432/fraud_guird"
       - key: ALLOWED_HOSTS
         value: ".onrender.com"
       - key: PORT
