@@ -6,7 +6,7 @@ from pathlib import Path
 
 # Import specific settings from base settings to avoid conflicts
 from .settings import (
-    BASE_DIR, SECRET_KEY, INSTALLED_APPS, MIDDLEWARE, ROOT_URLCONF,
+    BASE_DIR, INSTALLED_APPS, MIDDLEWARE, ROOT_URLCONF,
     TEMPLATES, WSGI_APPLICATION, AUTH_PASSWORD_VALIDATORS,
     LANGUAGE_CODE, TIME_ZONE, USE_I18N, USE_TZ, STATIC_URL,
     DEFAULT_AUTO_FIELD, LOGIN_URL, LOGIN_REDIRECT_URL
@@ -14,6 +14,9 @@ from .settings import (
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-w^=fb$xyf-ku5@n^*ek4#x(-iijee+kj$ixqxmw3wr0zjz@y(*')
 
 # Production hosts
 ALLOWED_HOSTS = [
@@ -25,58 +28,28 @@ ALLOWED_HOSTS = [
 # Database configuration for PostgreSQL on Render
 import dj_database_url
 
-# Get DATABASE_URL and ensure it's a string
-# Try multiple methods to get the DATABASE_URL
-database_url = None
+# Get DATABASE_URL from environment
+database_url = os.environ.get('DATABASE_URL', '')
 
-# Debug: Print all environment variables
-print("All environment variables:")
-for key, value in os.environ.items():
-    if 'DATABASE' in key.upper() or 'DB' in key.upper():
-        print(f"  {key}: {repr(value)}")
-
-# Also check for any environment variables that might contain the database URL
+# Debug: Print database-related environment variables
 print("Checking for database-related environment variables:")
 for key, value in os.environ.items():
     if any(db_key in key.upper() for db_key in ['DATABASE', 'DB', 'POSTGRES', 'PSQL']):
         print(f"  {key}: {repr(value)}")
-        print(f"    Type: {type(value)}")
-        print(f"    Length: {len(str(value)) if value else 0}")
-        if isinstance(value, bytes):
-            print(f"    Decoded: {value.decode('utf-8', errors='ignore')}")
 
-# Method 1: Try using decouple config
-try:
-    from decouple import config
-    database_url = config('DATABASE_URL', default='')
-    print(f"Got DATABASE_URL from decouple config: {repr(database_url)}")
-except ImportError:
-    print("decouple not available, trying os.environ")
+print(f"DATABASE_URL from environment: {repr(database_url)}")
 
-# Method 2: Try os.environ directly
-if not database_url:
-    database_url = os.environ.get('DATABASE_URL', '')
-    print(f"Got DATABASE_URL from os.environ: {repr(database_url)}")
-
-# Method 3: Try os.getenv as fallback
-if not database_url:
-    database_url = os.getenv('DATABASE_URL', '')
-    print(f"Got DATABASE_URL from os.getenv: {repr(database_url)}")
-
-print(f"Final DATABASE_URL: {repr(database_url)}")
+# Also check if we're running in Render environment
+print(f"Running on Render: {'RENDER' in os.environ}")
+print(f"All environment variables: {list(os.environ.keys())}")
 
 if database_url:
-    # Handle bytes objects by decoding to string if necessary
-    if isinstance(database_url, bytes):
-        print(f"Converting bytes to string: {database_url}")
-        database_url = database_url.decode('utf-8')
-    
     # Clean the URL string (remove any extra quotes or whitespace)
     database_url = database_url.strip().strip('"').strip("'")
     print(f"Cleaned DATABASE_URL: {repr(database_url)}")
     
     try:
-        # Override the database configuration from base settings
+        # Configure PostgreSQL database
         DATABASES = {
             'default': dj_database_url.parse(database_url)
         }
@@ -84,58 +57,9 @@ if database_url:
         print(f"Database engine: {DATABASES['default']['ENGINE']}")
         print(f"Database name: {DATABASES['default']['NAME']}")
         
-        # Additional validation
-        if 'ENGINE' in DATABASES['default']:
-            print(f"Database configuration looks valid")
-        else:
-            raise Exception("Database configuration missing ENGINE")
-            
     except Exception as e:
         print(f"Error parsing DATABASE_URL: {e}")
         print(f"DATABASE_URL value: {repr(database_url)}")
-        print(f"Error type: {type(e)}")
-        print(f"Error details: {str(e)}")
-        
-        # Try to manually construct the database configuration
-        if database_url and 'postgres' in database_url.lower():
-            print("Attempting manual PostgreSQL configuration...")
-            try:
-                # Extract components manually
-                if '://' in database_url:
-                    parts = database_url.split('://')
-                    if len(parts) == 2:
-                        scheme, rest = parts
-                        if '@' in rest:
-                            auth, host_part = rest.split('@')
-                            if ':' in auth:
-                                user, password = auth.split(':')
-                            else:
-                                user, password = auth, ''
-                            
-                            if ':' in host_part:
-                                host_port, db_name = host_part.split('/')
-                                if ':' in host_port:
-                                    host, port = host_port.split(':')
-                                else:
-                                    host, port = host_port, '5432'
-                            else:
-                                host, port = host_part.split('/')[0], '5432'
-                                db_name = host_part.split('/')[1] if '/' in host_part else 'postgres'
-                            
-                            DATABASES = {
-                                'default': {
-                                    'ENGINE': 'django.db.backends.postgresql',
-                                    'NAME': db_name,
-                                    'USER': user,
-                                    'PASSWORD': password,
-                                    'HOST': host,
-                                    'PORT': port,
-                                }
-                            }
-                            print("Manual PostgreSQL configuration successful")
-                            # Continue with the rest of the settings
-            except Exception as manual_error:
-                print(f"Manual configuration failed: {manual_error}")
         
         # Fallback to SQLite if parsing fails
         DATABASES = {
