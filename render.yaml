@@ -18,9 +18,7 @@ services:
       - key: DEBUG
         value: "false"
       - key: DATABASE_URL
-        fromDatabase:
-          name: fraud_guird
-          property: connectionString
+        value: "postgresql://ae:GabpfWUndScU8vhX1gEFm9DU5ijYlqs1@dpg-d2ede4ali9vc73dtrj60-a.singapore-postgres.render.com:5432/fraud_guird"
       - key: ALLOWED_HOSTS
         value: ".onrender.com"
       - key: PORT
