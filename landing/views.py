@@ -1014,7 +1014,7 @@ def user_dashboard_view(request):
     user = request.user
     
     # Check if user is admin - admins cannot access user features
-            if user.is_superuser:
+    if user.is_superuser:
         messages.error(request, 'Admin users cannot access user dashboard. Use admin dashboard instead.')
         return redirect('admin_dashboard')
     

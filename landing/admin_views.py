@@ -137,7 +137,7 @@ def admin_dashboard(request):
     
     # Get real fraud analytics from database only (no external files)
     try:
-        fraud_analytics = get_fraud_analytics()
+    fraud_analytics = get_fraud_analytics()
     except Exception as e:
         print(f"Error getting fraud analytics: {e}")
         fraud_analytics = {
@@ -150,7 +150,7 @@ def admin_dashboard(request):
         }
     
     try:
-        ml_insights = get_ml_model_insights()
+    ml_insights = get_ml_model_insights()
     except Exception as e:
         print(f"Error getting ML insights: {e}")
         ml_insights = {
@@ -538,7 +538,7 @@ def admin_analytics(request):
     """Admin analytics dashboard with real-time fraud detection data"""
     # Get real fraud analytics from database only (no external files)
     try:
-        fraud_analytics = get_fraud_analytics()
+    fraud_analytics = get_fraud_analytics()
     except Exception as e:
         print(f"Error getting fraud analytics: {e}")
         fraud_analytics = {
@@ -551,7 +551,7 @@ def admin_analytics(request):
         }
     
     try:
-        ml_insights = get_ml_model_insights()
+    ml_insights = get_ml_model_insights()
     except Exception as e:
         print(f"Error getting ML insights: {e}")
         ml_insights = {
