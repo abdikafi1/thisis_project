@@ -7,18 +7,53 @@
     <!-- Header -->
     <div class="flex items-center justify-between">
         <div>
-            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">User Verification Management</h1>
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Monitor and manage your fraud detection system</h1>
             <p class="text-gray-600 dark:text-gray-400 mt-2">Manage user verification status and access control</p>
         </div>
-        <div class="flex items-center space-x-4">
-            <div class="bg-blue-100 dark:bg-blue-900/20 px-4 py-2 rounded-lg">
-                <span class="text-blue-800 dark:text-blue-200 font-medium">Total Users: {{ total_users }}</span>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl">
+            <!-- Total Users Card -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-users text-blue-600 dark:text-blue-400 text-xl"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Users</p>
+                        <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ total_users }}</p>
+                    </div>
+                </div>
             </div>
-            <div class="bg-green-100 dark:bg-green-900/20 px-4 py-2 rounded-lg">
-                <span class="text-green-800 dark:text-green-200 font-medium">Verified: {{ verified_count }}</span>
+
+            <!-- Verified Users Card -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-check-circle text-green-600 dark:text-green-400 text-xl"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Verified</p>
+                        <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ verified_count }}</p>
+                    </div>
+                </div>
             </div>
-            <div class="bg-yellow-100 dark:bg-yellow-900/20 px-4 py-2 rounded-lg">
-                <span class="text-yellow-800 dark:text-yellow-200 font-medium">Pending: {{ unverified_count }}</span>
+
+            <!-- Pending Users Card -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-clock text-yellow-600 dark:text-yellow-400 text-xl"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Pending</p>
+                        <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ unverified_count }}</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -217,22 +252,6 @@
         {% endif %}
     </div>
 
-    <!-- Information Section -->
-    <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
-        <div class="flex items-start">
-            <div class="flex-shrink-0">
-                <i class="fas fa-info-circle text-blue-500 text-xl"></i>
-            </div>
-            <div class="ml-3">
-                <h3 class="text-sm font-medium text-blue-800 dark:text-blue-200">Verification System Information</h3>
-                <div class="mt-2 text-sm text-blue-700 dark:text-blue-300 space-y-1">
-                    <p>• <strong>Unverified users</strong> cannot access prediction features and will see a message to contact admin</p>
-                    <p>• <strong>Verified users</strong> have full access to all system features</p>
-                    <p>• <strong>Admin users</strong> can manage verification status for all users</p>
-                    <p>• Verification status is stored in the database and persists across sessions</p>
-                </div>
-            </div>
-        </div>
-    </div>
+ 
 </div>
 {% endblock %}
