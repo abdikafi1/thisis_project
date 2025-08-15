@@ -961,7 +961,7 @@ def admin_profile_view(request):
     # In production, you would want to restrict this
     if not is_admin:
         # Check if user is staff or superuser as fallback
-        if not (request.user.is_staff or request.user.is_superuser):
+        if not request.user.is_superuser:
             messages.warning(request, 'This is an admin profile page. Regular users will see limited functionality.')
     
     if request.method == 'POST':
@@ -1014,7 +1014,7 @@ def user_dashboard_view(request):
     user = request.user
     
     # Check if user is admin - admins cannot access user features
-    if user.is_superuser or user.is_staff:
+            if user.is_superuser:
         messages.error(request, 'Admin users cannot access user dashboard. Use admin dashboard instead.')
         return redirect('admin_dashboard')
     
@@ -1622,7 +1622,7 @@ def unified_profile_view(request):
     user_non_fraud_predictions = Prediction.objects.filter(user=user, result='Not Fraud').count()
     
     # Check if user is admin
-    is_admin = user.is_superuser or user.is_staff or profile.user_level == 'admin'
+            is_admin = user.is_superuser or profile.user_level == 'admin'
     
     context = {
         'form': form,

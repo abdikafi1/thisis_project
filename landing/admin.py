@@ -14,7 +14,7 @@ class UserProfileInline(admin.StackedInline):
 class UserAdmin(BaseUserAdmin):
     inlines = (UserProfileInline,)
     list_display = ('username', 'email', 'first_name', 'last_name', 'get_user_level', 'get_is_verified', 'is_active', 'date_joined')
-    list_filter = ('is_active', 'is_staff', 'profile__user_level', 'profile__is_verified', 'date_joined')
+    list_filter = ('is_active', 'profile__user_level', 'profile__is_verified', 'date_joined')
     search_fields = ('username', 'email', 'first_name', 'last_name', 'profile__company')
     
     def get_user_level(self, obj):

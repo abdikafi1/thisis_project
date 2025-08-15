@@ -95,7 +95,6 @@ def admin_dashboard(request):
         # Django User model statistics
         'active_users': User.objects.filter(is_active=True).count(),
         'inactive_users': User.objects.filter(is_active=False).count(),
-        'staff_users': User.objects.filter(is_staff=True).count(),
         'superuser_count': User.objects.filter(is_superuser=True).count(),
         'users_with_email': User.objects.exclude(email='').count(),
         'users_with_last_login': User.objects.filter(last_login__isnull=False).count(),

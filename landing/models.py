@@ -41,21 +41,15 @@ class UserProfile(models.Model):
         # Disconnect the signal to prevent recursion
         post_save.disconnect(save_user_profile, sender=User)
         
-        # NEVER change is_superuser - only handle staff and user_level
+        # NEVER change is_superuser - only handle user_level
         if self.user_level == 'admin':
-            # If user_level is admin, only set staff to False if not already True
+            # If user_level is admin, do nothing to is_superuser
             # NEVER touch is_superuser - keep whatever it is
-            if not self.user.is_staff:      # Only set to False if not already True
-                self.user.is_staff = False
-            self.user.save(update_fields=['is_staff']) # This save will not trigger the signal now
-        elif self.user.is_superuser or self.user.is_staff:
+            pass
+        elif self.user.is_superuser:
             # If Django admin fields are true, ensure user_level is basic
             # BUT NEVER change is_superuser - keep whatever it is
             self.user_level = 'basic'
-            # Don't change is_superuser - keep whatever it is
-            if not self.user.is_staff:      # Only set to False if not already True
-                self.user.is_staff = False
-            self.user.save(update_fields=['is_staff']) # This save will not trigger the signal now
         
         super().save(*args, **kwargs)
         
@@ -73,8 +67,6 @@ class UserProfile(models.Model):
             # BUT NEVER change is_superuser if it's already set
             if not user.is_superuser:  # Only set to False if not already set
                 user.is_superuser = False  # New users get is_superuser=False
-            if not user.is_staff:      # Only set to True if not already set
-                user.is_staff = True
             user.save()
             profile, created = cls.objects.get_or_create(user=user)
             profile.user_level = 'basic'
@@ -82,9 +74,6 @@ class UserProfile(models.Model):
         else:
             # Custom admin: set custom level, ensure Django fields are False
             # BUT NEVER change is_superuser - keep whatever it is
-            # Only set staff to False if not already True
-            if user.is_staff:      # Only set to False if not already True
-                user.is_staff = False
             user.save()
             profile, created = cls.objects.get_or_create(user=user)
             profile.user_level = 'admin'
