@@ -54,6 +54,7 @@ def admin_dashboard(request):
     # Get comprehensive real statistics from database
     total_users = User.objects.count()
     total_predictions = Prediction.objects.count()
+    total_activities = UserActivity.objects.count()
     
     # Active users (users who have made predictions or activities recently)
     thirty_days_ago = timezone.now() - timedelta(days=30)
@@ -100,6 +101,31 @@ def admin_dashboard(request):
     
     # Recent users with detailed info
     recent_users = User.objects.select_related('profile').order_by('-date_joined')[:10]
+    
+    # User levels and activity statistics
+    user_levels = UserProfile.objects.values('user_level').annotate(count=Count('id'))
+    recent_activities = UserActivity.objects.select_related('user').order_by('-created_at')[:10]
+    activity_types = UserActivity.objects.values('activity_type').annotate(count=Count('id'))
+    
+    # Daily predictions for charts
+    daily_predictions = Prediction.objects.filter(
+        created_at__gte=thirty_days_ago
+    ).annotate(
+        day=models.functions.TruncDate('created_at')
+    ).values('day').annotate(count=Count('id')).order_by('day')
+    
+    # Daily fraud statistics for charts
+    daily_fraud_stats = Prediction.objects.filter(
+        created_at__gte=thirty_days_ago
+    ).annotate(
+        day=models.functions.TruncDate('created_at')
+    ).values('day', 'result').annotate(count=Count('id')).order_by('day')
+    
+    # Fraud cases statistics
+    fraud_cases = Prediction.objects.filter(result='Fraud').order_by('-created_at')[:5]
+    non_fraud_cases = Prediction.objects.filter(result='Not Fraud').order_by('-created_at')[:5]
+    total_fraud_cases = Prediction.objects.filter(result='Fraud').count()
+    total_legitimate_cases = Prediction.objects.filter(result='Not Fraud').count()
     
     # User activity summary
     user_activity_summary = {
