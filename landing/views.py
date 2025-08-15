@@ -34,19 +34,56 @@ def load_ml_model():
     global model, encoders, categorical_cols, feature_columns, numeric_cols
     
     try:
+        # Check if files exist
+        if not os.path.exists(MODEL_PATH):
+            print(f"❌ Model file not found: {MODEL_PATH}")
+            return False
+        if not os.path.exists(ENCODERS_PATH):
+            print(f"❌ Encoders file not found: {ENCODERS_PATH}")
+            return False
+        if not os.path.exists(CATEGORICAL_COLS_PATH):
+            print(f"❌ Categorical cols file not found: {CATEGORICAL_COLS_PATH}")
+            return False
+        if not os.path.exists(FEATURE_COLUMNS_PATH):
+            print(f"❌ Feature columns file not found: {FEATURE_COLUMNS_PATH}")
+            return False
+        if not os.path.exists(NUMERIC_COLS_PATH):
+            print(f"❌ Numeric cols file not found: {NUMERIC_COLS_PATH}")
+            return False
+        
+        # Load files with detailed error handling
         if model is None:
+            print("🔄 Loading ML model...")
             model = joblib.load(MODEL_PATH)
+            print("✅ ML model loaded successfully")
+            
         if encoders is None:
+            print("🔄 Loading encoders...")
             encoders = joblib.load(ENCODERS_PATH)
+            print("✅ Encoders loaded successfully")
+            
         if categorical_cols is None:
+            print("🔄 Loading categorical columns...")
             categorical_cols = joblib.load(CATEGORICAL_COLS_PATH)
+            print("✅ Categorical columns loaded successfully")
+            
         if feature_columns is None:
+            print("🔄 Loading feature columns...")
             feature_columns = joblib.load(FEATURE_COLUMNS_PATH)
+            print("✅ Feature columns loaded successfully")
+            
         if numeric_cols is None:
+            print("🔄 Loading numeric columns...")
             numeric_cols = joblib.load(NUMERIC_COLS_PATH)
+            print("✅ Numeric columns loaded successfully")
+        
+        print("🎉 All ML model components loaded successfully!")
         return True
+        
     except Exception as e:
-        print(f"Error loading ML model: {e}")
+        print(f"❌ Error loading ML model: {e}")
+        import traceback
+        traceback.print_exc()
         return False
 
 def predict_fraud(input_data):
@@ -54,9 +91,17 @@ def predict_fraud(input_data):
     import time
     start_time = time.time()
     
-    # Load ML model if not already loaded
-    if not load_ml_model():
-        return None, None, None, ["ML model not available"], {}, []
+    # Load ML model if not already loaded - with retry mechanism
+    max_retries = 3
+    for attempt in range(max_retries):
+        if load_ml_model():
+            break
+        else:
+            print(f"⚠️ ML model loading attempt {attempt + 1} failed, retrying...")
+            if attempt == max_retries - 1:
+                print("❌ All ML model loading attempts failed")
+                return None, None, None, ["ML model not available after multiple attempts"], {}, []
+            time.sleep(1)  # Wait before retry
     
     input_df = pd.DataFrame([input_data])
     # Ensure all expected columns exist
