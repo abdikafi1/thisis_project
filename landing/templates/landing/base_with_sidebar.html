@@ -943,10 +943,37 @@
             }
         });
 
-        // Auto-hide messages after 2 seconds
+        // Smart message auto-hide system
         function autoHideMessages() {
             const messages = document.querySelectorAll('.message-auto-hide');
             messages.forEach((message, index) => {
+                // Check if it's an error message or success message
+                const isError = message.classList.contains('alert-danger') || 
+                               message.classList.contains('bg-red-50') || 
+                               message.classList.contains('border-red-400') ||
+                               message.textContent.toLowerCase().includes('error') ||
+                               message.textContent.toLowerCase().includes('denied') ||
+                               message.textContent.toLowerCase().includes('failed');
+                
+                const isSuccess = message.classList.contains('alert-success') || 
+                                 message.classList.contains('bg-green-50') || 
+                                 message.classList.contains('border-green-400') ||
+                                 message.textContent.toLowerCase().includes('success') ||
+                                 message.textContent.toLowerCase().includes('updated') ||
+                                 message.textContent.toLowerCase().includes('created');
+                
+                let hideDelay;
+                if (isError) {
+                    // Error messages: stay visible for 1 second then auto-hide
+                    hideDelay = 1000;
+                } else if (isSuccess) {
+                    // Success messages: auto-hide after 1 second
+                    hideDelay = 1000;
+                } else {
+                    // Other messages: auto-hide after 2 seconds
+                    hideDelay = 2000;
+                }
+                
                 setTimeout(() => {
                     if (message && message.parentElement) {
                         message.style.opacity = '0';
@@ -957,7 +984,7 @@
                             }
                         }, 500);
                     }
-                }, 2000 + (index * 200)); // Stagger messages by 200ms
+                }, hideDelay + (index * 100)); // Stagger messages by 100ms
             });
         }
 
@@ -974,7 +1001,8 @@
             }
         };
 
-        // Auto-hide disabled - messages stay visible until manually closed
+        // Start smart auto-hide when page loads
+        setTimeout(autoHideMessages, 100);
     </script>
     
     {% block extra_js %}{% endblock %}
