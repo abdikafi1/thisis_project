@@ -114,12 +114,12 @@ def admin_dashboard(request):
     except Exception as e:
         print(f"Error getting fraud analytics: {e}")
         fraud_analytics = {
-            'total_records': 0,
-            'fraud_cases': 0,
-            'legitimate_cases': 0,
-            'fraud_rate': 0.0,
+            'total_records': 'Not Available',
+            'fraud_cases': 'Not Available',
+            'legitimate_cases': 'Not Available',
+            'fraud_rate': 'Not Available',
             'high_risk_patterns': {},
-            'model_performance': {'accuracy': 0.0, 'precision': 0.0, 'recall': 0.0, 'f1_score': 0.0},
+            'model_performance': {'accuracy': 'Not Available', 'precision': 'Not Available', 'recall': 'Not Available', 'f1_score': 'Not Available'},
         }
     
     try:
@@ -134,8 +134,8 @@ def admin_dashboard(request):
                 'medium': ['Rural accident area', 'High deductible', 'Older vehicle'],
                 'low': ['Long policy history', 'Driver rating 1-2', 'Police report filed']
             },
-            'model_version': 'BalancedRandomForest',
-            'last_trained': '',
+            'model_version': 'Not Available',
+            'last_trained': 'Not Available',
             'training_data_size': 0
         }
     total_activities = activities.count()
@@ -214,11 +214,11 @@ def admin_dashboard(request):
         'total_fraud_cases': total_fraud_cases,
         'total_legitimate_cases': total_legitimate_cases,
         'daily_fraud_data': json.dumps(daily_fraud_data),
-        'fraud_rate': fraud_analytics.get('fraud_rate', 0),
-        'model_accuracy': fraud_analytics.get('model_performance', {}).get('accuracy', 72.0),
-        'model_precision': fraud_analytics.get('model_performance', {}).get('precision', 68.5),
-        'model_recall': fraud_analytics.get('model_performance', {}).get('recall', 75.2),
-        'model_f1': fraud_analytics.get('model_performance', {}).get('f1_score', 71.7),
+        'fraud_rate': fraud_analytics.get('fraud_rate', 'Not Available'),
+        'model_accuracy': fraud_analytics.get('model_performance', {}).get('accuracy', 'Not Available'),
+        'model_precision': fraud_analytics.get('model_performance', {}).get('precision', 'Not Available'),
+        'model_recall': fraud_analytics.get('model_performance', {}).get('recall', 'Not Available'),
+        'model_f1': fraud_analytics.get('model_performance', {}).get('f1_score', 'Not Available'),
         'high_risk_patterns': fraud_analytics.get('high_risk_patterns', {}),
         'feature_importance': ml_insights.get('feature_importance', {}),
         'risk_factors': ml_insights.get('risk_factors', {}),
@@ -515,12 +515,12 @@ def admin_analytics(request):
     except Exception as e:
         print(f"Error getting fraud analytics: {e}")
         fraud_analytics = {
-            'total_records': 0,
-            'fraud_cases': 0,
-            'legitimate_cases': 0,
-            'fraud_rate': 0.0,
+            'total_records': 'Not Available',
+            'fraud_cases': 'Not Available',
+            'legitimate_cases': 'Not Available',
+            'fraud_rate': 'Not Available',
             'high_risk_patterns': {},
-            'model_performance': {'accuracy': 0.0, 'precision': 0.0, 'recall': 0.0, 'f1_score': 0.0},
+            'model_performance': {'accuracy': 'Not Available', 'precision': 'Not Available', 'recall': 'Not Available', 'f1_score': 'Not Available'},
         }
     
     try:
@@ -535,9 +535,9 @@ def admin_analytics(request):
                 'medium': ['Rural accident area', 'High deductible', 'Older vehicle'],
                 'low': ['Long policy history', 'Driver rating 1-2', 'Police report filed']
             },
-            'model_version': 'BalancedRandomForest',
-            'last_trained': '',
-            'training_data_size': 0
+            'model_version': 'Not Available',
+            'last_trained': 'Not Available',
+            'training_data_size': 'Not Available'
         }
     
     # Get database statistics
@@ -576,16 +576,16 @@ def admin_analytics(request):
         'recent_predictions': recent_predictions,
         'daily_fraud_stats': json.dumps(daily_fraud_stats_list),
         # Real-time metrics from ML model
-        'fraud_rate': fraud_analytics.get('fraud_rate', 0),
-        'model_accuracy': fraud_analytics.get('model_performance', {}).get('accuracy', 0),
-        'precision': fraud_analytics.get('model_performance', {}).get('precision', 0),
-        'recall': fraud_analytics.get('model_performance', {}).get('recall', 0),
-        'f1_score': fraud_analytics.get('model_performance', {}).get('f1_score', 0),
+        'fraud_rate': fraud_analytics.get('fraud_rate', 'Not Available'),
+        'model_accuracy': fraud_analytics.get('model_performance', {}).get('accuracy', 'Not Available'),
+        'precision': fraud_analytics.get('model_performance', {}).get('precision', 'Not Available'),
+        'recall': fraud_analytics.get('model_performance', {}).get('recall', 'Not Available'),
+        'f1_score': fraud_analytics.get('model_performance', {}).get('f1_score', 'Not Available'),
         'feature_importance': ml_insights.get('feature_importance', {}),
         'high_risk_patterns': fraud_analytics.get('high_risk_patterns', {}),
-        'total_records': fraud_analytics.get('total_records', 0),
-        'fraud_cases': fraud_analytics.get('fraud_cases', 0),
-        'legitimate_cases': fraud_analytics.get('legitimate_cases', 0),
+        'total_records': fraud_analytics.get('total_records', 'Not Available'),
+        'fraud_cases': fraud_analytics.get('fraud_cases', 'Not Available'),
+        'legitimate_cases': fraud_analytics.get('legitimate_cases', 'Not Available'),
     }
     
     return render(request, 'landing/admin/analytics.html', context)

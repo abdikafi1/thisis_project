@@ -263,17 +263,17 @@ def get_fraud_analytics():
         
         csv_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'selected_fraud_and_4k_nonfraud.csv')
         if not os.path.exists(csv_path):
-            # Return default analytics if CSV file doesn't exist
+            # Return "Not Available" text if CSV file doesn't exist
             return {
-                'total_records': 0,
-                'fraud_cases': 0,
-                'legitimate_cases': 0,
-                'fraud_rate': 0.0,
+                'total_records': 'Not Available',
+                'fraud_cases': 'Not Available',
+                'legitimate_cases': 'Not Available',
+                'fraud_rate': 'Not Available',
                 'high_risk_patterns': {},
                 'driver_rating_fraud': {},
                 'vehicle_price_fraud': {},
                 'time_patterns': {},
-                'model_performance': {'accuracy': 0.0, 'precision': 0.0, 'recall': 0.0, 'f1_score': 0.0},
+                'model_performance': {'accuracy': 'Not Available', 'precision': 'Not Available', 'recall': 'Not Available', 'f1_score': 'Not Available'},
             }
         
         df = pd.read_csv(csv_path)
@@ -323,15 +323,15 @@ def get_fraud_analytics():
     except Exception as e:
         print(f"Error in fraud analytics: {e}")
         return {
-            'total_records': 0,
-            'fraud_cases': 0,
-            'legitimate_cases': 0,
-            'fraud_rate': 0.0,
+            'total_records': 'Not Available',
+            'fraud_cases': 'Not Available',
+            'legitimate_cases': 'Not Available',
+            'fraud_rate': 'Not Available',
             'high_risk_patterns': {},
             'driver_rating_fraud': {},
             'vehicle_price_fraud': {},
             'time_patterns': {},
-            'model_performance': {'accuracy': 0.0, 'precision': 0.0, 'recall': 0.0, 'f1_score': 0.0},
+            'model_performance': {'accuracy': 'Not Available', 'precision': 'Not Available', 'recall': 'Not Available', 'f1_score': 'Not Available'},
         }
 
 def get_ml_model_insights():
@@ -343,7 +343,7 @@ def get_ml_model_insights():
         
         csv_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'selected_fraud_and_4k_nonfraud.csv')
         if not os.path.exists(csv_path):
-            # Return default insights if CSV file doesn't exist
+            # Return "Not Available" text if CSV file doesn't exist
             return {
                 'feature_importance': {},
                 'risk_factors': {
@@ -352,9 +352,9 @@ def get_ml_model_insights():
                     'medium': ['Rural accident area', 'High deductible', 'Older vehicle'],
                     'low': ['Long policy history', 'Driver rating 1-2', 'Police report filed']
                 },
-                'model_version': 'BalancedRandomForest',
-                'last_trained': '',
-                'training_data_size': 0
+                'model_version': 'Not Available',
+                'last_trained': 'Not Available',
+                'training_data_size': 'Not Available'
             }
         
         df = pd.read_csv(csv_path)
