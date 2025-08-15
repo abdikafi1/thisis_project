@@ -32,18 +32,27 @@ class UserProfile(models.Model):
         return self.user_level == 'basic'
     
     def save(self, *args, **kwargs):
-        """Enforce rule: only one admin type can be active per user"""
+        """Enforce rule: only one admin type can be active per user and prevent recursion."""
+        # Disconnect the signal to prevent recursion
+        post_save.disconnect(save_user_profile, sender=User)
+        
         if self.user_level == 'admin':
             # If user_level is admin, ensure Django admin fields are False
             self.user.is_superuser = False
             self.user.is_staff = False
-            self.user.save(update_fields=['is_superuser', 'is_staff'])
+            self.user.save(update_fields=['is_superuser', 'is_staff'])  # This save will not trigger the signal now
         elif self.user.is_superuser or self.user.is_staff:
-            # If Django admin fields are True, ensure user_level is basic
+            # If Django admin fields are true, ensure user_level is basic
             self.user_level = 'basic'
+            self.user.is_superuser = False  # Ensure superuser is false if user_level is basic
+            self.user.is_staff = False  # Ensure staff is false if user_level is basic
+            self.user.save(update_fields=['is_superuser', 'is_staff'])  # This save will not trigger the signal now
         
         super().save(*args, **kwargs)
-    
+        
+        # Reconnect the signal
+        post_save.connect(save_user_profile, sender=User)
+
     @classmethod
     def set_user_as_admin(cls, user, admin_type='custom'):
         """
@@ -119,5 +128,10 @@ def create_user_profile(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
+    # Check if profile exists before saving to prevent recursion if profile is being created
     if hasattr(instance, 'profile'):
-        instance.profile.save() 
+        # Disconnect the signal temporarily to prevent recursion
+        post_save.disconnect(save_user_profile, sender=User)
+        instance.profile.save()
+        # Reconnect the signal
+        post_save.connect(save_user_profile, sender=User) 
