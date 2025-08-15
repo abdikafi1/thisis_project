@@ -18,7 +18,7 @@ services:
       - key: DEBUG
         value: "false"
       - key: DATABASE_URL
-        value: "postgresql://neondb_owner:npg_LXrJzj85qwcC@ep-soft-truth-a14lkz4p-pooler.ap-southeast-1.aws.neon.tech/fraud?sslmode=require&channel_binding=require"
+        value: "postgresql://neondb_owner:npg_LXrJzj85qwcC@ep-soft-truth-a14lkz4p-pooler.ap-southeast-1.aws.neon.tech:5432/fraud?sslmode=require"
       - key: ALLOWED_HOSTS
         value: ".onrender.com,.neon.tech,.aws.neon.tech"
       - key: PORT
