@@ -25,54 +25,40 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
 ]
 
-# Database configuration for PostgreSQL on Render
-import dj_database_url
+# Database configuration for PostgreSQL with Neon
+from urllib.parse import urlparse, parse_qsl
 
 # Get DATABASE_URL from environment
 database_url = os.environ.get('DATABASE_URL', '')
 
-# Debug: Print database-related environment variables
-print("Checking for database-related environment variables:")
-for key, value in os.environ.items():
-    if any(db_key in key.upper() for db_key in ['DATABASE', 'DB', 'POSTGRES', 'PSQL']):
-        print(f"  {key}: {repr(value)}")
-
-print(f"DATABASE_URL from environment: {repr(database_url)}")
-
-# Also check if we're running in Render environment
-print(f"Running on Render: {'RENDER' in os.environ}")
-print(f"All environment variables: {list(os.environ.keys())}")
-
 if database_url:
-    # Clean the URL string (remove any extra quotes or whitespace)
-    database_url = database_url.strip().strip('"').strip("'")
-    print(f"Cleaned DATABASE_URL: {repr(database_url)}")
-    
     try:
         # Parse the database URL
-        db_config = dj_database_url.parse(database_url)
-        
-        # Add SSL requirements for Render PostgreSQL
-        db_config['OPTIONS'] = {
-            'sslmode': 'require',
-        }
+        tmpPostgres = urlparse(database_url)
         
         # Configure PostgreSQL database
         DATABASES = {
-            'default': db_config
+            'default': {
+                'ENGINE': 'django.db.backends.postgresql',
+                'NAME': tmpPostgres.path.replace('/', '') if tmpPostgres.path else 'fraud',
+                'USER': tmpPostgres.username if tmpPostgres.username else '',
+                'PASSWORD': tmpPostgres.password if tmpPostgres.password else '',
+                'HOST': tmpPostgres.hostname if tmpPostgres.hostname else '',
+                'PORT': 5432,
+                'OPTIONS': dict(parse_qsl(tmpPostgres.query)) if tmpPostgres.query else {},
+            }
         }
         print(f"Successfully configured PostgreSQL database")
         print(f"Database engine: {DATABASES['default']['ENGINE']}")
         print(f"Database name: {DATABASES['default']['NAME']}")
         print(f"Database host: {DATABASES['default']['HOST']}")
         print(f"Database port: {DATABASES['default']['PORT']}")
-        print(f"SSL mode: {DATABASES['default']['OPTIONS']['sslmode']}")
             
     except Exception as e:
         print(f"Error parsing DATABASE_URL: {e}")
         print(f"DATABASE_URL value: {repr(database_url)}")
         raise Exception("Failed to configure PostgreSQL database. Please check your DATABASE_URL.")
-                            else:
+else:
     print("No DATABASE_URL found!")
     raise Exception("DATABASE_URL environment variable is required for production deployment.")
 
