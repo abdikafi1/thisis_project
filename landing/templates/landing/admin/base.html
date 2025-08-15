@@ -381,27 +381,7 @@
                         </a>
                     </div>
 
-                    <!-- User Verification Section -->
-                    <div class="sidebar-section">
-                        <div class="flex items-center justify-between mb-4 px-4">
-                            <p class="section-title">User Verification</p>
-                            <div class="w-8 h-8 bg-emerald-500/20 rounded-full flex items-center justify-center glass-effect">
-                                <i class="fas fa-user-check text-emerald-400 text-xs"></i>
-                            </div>
-                        </div>
-                        <a href="{% url 'user_verification_management' %}" {% if request.resolver_match.url_name == 'user_verification_management' %}aria-current="page"{% endif %}
-                           class="nav-item-hover flex items-center px-4 py-3 text-white/80 hover:text-white rounded-xl transition-all duration-200 {% if request.resolver_match.url_name == 'user_verification_management' %}nav-item-active{% endif %} group">
-                            <div class="w-8 h-8 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
-                                <i class="fas fa-user-check text-white text-sm"></i>
-                            </div>
-                            <div class="flex-1">
-                                <span class="font-medium">User Verification</span>
-                                <p class="text-xs text-white/50 mt-1">Verify user accounts & status</p>
-                            </div>
-                            <span class="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded-full font-semibold">New</span>
-                        </a>
-                    </div>
-
+                 
                     <!-- User Features Section for Admins -->
                  
                     
