@@ -11,10 +11,9 @@ def admin_required(view_func):
         if not request.user.is_authenticated:
             return redirect('login')
         
-        from .models import UserProfile
-        profile, created = UserProfile.objects.get_or_create(user=request.user)
-        
-        if not profile.is_admin:
+        # Check if user is superuser OR has admin user_level
+        # Rule: Only one can be true at a time
+        if not (request.user.is_superuser or request.user.is_staff):
             messages.error(request, 'Access denied. Admin privileges required.')
             return HttpResponseForbidden("Access denied. Admin privileges required.")
         
@@ -28,10 +27,9 @@ def admin_or_basic_required(view_func):
         if not request.user.is_authenticated:
             return redirect('login')
         
-        from .models import UserProfile
-        profile, created = UserProfile.objects.get_or_create(user=request.user)
-        
-        if profile.user_level == 'basic':
+        # Check if user is superuser OR has admin user_level
+        # Rule: Only one can be true at a time
+        if not (request.user.is_superuser or request.user.is_staff):
             messages.error(request, 'This feature requires Admin access.')
             return HttpResponseForbidden("This feature requires Admin access.")
         

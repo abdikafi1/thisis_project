@@ -379,6 +379,17 @@
                             </div>
                             <i class="fas fa-chevron-right text-white/40 group-hover:text-white transition-colors"></i>
                         </a>
+                        <a href="{% url 'user_verification_management' %}" {% if request.resolver_match.url_name == 'user_verification_management' %}aria-current="page"{% endif %}
+                           class="nav-item-hover flex items-center px-4 py-3 text-white/80 hover:text-white rounded-xl transition-all duration-200 {% if request.resolver_match.url_name == 'user_verification_management' %}nav-item-active{% endif %} group">
+                            <div class="w-8 h-8 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
+                                <i class="fas fa-user-check text-white text-sm"></i>
+                            </div>
+                            <div class="flex-1">
+                                <span class="font-medium">User Verification</span>
+                                <p class="text-xs text-white/50 mt-1">Manage user access</p>
+                            </div>
+                            <i class="fas fa-chevron-right text-white/40 group-hover:text-white transition-colors"></i>
+                        </a>
                     </div>
 
                     <!-- User Features Section for Admins -->
@@ -425,7 +436,7 @@
                                 </div>
                             </div>
                             <div class="flex items-center space-x-2">
-                                {% if user.profile.user_level == 'admin' %}
+                                {% if user.is_superuser or user.is_staff %}
                                     <a href="{% url 'admin_profile' %}" class="w-8 h-8 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform duration-200 cursor-pointer" title="Admin Profile">
                                         <i class="fas fa-crown text-white text-sm"></i>
                                     </a>

@@ -11,7 +11,7 @@ from .views import (
 from .admin_views import (
     admin_dashboard, admin_user_management, admin_edit_user, admin_delete_user,
     admin_system_settings, admin_edit_setting, admin_activity_logs, admin_reports,
-    admin_predict, admin_prediction_result, admin_analytics
+    admin_predict, admin_prediction_result, admin_analytics, user_verification_management
 )
  
 urlpatterns = [
@@ -61,4 +61,5 @@ urlpatterns = [
     path('manage/settings/<int:setting_id>/edit/', admin_edit_setting, name='admin_edit_setting'),
     path('manage/activity-logs/', admin_activity_logs, name='admin_activity_logs'),
     path('manage/reports/', admin_reports, name='admin_reports'),
+    path('manage/verification/', user_verification_management, name='user_verification_management'),
 ] 

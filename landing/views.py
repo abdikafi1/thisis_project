@@ -414,6 +414,12 @@ def feature_impact_view(request):
 @login_required
 @track_activity('prediction', lambda req, *args, **kwargs: "Made fraud detection prediction")
 def prediction_view(request):
+    # Check if user is verified
+    profile, created = UserProfile.objects.get_or_create(user=request.user)
+    if not profile.is_verified:
+        messages.error(request, 'Your account needs to be verified to make predictions. Please contact an administrator.')
+        return redirect('user_dashboard')
+    
     if request.method == 'POST':
         form = PredictionForm(request.POST)
         if form.is_valid():
@@ -453,6 +459,12 @@ def prediction_view(request):
 
 @login_required
 def history_view(request):
+    # Check if user is verified
+    profile, created = UserProfile.objects.get_or_create(user=request.user)
+    if not profile.is_verified:
+        messages.error(request, 'Your account needs to be verified to view prediction history. Please contact an administrator.')
+        return redirect('user_dashboard')
+    
     # Get filter parameters
     filter_result = request.GET.get('filter_result', 'all')
     search_query = request.GET.get('search', '')
@@ -502,13 +514,11 @@ def history_view(request):
 
 @login_required
 def dashboard_view(request):
-    # Get or create user profile
-    profile, created = UserProfile.objects.get_or_create(user=request.user)
-    
-    # Redirect to user dashboard if user is regular user, admin dashboard if admin
-    if profile.is_admin:
+    # Check if user is admin - redirect to appropriate dashboard
+    if request.user.is_superuser or request.user.is_staff:
         return redirect('admin_dashboard')
-    return redirect('user_dashboard')
+    else:
+        return redirect('user_dashboard')
 
 @login_required  
 def dashboard_view_old(request):
@@ -951,8 +961,26 @@ def user_dashboard_view(request):
     """Enhanced user dashboard with real data from ML model and database"""
     user = request.user
     
+    # Check if user is admin - admins cannot access user features
+    if user.is_superuser or user.is_staff:
+        messages.error(request, 'Admin users cannot access user dashboard. Use admin dashboard instead.')
+        return redirect('admin_dashboard')
+    
     # Get or create user profile
     profile, created = UserProfile.objects.get_or_create(user=user)
+    
+    # Check verification status and provide appropriate messaging
+    verification_status = {
+        'is_verified': profile.is_verified,
+        'message': '',
+        'show_contact_admin': False
+    }
+    
+    if not profile.is_verified:
+        verification_status['message'] = 'Your account is not verified. Please contact admin for verification.'
+        verification_status['show_contact_admin'] = True
+    else:
+        verification_status['message'] = 'Your account is verified and active.'
     
     # Get user statistics from database
     user_predictions = Prediction.objects.filter(user=user)
@@ -1006,6 +1034,7 @@ def user_dashboard_view(request):
     context = {
         'user': user,
         'profile': profile,
+        'verification_status': verification_status,
         'user_predictions': total_predictions,
         'fraud_predictions': fraud_predictions,
         'safe_predictions': safe_predictions,

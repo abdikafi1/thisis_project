@@ -30,6 +30,44 @@ class UserProfile(models.Model):
     @property
     def is_basic(self):
         return self.user_level == 'basic'
+    
+    def save(self, *args, **kwargs):
+        """Enforce rule: only one admin type can be active per user"""
+        if self.user_level == 'admin':
+            # If user_level is admin, ensure Django admin fields are False
+            self.user.is_superuser = False
+            self.user.is_staff = False
+            self.user.save(update_fields=['is_superuser', 'is_staff'])
+        elif self.user.is_superuser or self.user.is_staff:
+            # If Django admin fields are True, ensure user_level is basic
+            self.user_level = 'basic'
+        
+        super().save(*args, **kwargs)
+    
+    @classmethod
+    def set_user_as_admin(cls, user, admin_type='custom'):
+        """
+        Set user as admin with specified type
+        admin_type: 'django' (uses Django admin) or 'custom' (uses custom admin)
+        """
+        if admin_type == 'django':
+            # Django admin: set Django fields, ensure custom level is basic
+            user.is_superuser = True
+            user.is_staff = True
+            user.save()
+            profile, created = cls.objects.get_or_create(user=user)
+            profile.user_level = 'basic'
+            profile.save()
+        else:
+            # Custom admin: set custom level, ensure Django fields are False
+            user.is_superuser = False
+            user.is_staff = False
+            user.save()
+            profile, created = cls.objects.get_or_create(user=user)
+            profile.user_level = 'admin'
+            profile.save()
+        
+        return profile
 
 class Prediction(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='predictions', null=True, blank=True)

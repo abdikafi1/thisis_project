@@ -517,3 +517,45 @@ def admin_analytics(request):
     }
     
     return render(request, 'landing/admin/analytics.html', context)
+
+@admin_required
+@track_activity('admin_action', lambda req, *args, **kwargs: "Accessed user verification management")
+def user_verification_management(request):
+    """Admin view to manage user verification status"""
+    if request.method == 'POST':
+        user_id = request.POST.get('user_id')
+        action = request.POST.get('action')
+        
+        if user_id and action:
+            try:
+                user = User.objects.get(id=user_id)
+                profile = UserProfile.objects.get(user=user)
+                
+                if action == 'verify':
+                    profile.is_verified = True
+                    profile.save()
+                    messages.success(request, f'User {user.username} has been verified successfully.')
+                elif action == 'unverify':
+                    profile.is_verified = False
+                    profile.save()
+                    messages.warning(request, f'User {user.username} verification has been revoked.')
+                
+            except (User.DoesNotExist, UserProfile.DoesNotExist):
+                messages.error(request, 'User not found.')
+    
+    # Get all users with their verification status
+    users_with_profiles = User.objects.select_related('profile').all()
+    
+    # Separate verified and unverified users
+    verified_users = [user for user in users_with_profiles if hasattr(user, 'profile') and user.profile.is_verified]
+    unverified_users = [user for user in users_with_profiles if hasattr(user, 'profile') and not user.profile.is_verified]
+    
+    context = {
+        'verified_users': verified_users,
+        'unverified_users': unverified_users,
+        'total_users': len(users_with_profiles),
+        'verified_count': len(verified_users),
+        'unverified_count': len(unverified_users),
+    }
+    
+    return render(request, 'landing/admin/user_verification.html', context)
