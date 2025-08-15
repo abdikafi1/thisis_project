@@ -6,6 +6,11 @@ from django.http import HttpResponseForbidden
 
 def admin_required(view_func):
     """Decorator to require admin level access or superuser"""
+    # SUPERUSER PRIORITY SYSTEM:
+    # 1. HIGHEST PRIORITY: request.user.is_superuser = True -> GRANT ACCESS IMMEDIATELY
+    # 2. SECOND PRIORITY: profile.user_level = 'admin' -> GRANT ACCESS
+    # 3. NEVER changes existing is_superuser values - respects database completely
+    
     @wraps(view_func)
     def _wrapped_view(request, *args, **kwargs):
         if not request.user.is_authenticated:

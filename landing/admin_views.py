@@ -17,6 +17,12 @@ from .decorators import admin_required, track_activity
 @track_activity('admin_action', lambda req, *args, **kwargs: "Accessed admin dashboard")
 def admin_dashboard(request):
     """Enhanced admin dashboard with real fraud detection analytics"""
+    # SUPERUSER PRIORITY: is_superuser=True gets highest priority access
+    # This function is protected by @admin_required decorator which checks:
+    # 1. First: if request.user.is_superuser -> GRANT ACCESS IMMEDIATELY
+    # 2. Second: if profile.user_level == 'admin' -> GRANT ACCESS
+    # 3. Never changes existing is_superuser values - respects database
+    
     # Check if user has a profile, create one if not
     profile, created = UserProfile.objects.get_or_create(user=request.user)
     

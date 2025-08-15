@@ -33,6 +33,11 @@ class UserProfile(models.Model):
     
     def save(self, *args, **kwargs):
         """Enforce rule: only one admin type can be active per user and prevent recursion."""
+        # CRITICAL: NEVER change is_superuser if it's already set
+        # This method respects existing database values and only sets defaults for new users
+        # If is_superuser=True exists in database -> KEEP IT TRUE forever
+        # If is_superuser=False exists in database -> KEEP IT FALSE forever
+        
         # Disconnect the signal to prevent recursion
         post_save.disconnect(save_user_profile, sender=User)
         
