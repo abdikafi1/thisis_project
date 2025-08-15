@@ -379,8 +379,27 @@
                             </div>
                             <i class="fas fa-chevron-right text-white/40 group-hover:text-white transition-colors"></i>
                         </a>
+                    </div>
 
-                      
+                    <!-- User Verification Section -->
+                    <div class="sidebar-section">
+                        <div class="flex items-center justify-between mb-4 px-4">
+                            <p class="section-title">User Verification</p>
+                            <div class="w-8 h-8 bg-emerald-500/20 rounded-full flex items-center justify-center glass-effect">
+                                <i class="fas fa-user-check text-emerald-400 text-xs"></i>
+                            </div>
+                        </div>
+                        <a href="{% url 'admin_user_verification' %}" {% if request.resolver_match.url_name == 'admin_user_verification' %}aria-current="page"{% endif %}
+                           class="nav-item-hover flex items-center px-4 py-3 text-white/80 hover:text-white rounded-xl transition-all duration-200 {% if request.resolver_match.url_name == 'admin_user_verification' %}nav-item-active{% endif %} group">
+                            <div class="w-8 h-8 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
+                                <i class="fas fa-user-check text-white text-sm"></i>
+                            </div>
+                            <div class="flex-1">
+                                <span class="font-medium">User Verification</span>
+                                <p class="text-xs text-white/50 mt-1">Verify user accounts & status</p>
+                            </div>
+                            <span class="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded-full font-semibold">New</span>
+                        </a>
                     </div>
 
                     <!-- User Features Section for Admins -->
@@ -664,10 +683,47 @@
                 }
             }
 
-            // Update header when page loads
-            updateHeaderFromURL();
+                                        // Update header when page loads
+                            updateHeaderFromURL();
 
-            // Smart message auto-hide system
+                            // Update header based on current page URL
+                            function updateHeaderFromURL() {
+                                const currentPath = window.location.pathname;
+                                let sectionName = 'Dashboard';
+                                
+                                // Map URL paths to section names
+                                if (currentPath.includes('/manage/dashboard/')) {
+                                    sectionName = 'Dashboard';
+                                } else if (currentPath.includes('/manage/users/')) {
+                                    sectionName = 'User Management';
+                                } else if (currentPath.includes('/manage/verification/')) {
+                                    sectionName = 'User Verification';
+                                } else if (currentPath.includes('/manage/analytics/')) {
+                                    sectionName = 'Analytics';
+                                } else if (currentPath.includes('/manage/reports/')) {
+                                    sectionName = 'Reports';
+                                } else if (currentPath.includes('/manage/activity/')) {
+                                    sectionName = 'Activity Logs';
+                                } else if (currentPath.includes('/manage/settings/')) {
+                                    sectionName = 'System Settings';
+                                } else if (currentPath.includes('/manage/predict/')) {
+                                    sectionName = 'Predictions';
+                                }
+                                
+                                // Find and activate the corresponding sidebar item
+                                const itemToActivate = Array.from(navItems).find(item => {
+                                    const text = item.querySelector('span.font-medium');
+                                    return text && text.textContent.trim() === sectionName;
+                                });
+                                
+                                if (itemToActivate) {
+                                    navItems.forEach(nav => nav.classList.remove('nav-item-active'));
+                                    itemToActivate.classList.add('nav-item-active');
+                                    updateHeaderFromSidebar();
+                                }
+                            }
+
+                            // Smart message auto-hide system
             function autoHideMessages() {
                 const messages = document.querySelectorAll('.message-auto-hide');
                 messages.forEach((message, index) => {
