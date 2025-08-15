@@ -82,19 +82,33 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 # Use PostgreSQL with Neon database
-tmpPostgres = urlparse(os.getenv("DATABASE_URL"))
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': tmpPostgres.path.replace('/', '') if tmpPostgres.path else 'neondb',
-        'USER': tmpPostgres.username if tmpPostgres.username else '',
-        'PASSWORD': tmpPostgres.password if tmpPostgres.password else '',
-        'HOST': tmpPostgres.hostname if tmpPostgres.hostname else '',
-        'PORT': 5432,
-        'OPTIONS': dict(parse_qsl(tmpPostgres.query)) if tmpPostgres.query else {},
+database_url = os.getenv("DATABASE_URL")
+if database_url:
+    tmpPostgres = urlparse(database_url)
+    
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': tmpPostgres.path.replace('/', '') if tmpPostgres.path else 'neondb',
+            'USER': tmpPostgres.username if tmpPostgres.username else '',
+            'PASSWORD': tmpPostgres.password if tmpPostgres.password else '',
+            'HOST': tmpPostgres.hostname if tmpPostgres.hostname else '',
+            'PORT': tmpPostgres.port if tmpPostgres.port else 5432,
+            'OPTIONS': dict(parse_qsl(tmpPostgres.query)) if tmpPostgres.query else {},
+        }
     }
-}
+else:
+    # Fallback to default database configuration
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'neondb',
+            'USER': '',
+            'PASSWORD': '',
+            'HOST': '',
+            'PORT': 5432,
+        }
+    }
 
 
 # Password validation
