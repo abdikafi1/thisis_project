@@ -87,7 +87,7 @@ tmpPostgres = urlparse(os.getenv("DATABASE_URL"))
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': tmpPostgres.path.replace('/', '') if tmpPostgres.path else 'fraud',
+        'NAME': tmpPostgres.path.replace('/', '') if tmpPostgres.path else 'neondb',
         'USER': tmpPostgres.username if tmpPostgres.username else '',
         'PASSWORD': tmpPostgres.password if tmpPostgres.password else '',
         'HOST': tmpPostgres.hostname if tmpPostgres.hostname else '',
