@@ -209,8 +209,8 @@ yarn-error.log*
 *.sqlite3
 
 # ML model files (large binary files)
-# ML model files (large binary files)
-*.pkl
+# ML model files - keep these for deployment
+# *.pkl
 *.joblib
 *.h5
 *.hdf5
