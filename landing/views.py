@@ -515,9 +515,9 @@ def history_view(request):
 @login_required
 def dashboard_view(request):
     # Check if user is admin - redirect to appropriate dashboard
-            # Check if user has admin user_level from database
-        profile, created = UserProfile.objects.get_or_create(user=request.user)
-        if profile.user_level == 'admin':
+    # Check if user has admin user_level from database
+    profile, created = UserProfile.objects.get_or_create(user=request.user)
+    if profile.user_level == 'admin':
         return redirect('admin_dashboard')
     else:
         return redirect('user_dashboard')
