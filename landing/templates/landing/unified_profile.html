@@ -4,37 +4,24 @@
 
 {% block content %}
 <div class="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-    <!-- Header Section -->
-    <div class="bg-white shadow-sm border-b border-gray-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <!-- Breadcrumb -->
-            <div class="flex items-center space-x-2 text-sm text-gray-600 mb-4">
-                <a href="{% url 'dashboard' %}" class="hover:text-blue-600 transition-colors">
-                    <i class="fas fa-home text-lg"></i>
-                    <span class="font-medium">Dashboard</span>
-                </a>
-                <i class="fas fa-chevron-right text-gray-400"></i>
-                <span class="flex items-center space-x-2 text-blue-600 font-semibold">
-                    <i class="fas fa-user-circle text-xl"></i>
-                    <span class="text-xl">Unified Profile</span>
-                </span>
-            </div>
-            
-            <!-- Main page title and subtitle -->
-            <h1 class="text-4xl font-bold text-gray-900 page-title-dynamic">Unified Profile</h1>
-            <p class="text-gray-600 mt-2">Manage your account, profile information, and permissions in one place</p>
-        </div>
-    </div>
-
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Left Column: Profile Form -->
-            <div class="lg:col-span-2">
-                <div class="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
-                    <div class="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-700 px-8 py-6 text-white">
-                        <h2 class="text-2xl font-bold mb-2">Profile Information</h2>
-                        <p class="text-blue-100">Update your personal and account information</p>
-                    </div>
+        
+        <!-- Welcome Message - Always Visible -->
+        <div class="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden mb-8">
+            <div class="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-700 px-8 py-6 text-white">
+                <h1 class="text-3xl font-bold mb-2">Welcome, {{ user.first_name|default:user.username }}!</h1>
+                <p class="text-blue-100">Manage your profile and account settings</p>
+            </div>
+        </div>
+
+        <!-- For Unverified Users - Show Only Basic Profile Form -->
+        {% if not profile.is_verified %}
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Profile Form for Unverified Users -->
+            <div class="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
+                <div class="bg-gradient-to-r from-green-600 to-emerald-700 px-6 py-4 text-white">
+                    <h2 class="text-xl font-semibold">Update Your Profile</h2>
+                </div>
                     
                     <div class="p-8">
                         <form method="post" class="space-y-6">
@@ -151,7 +138,7 @@
 
                             <!-- Submit Button -->
                             <div class="pt-6 border-t border-gray-200">
-                                <button type="submit" class="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold py-4 px-6 rounded-xl hover:from-blue-600 hover:to-purple-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl">
+                                <button type="submit" class="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white font-semibold py-3 px-6 rounded-xl hover:from-green-600 hover:to-emerald-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl">
                                     <i class="fas fa-save mr-2"></i>Update Profile
                                 </button>
                             </div>
@@ -159,6 +146,51 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Simple Profile Info for Unverified Users -->
+            <div class="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
+                <div class="bg-gradient-to-r from-purple-600 to-indigo-700 px-6 py-4 text-white">
+                    <h3 class="text-lg font-semibold">Account Status</h3>
+                </div>
+                
+                <div class="p-6">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-medium text-gray-600">Username</span>
+                            <span class="text-sm font-semibold text-gray-900">{{ user.username }}</span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-medium text-gray-600">Email</span>
+                            <span class="text-sm font-semibold text-gray-900">{{ user.email }}</span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-medium text-gray-600">Member Since</span>
+                            <span class="text-sm text-gray-900">{{ user.date_joined|date:"M d, Y" }}</span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-medium text-gray-600">Status</span>
+                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                Unverified
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- For Verified Users - Show Full Profile -->
+        {% else %}
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Left Column: Profile Form -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
+                    <div class="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-700 px-8 py-6 text-white">
+                        <h2 class="text-2xl font-bold mb-2">Profile Information</h2>
+                        <p class="text-blue-100">Update your personal and account information</p>
+                    </div>
 
             <!-- Right Column: Profile Summary and Stats -->
             <div class="space-y-6">
@@ -213,26 +245,7 @@
                     </div>
                 </div>
 
-                <!-- Show verification message for unverified users -->
-                {% if not profile.is_verified %}
-                    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 mb-8 rounded-lg shadow-lg">
-                        <div class="flex items-center">
-                            <div class="flex-shrink-0">
-                                <i class="fas fa-exclamation-triangle text-yellow-400 text-2xl"></i>
-                            </div>
-                            <div class="ml-3">
-                                <h3 class="text-lg font-medium text-yellow-800">Account Verification Required</h3>
-                                <div class="mt-2 text-yellow-700">
-                                    <p>Your account is currently unverified. Once verified by an administrator, you will have access to all profile features, statistics, and dashboard analytics.</p>
-                                    <p class="mt-2 text-sm">Please contact an administrator to get your account verified.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                {% endif %}
-                
-                <!-- Only show statistics and actions if user is verified -->
-                {% if profile.is_verified %}
+                <!-- Statistics and actions for verified users -->
                 <!-- Statistics Card -->
                 <div class="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
                     <div class="bg-gradient-to-r from-green-600 to-emerald-700 px-6 py-4 text-white">
@@ -290,10 +303,10 @@
                         </div>
                     </div>
                 </div>
-                {% endif %}
                 <!-- End of verified user content -->
             </div>
         </div>
+        {% endif %}
     </div>
 </div>
 

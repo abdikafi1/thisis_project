@@ -542,15 +542,7 @@
                 <h3 class="nav-section-title px-4 py-2">Profile</h3>
             </div>
             
-            <ul class="space-y-1.5 mt-7 mb-9">
-                <li>
-                    <a href="{% url 'unified_profile' %}" {% if request.resolver_match.url_name == 'unified_profile' %}aria-current="page"{% endif %} class="sidebar-item flex items-center px-4 py-3 text-white hover:text-white {% if request.resolver_match.url_name == 'unified_profile' %}active{% endif %}">
-                        <i class="fas fa-user-edit nav-icon"></i>
-                        <span class="nav-text">Edit Profile</span>
-                    </a>
-                </li>
-                
-            </ul>
+           
 
             <!-- Settings Section removed per request; controls moved to top header icons -->
         </nav>
@@ -982,8 +974,7 @@
             }
         };
 
-        // Start auto-hide when page loads
-        setTimeout(autoHideMessages, 100);
+        // Auto-hide disabled - messages stay visible until manually closed
     </script>
     
     {% block extra_js %}{% endblock %}

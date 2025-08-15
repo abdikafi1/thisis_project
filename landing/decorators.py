@@ -5,11 +5,15 @@ from functools import wraps
 from django.http import HttpResponseForbidden
 
 def admin_required(view_func):
-    """Decorator to require admin level access"""
+    """Decorator to require admin level access or superuser"""
     @wraps(view_func)
     def _wrapped_view(request, *args, **kwargs):
         if not request.user.is_authenticated:
             return redirect('login')
+        
+        # Check if user is Django superuser first
+        if request.user.is_superuser:
+            return view_func(request, *args, **kwargs)
         
         # Check if user has admin user_level from database
         from .models import UserProfile
@@ -23,11 +27,15 @@ def admin_required(view_func):
     return _wrapped_view
 
 def admin_or_basic_required(view_func):
-    """Decorator to require admin or basic level access"""
+    """Decorator to require admin or basic level access or superuser"""
     @wraps(view_func)
     def _wrapped_view(request, *args, **kwargs):
         if not request.user.is_authenticated:
             return redirect('login')
+        
+        # Check if user is Django superuser first
+        if request.user.is_superuser:
+            return view_func(request, *args, **kwargs)
         
         # Check if user has admin user_level from database
         from .models import UserProfile
