@@ -537,6 +537,21 @@
                 
             </ul>
 
+            <!-- Profile Section -->
+            <div class="sidebar-section">
+                <h3 class="nav-section-title px-4 py-2">Profile</h3>
+            </div>
+            
+            <ul class="space-y-1.5 mt-7 mb-9">
+                <li>
+                    <a href="{% url 'unified_profile' %}" {% if request.resolver_match.url_name == 'unified_profile' %}aria-current="page"{% endif %} class="sidebar-item flex items-center px-4 py-3 text-white hover:text-white {% if request.resolver_match.url_name == 'unified_profile' %}active{% endif %}">
+                        <i class="fas fa-user-edit nav-icon"></i>
+                        <span class="nav-text">Edit Profile</span>
+                    </a>
+                </li>
+                
+            </ul>
+
             <!-- Settings Section removed per request; controls moved to top header icons -->
         </nav>
 
@@ -544,7 +559,7 @@
         <div class="sidebar-footer p-4">
             {% if user.is_authenticated %}
                 <div class="flex items-center justify-center mb-4">
-                    <a href="{% url 'user_profile' %}" class="user-avatar hover:scale-110 transition-transform duration-200 cursor-pointer" title="View User Profile">
+                    <a href="{% url 'unified_profile' %}" class="user-avatar hover:scale-110 transition-transform duration-200 cursor-pointer" title="View User Profile">
                         {{ user.first_name|first|default:user.username|first|upper }}
                     </a>
                 </div>
@@ -592,7 +607,7 @@
                 <div class="flex items-center space-x-4">
                     {% if user.is_authenticated %}
                         <div class="flex items-center space-x-3">
-                            <a href="{% if user.profile.is_admin %}{% url 'admin_profile' %}{% else %}{% url 'user_profile' %}{% endif %}" class="flex items-center space-x-3 text-gray-700 hover:text-gray-900 transition-colors group" title="View Profile">
+                            <a href="{% url 'unified_profile' %}" class="flex items-center space-x-3 text-gray-700 hover:text-gray-900 transition-colors group" title="View Profile">
                                 <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-sm font-semibold shadow-lg hover:scale-110 transition-transform duration-200 cursor-pointer group-hover:shadow-xl">
                                     {{ user.first_name|first|default:user.username|first|upper }}
                                 </div>
@@ -616,13 +631,21 @@
 
         <!-- Page Content -->
         <main class="p-6 glass-effect rounded-2xl shadow-lg mt-6 mx-4">
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="mb-4 p-4 rounded-lg {% if message.tags == 'error' %}bg-red-100 text-red-700 border border-red-200{% elif message.tags == 'success' %}bg-green-100 text-green-700 border border-green-200{% else %}bg-blue-100 text-blue-700 border border-blue-200{% endif %} shadow-sm">
-                        {{ message }}
+                    {% if messages %}
+            {% for message in messages %}
+                <div class="message-auto-hide mb-4 p-4 rounded-lg {% if message.tags == 'error' %}bg-red-100 text-red-700 border border-red-200{% elif message.tags == 'success' %}bg-green-100 text-green-700 border border-green-200{% else %}bg-blue-100 text-blue-700 border border-blue-200{% endif %} shadow-sm transition-all duration-500" data-message-id="{{ forloop.counter }}">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <i class="fas {% if message.tags == 'error' %}fa-exclamation-circle{% elif message.tags == 'success' %}fa-check-circle{% else %}fa-info-circle{% endif %} mr-2 text-sm"></i>
+                            <span>{{ message }}</span>
+                        </div>
+                        <button class="message-close-btn ml-3 text-gray-400 hover:text-gray-600 transition-colors" onclick="hideMessage(this.parentElement)">
+                            <i class="fas fa-times"></i>
+                        </button>
                     </div>
-                {% endfor %}
-            {% endif %}
+                </div>
+            {% endfor %}
+        {% endif %}
             
             {% block content %}{% endblock %}
         </main>
@@ -894,7 +917,73 @@
                     }, 150);
                 });
             }
+            
+            // Sidebar active state management
+            const sidebarItems = document.querySelectorAll('.sidebar-item');
+            
+            // Add click event to all sidebar items
+            sidebarItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    // Remove active class from all items
+                    sidebarItems.forEach(nav => nav.classList.remove('active'));
+                    // Add active class to clicked item
+                    this.classList.add('active');
+                    
+                    // Store active state in sessionStorage for persistence
+                    const activeText = this.querySelector('.nav-text');
+                    if (activeText) {
+                        sessionStorage.setItem('activeUserSidebarItem', activeText.textContent);
+                    }
+                });
+            });
+            
+            // Restore active state from sessionStorage on page load
+            const lastActiveItem = sessionStorage.getItem('activeUserSidebarItem');
+            if (lastActiveItem) {
+                const itemToActivate = Array.from(sidebarItems).find(item => {
+                    const text = item.querySelector('.nav-text');
+                    return text && text.textContent === lastActiveItem;
+                });
+                if (itemToActivate) {
+                    sidebarItems.forEach(nav => nav.classList.remove('active'));
+                    itemToActivate.classList.add('active');
+                }
+            }
         });
+
+        // Auto-hide messages after 2 seconds
+        function autoHideMessages() {
+            const messages = document.querySelectorAll('.message-auto-hide');
+            messages.forEach((message, index) => {
+                setTimeout(() => {
+                    if (message && message.parentElement) {
+                        message.style.opacity = '0';
+                        message.style.transform = 'translateY(-20px)';
+                        setTimeout(() => {
+                            if (message && message.parentElement) {
+                                message.remove();
+                            }
+                        }, 500);
+                    }
+                }, 2000 + (index * 200)); // Stagger messages by 200ms
+            });
+        }
+
+        // Manual hide message function
+        window.hideMessage = function(messageElement) {
+            if (messageElement) {
+                messageElement.style.opacity = '0';
+                messageElement.style.transform = 'translateY(-20px)';
+                setTimeout(() => {
+                    if (messageElement && messageElement.parentElement) {
+                        messageElement.remove();
+                    }
+                }, 500);
+            }
+        };
+
+        // Start auto-hide when page loads
+        setTimeout(autoHideMessages, 100);
     </script>
     
     {% block extra_js %}{% endblock %}

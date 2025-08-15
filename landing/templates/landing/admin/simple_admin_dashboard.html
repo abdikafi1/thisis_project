@@ -39,11 +39,11 @@
             </div>
         </div>
 
-        <!-- Active Users -->
+        <!-- Recent Users -->
         <div class="card hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-purple-50 to-purple-100 border border-purple-200">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-purple-700 text-sm font-semibold uppercase tracking-wide">Active Users (30 Days)</p>
+                    <p class="text-purple-700 text-sm font-semibold uppercase tracking-wide">Recent Users (30 Days)</p>
                     <h3 class="text-4xl font-black text-purple-900 mt-2">{{ active_users|default:"0" }}</h3>
                     <p class="text-purple-600 text-sm mt-2 flex items-center">
                         <i class="fas fa-chart-line mr-1"></i> Total: {{ total_users|default:"0" }} Users
@@ -118,7 +118,7 @@
                 </div>
                 
                 <div class="flex justify-between items-center">
-                    <span class="text-xs lg:text-sm text-gray-600 truncate">Administrator</span>
+                    <span class="text-xs lg:text-sm text-gray-600 truncate">Administrators</span>
                     <span class="text-xs lg:text-sm font-semibold text-blue-600 ml-2">{{ user_stats.admin_users|default:"0" }}</span>
                 </div>
             </div>
@@ -223,22 +223,22 @@
                         <td class="px-2 lg:px-4 py-2 lg:py-3">
                             {% if user.profile.user_level == 'admin' %}
                                 <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800 whitespace-nowrap">
-                                    <i class="fas fa-crown mr-1"></i>Admin
+                                    <i class="fas fa-crown mr-1"></i>{{ user.profile.get_user_level_display }}
                                 </span>
                             {% else %}
                                 <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800 whitespace-nowrap">
-                                    <i class="fas fa-user mr-1"></i>Basic
+                                    <i class="fas fa-user mr-1"></i>{{ user.profile.get_user_level_display }}
                                 </span>
                             {% endif %}
                         </td>
                         <td class="px-2 lg:px-4 py-2 lg:py-3 hidden md:table-cell">
                             {% if user.is_active %}
                                 <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800 whitespace-nowrap">
-                                    <i class="fas fa-check-circle mr-1"></i>Active
+                                    <i class="fas fa-check-circle mr-1"></i>Enabled
                                 </span>
                             {% else %}
                                 <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800 whitespace-nowrap">
-                                    <i class="fas fa-times-circle mr-1"></i>Inactive
+                                    <i class="fas fa-times-circle mr-1"></i>Disabled
                                 </span>
                             {% endif %}
                         </td>

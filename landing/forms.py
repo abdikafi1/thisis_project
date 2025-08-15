@@ -468,3 +468,110 @@ class UserAccountForm(forms.ModelForm):
             self.fields['last_name'].initial = user.last_name
             self.fields['email'].initial = user.email
             self.fields['username'].initial = user.username 
+
+class UnifiedProfileForm(forms.ModelForm):
+    """Unified form for editing both user profile and admin profile information"""
+    # User model fields
+    first_name = forms.CharField(
+        max_length=30, 
+        required=True,
+        widget=forms.TextInput(attrs={
+            'class': 'w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-300 bg-white shadow-sm hover:shadow-lg',
+            'placeholder': 'Enter your first name'
+        })
+    )
+    last_name = forms.CharField(
+        max_length=30, 
+        required=True,
+        widget=forms.TextInput(attrs={
+            'class': 'w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-300 bg-white shadow-sm hover:shadow-lg',
+            'placeholder': 'Enter your last name'
+        })
+    )
+    email = forms.EmailField(
+        required=True,
+        widget=forms.EmailInput(attrs={
+            'class': 'w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-300 bg-white shadow-sm hover:shadow-lg',
+            'placeholder': 'Enter your email address'
+        })
+    )
+    
+    # UserProfile model fields
+    phone_number = forms.CharField(
+        max_length=15, 
+        required=False,
+        widget=forms.TextInput(attrs={
+            'class': 'w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-300 bg-white shadow-sm hover:shadow-lg',
+            'placeholder': 'Enter your phone number'
+        })
+    )
+    company = forms.CharField(
+        max_length=100, 
+        required=False,
+        widget=forms.TextInput(attrs={
+            'class': 'w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-300 bg-white shadow-sm hover:shadow-lg',
+            'placeholder': 'Enter your company name'
+        })
+    )
+    position = forms.CharField(
+        max_length=100, 
+        required=False,
+        widget=forms.TextInput(attrs={
+            'class': 'w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-300 bg-white shadow-sm hover:shadow-lg',
+            'placeholder': 'Enter your position'
+        })
+    )
+    
+    # Admin-only fields
+    user_level = forms.ChoiceField(
+        choices=UserProfile.USER_LEVELS,
+        required=False,
+        widget=forms.Select(attrs={
+            'class': 'w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-300 bg-white shadow-sm hover:shadow-lg'
+        })
+    )
+    is_verified = forms.BooleanField(
+        required=False,
+        widget=forms.CheckboxInput(attrs={
+            'class': 'w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2'
+        })
+    )
+    
+    class Meta:
+        model = UserProfile
+        fields = ['phone_number', 'company', 'position', 'user_level', 'is_verified']
+    
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        
+        if user:
+            # Set initial values from user model
+            self.fields['first_name'].initial = user.first_name
+            self.fields['last_name'].initial = user.last_name
+            self.fields['email'].initial = user.email
+            
+            # Set initial values from user profile
+            if hasattr(user, 'profile'):
+                profile = user.profile
+                self.fields['phone_number'].initial = profile.phone_number
+                self.fields['company'].initial = profile.company
+                self.fields['position'].initial = profile.position
+                self.fields['user_level'].initial = profile.user_level
+                self.fields['is_verified'].initial = profile.is_verified
+    
+    def save(self, commit=True):
+        profile = super().save(commit=False)
+        
+        if commit:
+            # Save user model changes
+            user = profile.user
+            user.first_name = self.cleaned_data['first_name']
+            user.last_name = self.cleaned_data['last_name']
+            user.email = self.cleaned_data['email']
+            user.save()
+            
+            # Save profile changes
+            profile.save()
+        
+        return profile 

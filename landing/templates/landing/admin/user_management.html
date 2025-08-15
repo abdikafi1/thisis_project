@@ -148,11 +148,11 @@
                                 <div class="level-badge-container">
                                 {% if user.profile.user_level == 'admin' %}
                                         <span class="badge bg-danger px-3 py-2 rounded-pill">
-                                            <i class="fas fa-crown me-1"></i>ADMIN
+                                            <i class="fas fa-crown me-1"></i>{{ user.profile.get_user_level_display|upper }}
                                         </span>
                                 {% else %}
                                         <span class="badge bg-primary px-3 py-2 rounded-pill">
-                                            <i class="fas fa-user me-1"></i>BASIC USER
+                                            <i class="fas fa-user me-1"></i>{{ user.profile.get_user_level_display|upper }}
                                         </span>
                                 {% endif %}
                                 </div>
@@ -165,7 +165,7 @@
                                         </span>
                                     {% elif user.profile.is_verified and not user.is_active %}
                                         <span class="badge bg-warning text-dark px-3 py-2 rounded-pill mb-1">
-                                            <i class="fas fa-pause-circle me-1"></i>VERIFIED (INACTIVE)
+                                            <i class="fas fa-pause-circle me-1"></i>VERIFIED (DISABLED)
                                         </span>
                                     {% elif not user.profile.is_verified and user.is_active %}
                                         <span class="badge bg-secondary px-6 py-2 rounded-pill mb-1">
@@ -173,7 +173,7 @@
                                     </span>
                                 {% else %}
                                         <span class="badge bg-dark px-3 py-2 rounded-pill mb-1">
-                                            <i class="fas fa-times-circle me-1"></i>INACTIVE
+                                            <i class="fas fa-times-circle me-1"></i>DISABLED
                                     </span>
                                 {% endif %}
                                 </div>

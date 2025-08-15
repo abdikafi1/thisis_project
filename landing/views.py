@@ -5,7 +5,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.utils import timezone
-from .forms import PredictionForm, CustomUserCreationForm, UserProfileForm, UserAccountForm
+from .forms import PredictionForm, CustomUserCreationForm, UserProfileForm, UserAccountForm, UnifiedProfileForm
 from .decorators import admin_required, admin_or_basic_required, verified_user_required, track_activity
 import pandas as pd
 import joblib
@@ -515,7 +515,9 @@ def history_view(request):
 @login_required
 def dashboard_view(request):
     # Check if user is admin - redirect to appropriate dashboard
-    if request.user.is_superuser or request.user.is_staff:
+            # Check if user has admin user_level from database
+        profile, created = UserProfile.objects.get_or_create(user=request.user)
+        if profile.user_level == 'admin':
         return redirect('admin_dashboard')
     else:
         return redirect('user_dashboard')
@@ -1548,6 +1550,40 @@ def export_csv_report(request):
             ])
     
     return response
+
+@login_required
+def unified_profile_view(request):
+    """Unified profile view that combines user profile and admin profile editing"""
+    user = request.user
+    profile, created = UserProfile.objects.get_or_create(user=user)
+    
+    if request.method == 'POST':
+        form = UnifiedProfileForm(request.POST, user=user, instance=profile)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Profile updated successfully!')
+            return redirect('unified_profile')
+    else:
+        form = UnifiedProfileForm(user=user, instance=profile)
+    
+    # Get user statistics
+    user_total_predictions = Prediction.objects.filter(user=user).count()
+    user_fraud_predictions = Prediction.objects.filter(user=user, result='Fraud').count()
+    user_non_fraud_predictions = Prediction.objects.filter(user=user, result='Not Fraud').count()
+    
+    # Check if user is admin
+    is_admin = user.is_superuser or user.is_staff or profile.user_level == 'admin'
+    
+    context = {
+        'form': form,
+        'profile': profile,
+        'is_admin': is_admin,
+        'user_total_predictions': user_total_predictions,
+        'user_fraud_predictions': user_fraud_predictions,
+        'user_non_fraud_predictions': user_non_fraud_predictions,
+    }
+    
+    return render(request, 'landing/unified_profile.html', context) 
 
 
  

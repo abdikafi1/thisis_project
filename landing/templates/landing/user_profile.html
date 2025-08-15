@@ -9,24 +9,7 @@
     
     <!-- Page Header Section -->
     <!-- Contains the main title and description for the user profile page -->
-    <div class="mb-8">
-        <!-- Breadcrumb navigation (commented out but available for future use) -->
-        <!-- <div class="flex items-center space-x-4 text-gray-600 mb-4">
-            <a href="{% url 'dashboard' %}" class="flex items-center space-x-2 hover:text-blue-600 transition-colors">
-                <i class="fas fa-home text-lg"></i>
-                <span class="font-medium">Dashboard</span>
-            </a>
-            <i class="fas fa-chevron-right text-gray-400"></i>
-            <span class="flex items-center space-x-2 text-blue-600 font-semibold">
-                <i class="fas fa-user-circle text-xl"></i>
-                <span class="text-xl">My Profile</span>
-            </span>
-        </div> -->
-        
-        <!-- Main page title and subtitle -->
-                    <h1 class="text-4xl font-bold text-gray-900 page-title-dynamic">Profile</h1>
-        <p class="text-gray-600 mt-2">Manage your account and view your fraud detection statistics</p>
-    </div>
+
 
     <!-- User Profile Header Card -->
     <!-- Displays user's basic information with gradient background and status badges -->
@@ -51,11 +34,11 @@
                         <!-- Admin or Basic User badge -->
                         {% if user.profile.user_level == 'admin' %}
                             <span class="bg-red-500/20 text-white px-4 py-2 rounded-full text-sm font-semibold border border-white/30">
-                                <i class="fas fa-crown mr-2"></i>System Administrator
+                                <i class="fas fa-crown mr-2"></i>{{ user.profile.get_user_level_display }}
                             </span>
                         {% else %}
                             <span class="bg-gray-500/20 text-white px-4 py-2 rounded-full text-sm font-semibold border border-white/30">
-                                <i class="fas fa-user mr-2"></i>Basic User
+                                <i class="fas fa-user mr-2"></i>{{ user.profile.get_user_level_display }}
                             </span>
                         {% endif %}
                         
@@ -76,6 +59,26 @@
         </div>
     </div>
 
+    <!-- Show verification message for unverified users -->
+    {% if not user.profile.is_verified %}
+        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 mb-8 rounded-lg shadow-lg">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-exclamation-triangle text-yellow-400 text-2xl"></i>
+                </div>
+                <div class="ml-3">
+                    <h3 class="text-lg font-medium text-yellow-800">Account Verification Required</h3>
+                    <div class="mt-2 text-yellow-700">
+                        <p>Your account is currently unverified. Once verified by an administrator, you will have access to all profile features and dashboard analytics.</p>
+                        <p class="mt-2 text-sm">Please contact an administrator to get your account verified.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    
+    <!-- Only show account information if user is verified -->
+    {% if user.profile.is_verified %}
     <!-- Account Information Display Section -->
     <div class="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 p-10 relative overflow-hidden mb-8">
         <!-- Decorative background elements -->
@@ -417,5 +420,7 @@
             </form>
         </div>
     </div>
+    {% endif %}
+    <!-- End of verified user content -->
 </div>
 {% endblock %}
