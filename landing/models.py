@@ -71,8 +71,8 @@ class UserProfile(models.Model):
         if admin_type == 'django':
             # Django admin: set Django fields, ensure custom level is basic
             # BUT NEVER change is_superuser if it's already set
-            if not user.is_superuser:  # Only set to True if not already set
-                user.is_superuser = True
+            if not user.is_superuser:  # Only set to False if not already set
+                user.is_superuser = False  # New users get is_superuser=False
             if not user.is_staff:      # Only set to True if not already set
                 user.is_staff = True
             user.save()
