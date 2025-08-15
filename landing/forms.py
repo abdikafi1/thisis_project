@@ -16,44 +16,82 @@ try:
 except:
     # Fallback if CSV or pandas is not available
     def get_choices(col):
-        # Return basic choices for common fields
+        # Return basic choices for common fields - using exact values from training data with meaningful descriptions
         basic_choices = {
             'Days_Policy_Accident': [
-                ('1 to 7', '1 to 7'), ('8 to 15', '8 to 15'), ('16 to 30', '16 to 30'),
-                ('31 to 60', '31 to 60'), ('61 to 90', '61 to 90'), ('91 to 180', '91 to 180')
+                ('1 to 7', '🚨 1-7 days (Very Recent - High Risk)'),
+                ('8 to 15', '⚠️ 8-15 days (Recent - Medium Risk)'),
+                ('15 to 30', '📅 15-30 days (Moderate - Normal Risk)'),
+                ('more than 30', '✅ More than 30 days (Older - Lower Risk)'),
+                ('none', '❌ No policy accident (Clean Record)')
             ],
             'Days_Policy_Claim': [
-                ('1 to 7', '1 to 7'), ('8 to 15', '8 to 15'), ('16 to 30', '16 to 30'),
-                ('31 to 60', '31 to 60'), ('61 to 90', '61 to 90'), ('91 to 180', '91 to 180')
+                ('8 to 15', '⚡ 8-15 days (Quick Claim - Medium Risk)'),
+                ('15 to 30', '📋 15-30 days (Standard Claim - Normal Risk)'),
+                ('more than 30', '⏰ More than 30 days (Delayed Claim - Lower Risk)')
             ],
             'PastNumberOfClaims': [
-                ('none', 'none'), ('1', '1'), ('2 to 4', '2 to 4'), ('more than 4', 'more than 4')
+                ('none', '✅ None (Clean History - Low Risk)'),
+                ('1', '📝 1 claim (Single Incident - Low Risk)'),
+                ('2 to 4', '⚠️ 2-4 claims (Multiple Incidents - Medium Risk)'),
+                ('more than 4', '🚨 More than 4 claims (Frequent Claims - High Risk)')
             ],
             'VehiclePrice': [
-                ('less than 20000', 'less than 20000'), ('20000 to 29000', '20000 to 29000'),
-                ('30000 to 39000', '30000 to 39000'), ('40000 to 59000', '40000 to 59000'),
-                ('60000 to 69000', '60000 to 69000'), ('more than 69000', 'more than 69000')
+                ('less than 20000', '💰 Under $20K (Economy - Low Risk)'),
+                ('20000 to 29000', '🚗 $20K-$29K (Standard - Low Risk)'),
+                ('30000 to 39000', '🏎️ $30K-$39K (Mid-Range - Medium Risk)'),
+                ('40000 to 59000', '💎 $40K-$59K (Premium - Medium Risk)'),
+                ('60000 to 69000', '🔥 $60K-$69K (Luxury - High Risk)'),
+                ('more than 69000', '👑 Over $69K (Ultra-Luxury - Very High Risk)')
             ],
-            'PoliceReportFiled': [('Yes', 'Yes'), ('No', 'No')],
-            'WitnessPresent': [('Yes', 'Yes'), ('No', 'No')],
+            'PoliceReportFiled': [
+                ('Yes', '👮 Yes (Official Report - Higher Risk)'),
+                ('No', '❌ No (No Official Report - Lower Risk)')
+            ],
+            'WitnessPresent': [
+                ('Yes', '👁️ Yes (Witness Available - Lower Risk)'),
+                ('No', '🙈 No (No Witness - Higher Risk)')
+            ],
             'NumberOfSuppliments': [
-                ('none', 'none'), ('1 to 2', '1 to 2'), ('3 to 5', '3 to 5'), ('more than 5', 'more than 5')
+                ('none', '✅ None (No Supplements - Low Risk)'),
+                ('1 to 2', '📄 1-2 supplements (Minor - Low Risk)'),
+                ('3 to 5', '📋 3-5 supplements (Moderate - Medium Risk)'),
+                ('more than 5', '🚨 More than 5 supplements (Excessive - High Risk)')
             ],
             'AddressChange_Claim': [
-                ('no change', 'no change'), ('under 6 months', 'under 6 months'),
-                ('1 year', '1 year'), ('2 to 3 years', '2 to 3 years'), ('4 to 8 years', '4 to 8 years')
+                ('no change', '🏠 No change (Stable - Low Risk)'),
+                ('under 6 months', '🔄 Under 6 months (Recent Move - High Risk)'),
+                ('1 year', '📅 1 year ago (Recent - Medium Risk)'),
+                ('2 to 3 years', '📆 2-3 years ago (Stable - Low Risk)'),
+                ('4 to 8 years', '📚 4-8 years ago (Very Stable - Low Risk)')
             ],
             'AgeOfVehicle': [
-                ('less than 1 year', 'less than 1 year'), ('1 to 2 years', '1 to 2 years'),
-                ('3 to 5 years', '3 to 5 years'), ('6 to 10 years', '6 to 10 years'),
-                ('more than 10 years', 'more than 10 years')
+                ('new', '🆕 New vehicle (0-1 year - Low Risk)'),
+                ('2 years', '📅 2 years old (Recent - Low Risk)'),
+                ('3 years', '📆 3 years old (Recent - Low Risk)'),
+                ('4 years', '📋 4 years old (Moderate - Medium Risk)'),
+                ('5 years', '📊 5 years old (Moderate - Medium Risk)'),
+                ('6 years', '📈 6 years old (Older - Medium Risk)'),
+                ('7 years', '📉 7 years old (Older - Medium Risk)'),
+                ('more than 7', '⏳ More than 7 years (Old - Higher Risk)')
             ],
-            'Fault': [('Policy Holder', 'Policy Holder'), ('Third Party', 'Third Party')],
-            'AccidentArea': [('Urban', 'Urban'), ('Rural', 'Rural')],
-            'BasePolicy': [('Liability', 'Liability'), ('Collision', 'Collision'), ('All Perils', 'All Perils')],
+            'Fault': [
+                ('Policy Holder', '👤 Policy Holder (At Fault - Higher Risk)'),
+                ('Third Party', '👥 Third Party (Not At Fault - Lower Risk)')
+            ],
+            'AccidentArea': [
+                ('Urban', '🏙️ Urban area (City - Higher Risk)'),
+                ('Rural', '🌾 Rural area (Countryside - Lower Risk)')
+            ],
+            'BasePolicy': [
+                ('Liability', '🛡️ Liability (Basic Coverage - Lower Risk)'),
+                ('Collision', '💥 Collision (Standard Coverage - Medium Risk)'),
+                ('All Perils', '🌟 All Perils (Full Coverage - Higher Risk)')
+            ],
             'VehicleCategory': [
-                ('Sport', 'Sport'), ('Utility', 'Utility'), ('Family', 'Family'),
-                ('Luxury', 'Luxury'), ('Economy', 'Economy')
+                ('Sedan', '🚗 Sedan (Family Car - Low Risk)'),
+                ('Sport', '🏎️ Sport (Performance Car - High Risk)'),
+                ('Utility', '🚐 Utility (Work Vehicle - Medium Risk)')
             ]
         }
         return basic_choices.get(col, [('', 'Select option')])
@@ -63,104 +101,118 @@ class PredictionForm(forms.Form):
     form_title = "Fraud Prediction Detection"
     
     Days_Policy_Accident = forms.ChoiceField(
-        label="Days Between Policy Start and Accident",
-        choices=[('', 'Select timeframe between policy start and accident occurrence')] + get_choices('Days_Policy_Accident'),
+        label="🚨 Days Between Policy Start and Accident",
+        help_text="How many days after starting the policy did the accident occur?",
+        choices=[('', '📋 Select timeframe between policy start and accident occurrence')] + get_choices('Days_Policy_Accident'),
         widget=forms.Select(attrs={'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none transition'})
     )
     
     Days_Policy_Claim = forms.ChoiceField(
-        label="Days Policy Claim",
-        choices=[('', 'Select the range of days since the policy claim.')] + get_choices('Days_Policy_Claim'),
+        label="⚡ Days Since Policy Claim",
+        help_text="How many days have passed since the policy claim was filed?",
+        choices=[('', '📋 Select the range of days since the policy claim')] + get_choices('Days_Policy_Claim'),
         widget=forms.Select(attrs={'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none transition'})
     )
     
     PastNumberOfClaims = forms.ChoiceField(
-        label="Previous Insurance Claims History",
-        choices=[('', 'Select driver\'s previous claims record (affects risk assessment)')] + get_choices('PastNumberOfClaims'),
+        label="📝 Previous Insurance Claims History",
+        help_text="Driver's previous claims record (affects risk assessment)",
+        choices=[('', '📋 Select driver\'s previous claims record')] + get_choices('PastNumberOfClaims'),
         widget=forms.Select(attrs={'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none transition'})
     )
     
     VehiclePrice = forms.ChoiceField(
-        label="Vehicle Market Value",
-        choices=[('', 'Select vehicle\'s current market value range (higher value = higher coverage)')] + get_choices('VehiclePrice'),
+        label="💰 Vehicle Market Value",
+        help_text="Current market value range (higher value = higher coverage needed)",
+        choices=[('', '📋 Select vehicle\'s current market value range')] + get_choices('VehiclePrice'),
         widget=forms.Select(attrs={'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none transition'})
     )
     
     PoliceReportFiled = forms.ChoiceField(
-        label="Police Report Status",
-        choices=[('', 'Was an official police report filed for this accident?')] + get_choices('PoliceReportFiled'),
+        label="👮 Police Report Status",
+        help_text="Was an official police report filed for this accident?",
+        choices=[('', '📋 Select whether police report was filed')] + get_choices('PoliceReportFiled'),
         widget=forms.Select(attrs={'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none transition'})
     )
     
     WitnessPresent = forms.ChoiceField(
-        label="Witness Present",
-        choices=[('', 'Select whether a witness was present.')] + get_choices('WitnessPresent'),
+        label="👁️ Witness Present",
+        help_text="Was there a witness present during the accident?",
+        choices=[('', '📋 Select whether a witness was present')] + get_choices('WitnessPresent'),
         widget=forms.Select(attrs={'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none transition'})
     )
     
     NumberOfSuppliments = forms.ChoiceField(
-        label="Number Of Suppliments",
-        choices=[('', 'Select the number of supplements.')] + get_choices('NumberOfSuppliments'),
+        label="📄 Number of Supplements",
+        help_text="Additional documents or claims added to the original claim",
+        choices=[('', '📋 Select the number of supplements')] + get_choices('NumberOfSuppliments'),
         widget=forms.Select(attrs={'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none transition'})
     )
     
     AddressChange_Claim = forms.ChoiceField(
-        label="Address Change Claim",
-        choices=[('', 'Select the address change period for the claim.')] + get_choices('AddressChange_Claim'),
+        label="🏠 Address Change Period",
+        help_text="When did the address change relative to the claim?",
+        choices=[('', '📋 Select the address change period for the claim')] + get_choices('AddressChange_Claim'),
         widget=forms.Select(attrs={'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none transition'})
     )
     
     Deductible = forms.IntegerField(
-        label="Deductible Amount",
-        help_text="Enter the deductible amount (e.g., 400, 500, 700).",
+        label="💵 Deductible Amount",
+        help_text="Amount you pay before insurance covers the rest (e.g., 400, 500, 700)",
         widget=forms.NumberInput(attrs={'placeholder': 'Enter deductible amount (400-1000)', 'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none transition'})
     )
     
     DriverRating = forms.ChoiceField(
-        label="Driver Rating",
+        label="⭐ Driver Rating",
+        help_text="Driver rating based on driving history and violations",
         choices=[
-            ('', 'Select driver rating based on driving history'),
-            ('1', '1 - Poor (Multiple violations, high risk)'),
-            ('2', '2 - Average (Some violations, moderate risk)'),
-            ('3', '3 - Good (Minor violations, mostly clean record)'),
-            ('4', '4 - Excellent (No violations, clean record')
+            ('', '📋 Select driver rating based on driving history'),
+            ('1', '🚨 1 - Poor (Multiple violations, high risk)'),
+            ('2', '⚠️ 2 - Average (Some violations, moderate risk)'),
+            ('3', '✅ 3 - Good (Minor violations, mostly clean record)'),
+            ('4', '🌟 4 - Excellent (No violations, clean record)')
         ],
         widget=forms.Select(attrs={'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none transition'})
     )
     
     Age = forms.IntegerField(
-        label="Driver Age",
-        help_text="Enter the age of the driver (18-71).",
+        label="👤 Driver Age",
+        help_text="Age of the driver at the time of the accident (18-71)",
         widget=forms.NumberInput(attrs={'placeholder': 'Enter age (18-71)', 'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none transition'})
     )
     
     AgeOfVehicle = forms.ChoiceField(
-        label="Age Of Vehicle",
-        choices=[('', 'Select the age of the vehicle.')] + get_choices('AgeOfVehicle'),
+        label="🚗 Age of Vehicle",
+        help_text="How old is the vehicle involved in the accident?",
+        choices=[('', '📋 Select the age of the vehicle')] + get_choices('AgeOfVehicle'),
         widget=forms.Select(attrs={'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none transition'})
     )
     
     Fault = forms.ChoiceField(
-        label="Fault Assignment",
-        choices=[('', 'Select who was determined to be at fault for the accident')] + get_choices('Fault'),
+        label="👤 Fault Assignment",
+        help_text="Who was determined to be at fault for the accident?",
+        choices=[('', '📋 Select who was at fault for the accident')] + get_choices('Fault'),
         widget=forms.Select(attrs={'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none transition'})
     )
     
     AccidentArea = forms.ChoiceField(
-        label="Accident Location Type",
-        choices=[('', 'Select the type of area where the accident occurred')] + get_choices('AccidentArea'),
+        label="🏙️ Accident Location Type",
+        help_text="Type of area where the accident occurred",
+        choices=[('', '📋 Select the type of area where accident occurred')] + get_choices('AccidentArea'),
         widget=forms.Select(attrs={'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none transition'})
     )
     
     BasePolicy = forms.ChoiceField(
-        label="Base Policy",
-        choices=[('', 'Select the base policy type.')] + get_choices('BasePolicy'),
+        label="🛡️ Base Policy Type",
+        help_text="Type of insurance coverage policy",
+        choices=[('', '📋 Select the base policy type')] + get_choices('BasePolicy'),
         widget=forms.Select(attrs={'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none transition'})
     )
     
     VehicleCategory = forms.ChoiceField(
-        label="Vehicle Category",
-        choices=[('', 'Select the vehicle category.')] + get_choices('VehicleCategory'),
+        label="🚗 Vehicle Category",
+        help_text="Type/category of vehicle involved",
+        choices=[('', '📋 Select the vehicle category')] + get_choices('VehicleCategory'),
         widget=forms.Select(attrs={'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none transition'})
     )
     

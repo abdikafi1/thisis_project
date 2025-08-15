@@ -77,6 +77,17 @@ def predict_fraud(input_data):
             errors.append(f"Invalid value for {col}: {input_df[col].values[0]}. Please select a valid option.")
             input_df[col] = -1
     
+    # Handle numeric columns - ensure they are numeric
+    for col in numeric_cols:
+        try:
+            input_df[col] = pd.to_numeric(input_df[col], errors='coerce')
+            if pd.isna(input_df[col]).any():
+                errors.append(f"Invalid numeric value for {col}: {input_df[col].values[0]}")
+                return None, None, None, errors, {}, []
+        except Exception as e:
+            errors.append(f"Error processing numeric column {col}: {e}")
+            return None, None, None, errors, {}, []
+    
     if errors:
         return None, None, None, errors
     
