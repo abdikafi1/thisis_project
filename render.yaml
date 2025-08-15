@@ -1,0 +1,26 @@
+services:
+  # Django web service
+  - type: web
+    name: fraud-detection-system
+    env: python
+    plan: free
+    buildCommand: |
+      pip install -r requirements_deploy.txt
+      python manage.py collectstatic --noinput
+      python manage.py migrate
+      python manage.py loaddata data_backup.json || echo "Data import failed, continuing with fresh database"
+    startCommand: gunicorn myproject.wsgi:application --bind 0.0.0.0:$PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.7"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "false"
+      - key: DATABASE_URL
+        value: "postgresql://neondb_owner:npg_LXrJzj85qwcC@ep-soft-truth-a14lkz4p-pooler.ap-southeast-1.aws.neon.tech/fraud?sslmode=require&channel_binding=require"
+      - key: ALLOWED_HOSTS
+        value: ".onrender.com,.neon.tech,.aws.neon.tech"
+      - key: PORT
+        value: "10000"
+    healthCheckPath: /

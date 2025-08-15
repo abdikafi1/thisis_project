@@ -4,13 +4,84 @@ Production settings for fraud detection system on Render
 import os
 from pathlib import Path
 
-# Import specific settings from base settings to avoid conflicts
-from .settings import (
-    BASE_DIR, INSTALLED_APPS, MIDDLEWARE, ROOT_URLCONF,
-    TEMPLATES, WSGI_APPLICATION, AUTH_PASSWORD_VALIDATORS,
-    LANGUAGE_CODE, TIME_ZONE, USE_I18N, USE_TZ, STATIC_URL,
-    DEFAULT_AUTO_FIELD, LOGIN_URL, LOGIN_REDIRECT_URL
-)
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Application definition
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'landing',
+]
+
+MIDDLEWARE = [
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'django.middleware.security.SecurityMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+ROOT_URLCONF = 'myproject.urls'
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+                'landing.context_processors.analytics_data',
+            ],
+        },
+    },
+]
+
+WSGI_APPLICATION = 'myproject.wsgi.application'
+
+# Password validation
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+]
+
+# Internationalization
+LANGUAGE_CODE = 'en-us'
+TIME_ZONE = 'Africa/Nairobi'
+USE_I18N = True
+USE_TZ = True
+
+# Static files (CSS, JavaScript, Images)
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Default primary key field type
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Authentication Settings
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/dashboard/'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -21,6 +92,8 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-w^=fb$xyf-ku5@n^*ek4#
 # Production hosts
 ALLOWED_HOSTS = [
     '.onrender.com',
+    '.neon.tech',
+    '.aws.neon.tech',
     'localhost',
     '127.0.0.1',
 ]
