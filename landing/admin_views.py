@@ -17,22 +17,18 @@ from .decorators import admin_required, track_activity
 @track_activity('admin_action', lambda req, *args, **kwargs: "Accessed admin dashboard")
 def admin_dashboard(request):
     """Enhanced admin dashboard with real fraud detection analytics"""
-    # Ensure user has a profile (for both superusers and admin users)
-    profile, created = UserProfile.objects.get_or_create(
-        user=request.user,
-        defaults={
-            'user_level': 'admin',
-            'is_verified': True,
-            'phone_number': '',
-            'company': '',
-            'position': ''
-        }
-    )
+    # Check if user has a profile, create one if not
+    profile, created = UserProfile.objects.get_or_create(user=request.user)
     
-    # If user is superuser, ensure they have admin privileges
-    if request.user.is_superuser and profile.user_level != 'admin':
+    # NEVER change is_superuser if it's already set - only set defaults for new users
+    if created and request.user.is_superuser and profile.user_level != 'admin':
+        # Only for NEW profiles, set user_level to admin if user is superuser
         profile.user_level = 'admin'
         profile.is_verified = True
+        profile.save()
+    elif created and not request.user.is_superuser and profile.user_level != 'basic':
+        # Only for NEW profiles, set user_level to basic if user is not superuser
+        profile.user_level = 'basic'
         profile.save()
     
     # Get date range from form

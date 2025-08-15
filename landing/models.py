@@ -36,17 +36,23 @@ class UserProfile(models.Model):
         # Disconnect the signal to prevent recursion
         post_save.disconnect(save_user_profile, sender=User)
         
+        # NEVER change is_superuser if it's already set - only set defaults for new users
         if self.user_level == 'admin':
             # If user_level is admin, ensure Django admin fields are False
-            self.user.is_superuser = False
-            self.user.is_staff = False
-            self.user.save(update_fields=['is_superuser', 'is_staff'])  # This save will not trigger the signal now
+            # BUT don't change is_superuser if it's already True
+            if not self.user.is_superuser:  # Only set to False if not already True
+                self.user.is_superuser = False
+            if not self.user.is_staff:      # Only set to False if not already True
+                self.user.is_staff = False
+            self.user.save(update_fields=['is_superuser', 'is_staff']) # This save will not trigger the signal now
         elif self.user.is_superuser or self.user.is_staff:
             # If Django admin fields are true, ensure user_level is basic
+            # BUT NEVER change is_superuser if it's already True
             self.user_level = 'basic'
-            self.user.is_superuser = False  # Ensure superuser is false if user_level is basic
-            self.user.is_staff = False  # Ensure staff is false if user_level is basic
-            self.user.save(update_fields=['is_superuser', 'is_staff'])  # This save will not trigger the signal now
+            # Don't change is_superuser if it's already True
+            if not self.user.is_staff:      # Only set to False if not already True
+                self.user.is_staff = False
+            self.user.save(update_fields=['is_staff']) # This save will not trigger the signal now
         
         super().save(*args, **kwargs)
         
@@ -61,16 +67,22 @@ class UserProfile(models.Model):
         """
         if admin_type == 'django':
             # Django admin: set Django fields, ensure custom level is basic
-            user.is_superuser = True
-            user.is_staff = True
+            # BUT NEVER change is_superuser if it's already set
+            if not user.is_superuser:  # Only set to True if not already set
+                user.is_superuser = True
+            if not user.is_staff:      # Only set to True if not already set
+                user.is_staff = True
             user.save()
             profile, created = cls.objects.get_or_create(user=user)
             profile.user_level = 'basic'
             profile.save()
         else:
             # Custom admin: set custom level, ensure Django fields are False
-            user.is_superuser = False
-            user.is_staff = False
+            # BUT NEVER change is_superuser if it's already True
+            if user.is_superuser:  # Only set to False if not already True
+                user.is_superuser = False
+            if user.is_staff:      # Only set to False if not already True
+                user.is_staff = False
             user.save()
             profile, created = cls.objects.get_or_create(user=user)
             profile.user_level = 'admin'
@@ -128,10 +140,24 @@ def create_user_profile(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
+    """Create or update user profile when user is saved"""
     # Check if profile exists before saving to prevent recursion if profile is being created
     if hasattr(instance, 'profile'):
         # Disconnect the signal temporarily to prevent recursion
         post_save.disconnect(save_user_profile, sender=User)
+        
+        # NEVER change is_superuser if it's already set - only set defaults for new users
+        profile = instance.profile
+        
+        # Only set defaults for new profiles, don't change existing values
+        if profile.pk is None:  # New profile
+            if instance.is_superuser and profile.user_level != 'admin':
+                profile.user_level = 'admin'
+                profile.is_verified = True
+            elif not instance.is_superuser and profile.user_level != 'basic':
+                profile.user_level = 'basic'
+        
         instance.profile.save()
+        
         # Reconnect the signal
         post_save.connect(save_user_profile, sender=User) 
