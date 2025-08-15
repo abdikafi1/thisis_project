@@ -15,7 +15,29 @@ import json
 from django.db.models import Q
 from datetime import timedelta
 
-MODEL_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'ml_model')
+# Try multiple possible paths for ML model files (for different deployment environments)
+POSSIBLE_MODEL_DIRS = [
+    os.path.join(os.path.dirname(os.path.dirname(__file__)), 'ml_model'),  # Local development
+    os.path.join(os.path.dirname(__file__), 'ml_model'),  # Alternative local path
+    '/opt/render/project/src/ml_model',  # Render production
+    '/app/ml_model',  # Alternative production path
+    os.path.join(os.getcwd(), 'ml_model'),  # Current working directory
+]
+
+# Find the first valid model directory
+MODEL_DIR = None
+for possible_dir in POSSIBLE_MODEL_DIRS:
+    if os.path.exists(possible_dir) and os.path.exists(os.path.join(possible_dir, 'model.pkl')):
+        MODEL_DIR = possible_dir
+        print(f"✅ Found ML model directory: {MODEL_DIR}")
+        break
+
+if MODEL_DIR is None:
+    print("❌ No valid ML model directory found. Tried:")
+    for possible_dir in POSSIBLE_MODEL_DIRS:
+        print(f"   - {possible_dir}")
+    MODEL_DIR = POSSIBLE_MODEL_DIRS[0]  # Fallback to first option
+
 MODEL_PATH = os.path.join(MODEL_DIR, 'model.pkl')
 ENCODERS_PATH = os.path.join(MODEL_DIR, 'encoders.pkl')
 CATEGORICAL_COLS_PATH = os.path.join(MODEL_DIR, 'categorical_cols.pkl')
@@ -36,9 +58,22 @@ def load_ml_model():
     global model, encoders, categorical_cols, feature_columns, numeric_cols
     
     try:
+        # Print current environment info for debugging
+        print(f"🔍 Current working directory: {os.getcwd()}")
+        print(f"🔍 Using model directory: {MODEL_DIR}")
+        print(f"🔍 Model path: {MODEL_PATH}")
+        
         # Check if files exist
         if not os.path.exists(MODEL_PATH):
             print(f"❌ Model file not found: {MODEL_PATH}")
+            # Try to list directory contents for debugging
+            if os.path.exists(MODEL_DIR):
+                print(f"📁 Contents of {MODEL_DIR}:")
+                try:
+                    for file in os.listdir(MODEL_DIR):
+                        print(f"   - {file}")
+                except Exception as e:
+                    print(f"   Error listing directory: {e}")
             return False
         if not os.path.exists(ENCODERS_PATH):
             print(f"❌ Encoders file not found: {ENCODERS_PATH}")
