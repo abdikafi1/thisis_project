@@ -30,7 +30,7 @@ feature_columns = None
 numeric_cols = None
 
 def load_ml_model():
-    """Load ML model and encoders only when needed"""
+    """🚀 Load ML model and encoders only when needed (lazy loading for performance)"""
     global model, encoders, categorical_cols, feature_columns, numeric_cols
     
     try:
@@ -50,6 +50,7 @@ def load_ml_model():
         return False
 
 def predict_fraud(input_data):
+    """🎯 Main fraud prediction function - analyzes insurance claims for fraud detection"""
     import time
     start_time = time.time()
     
@@ -427,7 +428,7 @@ def get_feature_impact(input_data):
 
 @login_required
 def fraud_analysis_view(request):
-    """View to show fraud patterns and analysis"""
+    """📊 View to show fraud patterns and analysis - displays fraud detection insights"""
     fraud_patterns, non_fraud_patterns = analyze_fraud_patterns()
     
     context = {
@@ -440,7 +441,7 @@ def fraud_analysis_view(request):
 
 @login_required
 def feature_impact_view(request):
-    """View to show feature impact on prediction"""
+    """🔍 View to show feature impact on prediction - analyzes how each field affects fraud detection"""
     if request.method == 'POST':
         form = PredictionForm(request.POST)
         if form.is_valid():
@@ -461,6 +462,7 @@ def feature_impact_view(request):
 @login_required
 @track_activity('prediction', lambda req, *args, **kwargs: "Made fraud detection prediction")
 def prediction_view(request):
+    """🎯 Main prediction view - handles insurance claim fraud detection using ML model"""
     # Check if user is verified
     profile, created = UserProfile.objects.get_or_create(user=request.user)
     if not profile.is_verified:
@@ -506,6 +508,7 @@ def prediction_view(request):
 
 @login_required
 def history_view(request):
+    """📋 View prediction history with filtering and search capabilities"""
     # Check if user is verified
     profile, created = UserProfile.objects.get_or_create(user=request.user)
     if not profile.is_verified:
@@ -561,6 +564,7 @@ def history_view(request):
 
 @login_required
 def dashboard_view(request):
+    """🔄 Smart dashboard router - redirects users to appropriate dashboard based on their role"""
     # Check if user is superuser or admin - redirect to appropriate dashboard
     if request.user.is_superuser:
         return redirect('admin_dashboard')
@@ -574,6 +578,7 @@ def dashboard_view(request):
 
 @login_required  
 def dashboard_view_old(request):
+    """📊 Legacy dashboard view - shows user statistics and prediction history (deprecated)"""
     # Get user's predictions
     user_predictions = Prediction.objects.filter(user=request.user).order_by('-created_at')
     
@@ -769,6 +774,7 @@ def prediction_result_view(request):
 # Authentication Views
 @track_activity('login', lambda req, *args, **kwargs: f"User {req.user.username} logged in")
 def login_view(request):
+    """🔐 Handle user login - authenticates users and redirects to appropriate dashboard"""
     if request.user.is_authenticated:
         return redirect('dashboard')
     
@@ -787,6 +793,7 @@ def login_view(request):
     return render(request, 'landing/login.html')
 
 def signup_view(request):
+    """👤 Handle user registration - creates new accounts and auto-logs in users"""
     if request.user.is_authenticated:
         return redirect('dashboard')
     
@@ -806,6 +813,7 @@ def signup_view(request):
 
 @track_activity('login', lambda req, *args, **kwargs: f"User {req.user.username} logged out")
 def logout_view(request):
+    """🚪 Handle user logout - safely terminates user sessions"""
     logout(request)
     messages.success(request, 'You have been logged out successfully.')
     return redirect('login')
@@ -898,7 +906,7 @@ def reset_password_view(request, username):
 @login_required
 @track_activity('settings_change', lambda req, *args, **kwargs: "Updated user profile")
 def user_profile_view(request):
-    """User profile management"""
+    """👤 User profile management - handles personal info, account settings, and user statistics"""
     # Get or create user profile
     profile, created = UserProfile.objects.get_or_create(user=request.user)
     
@@ -947,7 +955,7 @@ def user_profile_view(request):
 
 @login_required
 def admin_profile_view(request):
-    """Admin profile management"""
+    """👑 Admin profile management - handles admin settings and system-wide statistics"""
     # Get or create user profile
     profile, created = UserProfile.objects.get_or_create(user=request.user)
     
@@ -1603,7 +1611,7 @@ def export_csv_report(request):
 
 @login_required
 def unified_profile_view(request):
-    """Unified profile view that combines user profile and admin profile editing"""
+    """🔄 Unified profile view that combines user profile and admin profile editing - smart role-based interface"""
     user = request.user
     profile, created = UserProfile.objects.get_or_create(user=user)
     

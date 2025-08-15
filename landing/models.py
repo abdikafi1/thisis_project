@@ -6,6 +6,7 @@ from django.dispatch import receiver
 import json
 
 class UserProfile(models.Model):
+    """👤 Extended user profile with role management and verification system"""
     USER_LEVELS = [
         ('basic', 'Basic User'),
         ('admin', 'Administrator'),
@@ -82,6 +83,7 @@ class UserProfile(models.Model):
         return profile
 
 class Prediction(models.Model):
+    """🎯 Fraud detection predictions - stores ML model results and user input data"""
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='predictions', null=True, blank=True)
     input_data = models.TextField()  # Store as JSON string
     result = models.CharField(max_length=20)
@@ -96,6 +98,7 @@ class Prediction(models.Model):
         return json.loads(self.input_data)
 
 class UserActivity(models.Model):
+    """📊 User activity tracking - monitors user actions for analytics and security"""
     ACTIVITY_TYPES = [
         ('login', 'User Login'),
         ('prediction', 'Made Prediction'),
