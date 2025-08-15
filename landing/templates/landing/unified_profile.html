@@ -4,31 +4,21 @@
 
 {% block content %}
 <div class="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        
-        <!-- Welcome Message - Always Visible -->
-        <div class="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden mb-8">
-            <div class="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-700 px-8 py-6 text-white">
-                <h1 class="text-3xl font-bold mb-2">Welcome, {{ user.first_name|default:user.username }}!</h1>
-                <p class="text-blue-100">Manage your profile and account settings</p>
-            </div>
-        </div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 py-4 sm:py-6 lg:py-8">
+    
 
         <!-- For Unverified Users - Show Only Basic Profile Form -->
         {% if not profile.is_verified %}
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
             <!-- Profile Form for Unverified Users -->
             <div class="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
-                <div class="bg-gradient-to-r from-green-600 to-emerald-700 px-6 py-4 text-white">
-                    <h2 class="text-xl font-semibold">Update Your Profile</h2>
-                </div>
                     
-                    <div class="p-8">
-                        <form method="post" class="space-y-6">
+                    <div class="p-4 sm:p-6 lg:p-8">
+                        <form method="post" class="space-y-4 sm:space-y-6">
                             {% csrf_token %}
                             
                             {% if form.errors %}
-                                <div class="bg-red-50 border-l-4 border-red-400 p-4 rounded-lg">
+                                <div class="bg-red-50 border-l-4 border-red-400 p-3 sm:p-4 rounded-lg">
                                     <div class="flex">
                                         <i class="fas fa-exclamation-triangle text-red-400 mr-3 mt-1"></i>
                                         <div>
@@ -46,12 +36,12 @@
                             {% endif %}
 
                             <!-- Personal Information -->
-                            <div class="space-y-6">
-                                <h3 class="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2">
+                            <div class="space-y-4 sm:space-y-6">
+                                <h3 class="text-base sm:text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2">
                                     <i class="fas fa-user mr-2 text-blue-500"></i>Personal Information
                                 </h3>
                                 
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                                     <div>
                                         <label for="{{ form.first_name.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
                                             First Name
@@ -76,12 +66,12 @@
                             </div>
 
                             <!-- Contact Information -->
-                            <div class="space-y-6">
-                                <h3 class="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2">
+                            <div class="space-y-4 sm:space-y-6">
+                                <h3 class="text-base sm:text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2">
                                     <i class="fas fa-address-book mr-2 text-green-500"></i>Contact Information
                                 </h3>
                                 
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                                     <div>
                                         <label for="{{ form.phone_number.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
                                             Phone Number
@@ -107,12 +97,12 @@
 
                             <!-- Admin Settings (only visible to admins) -->
                             {% if is_admin %}
-                            <div class="space-y-6">
-                                <h3 class="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2">
+                            <div class="space-y-4 sm:space-y-6">
+                                <h3 class="text-base sm:text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2">
                                     <i class="fas fa-crown mr-2 text-purple-500"></i>Administrative Settings
                                 </h3>
                                 
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                                     <div>
                                         <label for="{{ form.user_level.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
                                             User Level
@@ -137,9 +127,9 @@
                             {% endif %}
 
                             <!-- Submit Button -->
-                            <div class="pt-6 border-t border-gray-200">
+                            <div class="pt-4 sm:pt-6 border-t border-gray-200">
                                 <button type="submit" class="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white font-semibold py-3 px-6 rounded-xl hover:from-green-600 hover:to-emerald-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl">
-                                    <i class="fas fa-save mr-2"></i>Update Profile
+                                    <i class="fas fa-save mr-2"></i>Edit Profile
                                 </button>
                             </div>
                         </form>
@@ -149,12 +139,12 @@
 
             <!-- Simple Profile Info for Unverified Users -->
             <div class="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
-                <div class="bg-gradient-to-r from-purple-600 to-indigo-700 px-6 py-4 text-white">
-                    <h3 class="text-lg font-semibold">Account Status</h3>
+                <div class="bg-gradient-to-r from-purple-600 to-indigo-700 px-4 sm:px-6 py-4 text-white">
+                    <h3 class="text-base sm:text-lg font-semibold">Account Status</h3>
                 </div>
                 
-                <div class="p-6">
-                    <div class="space-y-4">
+                <div class="p-4 sm:p-6">
+                    <div class="space-y-3 sm:space-y-4">
                         <div class="flex items-center justify-between">
                             <span class="text-sm font-medium text-gray-600">Username</span>
                             <span class="text-sm font-semibold text-gray-900">{{ user.username }}</span>
@@ -183,33 +173,157 @@
 
         <!-- For Verified Users - Show Full Profile -->
         {% else %}
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
             <!-- Left Column: Profile Form -->
-            <div class="lg:col-span-2">
+            <div class="xl:col-span-2">
                 <div class="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
-                    <div class="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-700 px-8 py-6 text-white">
-                        <h2 class="text-2xl font-bold mb-2">Profile Information</h2>
-                        <p class="text-blue-100">Update your personal and account information</p>
+                    <div class="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-700 px-4 sm:px-6 lg:px-8 py-4 sm:py-6 text-white">
+                        <h2 class="text-xl sm:text-2xl font-bold mb-2">Profile Information</h2>
+                        <p class="text-sm sm:text-base text-blue-100">Update your personal and account information</p>
                     </div>
 
+                    <div class="p-4 sm:p-6 lg:p-8">
+                        <form method="post" class="space-y-4 sm:space-y-6">
+                            {% csrf_token %}
+                            
+                            {% if form.errors %}
+                                <div class="bg-red-50 border-l-4 border-red-400 p-3 sm:p-4 rounded-lg">
+                                    <div class="flex">
+                                        <i class="fas fa-exclamation-triangle text-red-400 mr-3 mt-1"></i>
+                                        <div>
+                                            <h3 class="text-sm font-medium text-red-800">Please correct the following errors:</h3>
+                                            <ul class="mt-2 text-sm text-red-700 list-disc list-inside">
+                                                {% for field, errors in form.errors.items %}
+                                                    {% for error in errors %}
+                                                        <li>{{ error }}</li>
+                                                    {% endfor %}
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            <!-- Personal Information -->
+                            <div class="space-y-4 sm:space-y-6">
+                                <h3 class="text-base sm:text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2">
+                                    <i class="fas fa-user mr-2 text-blue-500"></i>Personal Information
+                                </h3>
+                                
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                                    <div>
+                                        <label for="{{ form.first_name.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
+                                            First Name
+                                        </label>
+                                        {{ form.first_name }}
+                                    </div>
+                                    
+                                    <div>
+                                        <label for="{{ form.last_name.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
+                                            Last Name
+                                        </label>
+                                        {{ form.last_name }}
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label for="{{ form.email.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
+                                        Email Address
+                                    </label>
+                                    {{ form.email }}
+                                </div>
+                            </div>
+
+                            <!-- Contact Information -->
+                            <div class="space-y-4 sm:space-y-6">
+                                <h3 class="text-base sm:text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2">
+                                    <i class="fas fa-address-book mr-2 text-green-500"></i>Contact Information
+                                </h3>
+                                
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                                    <div>
+                                        <label for="{{ form.phone_number.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
+                                            Phone Number
+                                        </label>
+                                        {{ form.phone_number }}
+                                    </div>
+                                    
+                                    <div>
+                                        <label for="{{ form.company.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
+                                            Company
+                                        </label>
+                                        {{ form.company }}
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label for="{{ form.position.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
+                                        Position
+                                    </label>
+                                    {{ form.position }}
+                                </div>
+                            </div>
+
+                            <!-- Admin Settings (only visible to admins) -->
+                            {% if is_admin %}
+                            <div class="space-y-4 sm:space-y-6">
+                                <h3 class="text-base sm:text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2">
+                                    <i class="fas fa-crown mr-2 text-purple-500"></i>Administrative Settings
+                                </h3>
+                                
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                                    <div>
+                                        <label for="{{ form.user_level.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
+                                            User Level
+                                        </label>
+                                        {{ form.user_level }}
+                                        <p class="mt-1 text-xs text-gray-500">Determines your access permissions</p>
+                                    </div>
+                                    
+                                    <div class="flex items-center">
+                                        <div class="flex items-center h-5">
+                                            {{ form.is_verified }}
+                                        </div>
+                                        <div class="ml-3 text-sm">
+                                            <label for="{{ form.is_verified.id_for_label }}" class="font-medium text-gray-700">
+                                                Verified User
+                                            </label>
+                                            <p class="text-gray-500">Verified users have access to additional features</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            <!-- Submit Button -->
+                            <div class="pt-4 sm:pt-6 border-t border-gray-200">
+                                <button type="submit" class="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white font-semibold py-3 px-6 rounded-xl hover:from-green-600 hover:to-emerald-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl">
+                                    <i class="fas fa-save mr-2"></i>Edit Profile
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
             <!-- Right Column: Profile Summary and Stats -->
-            <div class="space-y-6">
+            <div class="space-y-4 sm:space-y-6">
                 <!-- Profile Summary Card -->
                 <div class="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
-                    <div class="bg-gradient-to-r from-purple-600 to-indigo-700 px-6 py-6 text-white">
-                        <div class="flex items-center space-x-4">
-                            <div class="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border-2 border-white/30 shadow-xl">
-                                <i class="fas fa-user text-2xl"></i>
+                    <div class="bg-gradient-to-r from-purple-600 to-indigo-700 px-4 sm:px-6 py-4 sm:py-6 text-white">
+                        <div class="flex items-center space-x-3 sm:space-x-4">
+                            <div class="w-12 h-12 sm:w-16 sm:h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border-2 border-white/30 shadow-xl">
+                                <i class="fas fa-user text-lg sm:text-2xl"></i>
                             </div>
                             <div>
-                                <h3 class="text-xl font-bold">{{ user.first_name|default:user.username }}</h3>
-                                <p class="text-purple-100">{{ user.email }}</p>
+                                <h3 class="text-lg sm:text-xl font-bold">{{ user.first_name|default:user.username }}</h3>
+                                <p class="text-sm sm:text-base text-purple-100">{{ user.email }}</p>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="p-6">
-                        <div class="space-y-4">
+                    <div class="p-4 sm:p-6">
+                        <div class="space-y-3 sm:space-y-4">
                             <div class="flex items-center justify-between">
                                 <span class="text-sm font-medium text-gray-600">User Level</span>
                                 <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full 
@@ -248,27 +362,27 @@
                 <!-- Statistics and actions for verified users -->
                 <!-- Statistics Card -->
                 <div class="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
-                    <div class="bg-gradient-to-r from-green-600 to-emerald-700 px-6 py-4 text-white">
-                        <h3 class="text-lg font-semibold">
+                    <div class="bg-gradient-to-r from-green-600 to-emerald-700 px-4 sm:px-6 py-4 text-white">
+                        <h3 class="text-base sm:text-lg font-semibold">
                             <i class="fas fa-chart-bar mr-2"></i>Your Statistics
                         </h3>
                     </div>
                     
-                    <div class="p-6">
-                        <div class="space-y-4">
+                    <div class="p-4 sm:p-6">
+                        <div class="space-y-3 sm:space-y-4">
                             <div class="flex items-center justify-between">
                                 <span class="text-sm font-medium text-gray-600">Total Predictions</span>
-                                <span class="text-2xl font-bold text-green-600">{{ user_total_predictions }}</span>
+                                <span class="text-xl sm:text-2xl font-bold text-green-600">{{ user_total_predictions }}</span>
                             </div>
                             
                             <div class="flex items-center justify-between">
                                 <span class="text-sm font-medium text-gray-600">Fraud Detected</span>
-                                <span class="text-lg font-semibold text-red-600">{{ user_fraud_predictions }}</span>
+                                <span class="text-base sm:text-lg font-semibold text-red-600">{{ user_fraud_predictions }}</span>
                             </div>
                             
                             <div class="flex items-center justify-between">
                                 <span class="text-sm font-medium text-gray-600">Safe Transactions</span>
-                                <span class="text-lg font-semibold text-blue-600">{{ user_non_fraud_predictions }}</span>
+                                <span class="text-base sm:text-lg font-semibold text-blue-600">{{ user_non_fraud_predictions }}</span>
                             </div>
                         </div>
                     </div>
@@ -276,13 +390,13 @@
 
                 <!-- Quick Actions -->
                 <div class="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
-                    <div class="bg-gradient-to-r from-orange-600 to-red-700 px-6 py-4 text-white">
-                        <h3 class="text-lg font-semibold">
+                    <div class="bg-gradient-to-r from-orange-600 to-red-700 px-4 sm:px-6 py-4 text-white">
+                        <h3 class="text-base sm:text-lg font-semibold">
                             <i class="fas fa-bolt mr-2"></i>Quick Actions
                         </h3>
                     </div>
                     
-                    <div class="p-6">
+                    <div class="p-4 sm:p-6">
                         <div class="space-y-3">
                             <a href="{% url 'predict' %}" class="flex items-center justify-between w-full p-3 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors">
                                 <span class="text-sm font-medium text-blue-700">New Prediction</span>

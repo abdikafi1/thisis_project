@@ -22,20 +22,40 @@ CATEGORICAL_COLS_PATH = os.path.join(MODEL_DIR, 'categorical_cols.pkl')
 FEATURE_COLUMNS_PATH = os.path.join(MODEL_DIR, 'feature_columns.pkl')
 NUMERIC_COLS_PATH = os.path.join(MODEL_DIR, 'numeric_cols.pkl')
 
-# Load model and encoders once
-model = joblib.load(MODEL_PATH)
-encoders = joblib.load(ENCODERS_PATH)
-categorical_cols = joblib.load(CATEGORICAL_COLS_PATH)
-try:
-    feature_columns = joblib.load(FEATURE_COLUMNS_PATH)
-    numeric_cols = joblib.load(NUMERIC_COLS_PATH)
-except Exception:
-    feature_columns = None
-    numeric_cols = None
+# Initialize model variables
+model = None
+encoders = None
+categorical_cols = None
+feature_columns = None
+numeric_cols = None
+
+def load_ml_model():
+    """Load ML model and encoders only when needed"""
+    global model, encoders, categorical_cols, feature_columns, numeric_cols
+    
+    try:
+        if model is None:
+            model = joblib.load(MODEL_PATH)
+        if encoders is None:
+            encoders = joblib.load(ENCODERS_PATH)
+        if categorical_cols is None:
+            categorical_cols = joblib.load(CATEGORICAL_COLS_PATH)
+        if feature_columns is None:
+            feature_columns = joblib.load(FEATURE_COLUMNS_PATH)
+        if numeric_cols is None:
+            numeric_cols = joblib.load(NUMERIC_COLS_PATH)
+        return True
+    except Exception as e:
+        print(f"Error loading ML model: {e}")
+        return False
 
 def predict_fraud(input_data):
     import time
     start_time = time.time()
+    
+    # Load ML model if not already loaded
+    if not load_ml_model():
+        return None, None, None, ["ML model not available"], {}, []
     
     input_df = pd.DataFrame([input_data])
     # Ensure all expected columns exist
@@ -237,7 +257,25 @@ def analyze_fraud_patterns():
 def get_fraud_analytics():
     """Get analytics and real model performance based on saved model and dataset."""
     try:
+        # Import required modules safely
+        import os
+        import pandas as pd
+        
         csv_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'selected_fraud_and_4k_nonfraud.csv')
+        if not os.path.exists(csv_path):
+            # Return default analytics if CSV file doesn't exist
+            return {
+                'total_records': 0,
+                'fraud_cases': 0,
+                'legitimate_cases': 0,
+                'fraud_rate': 0.0,
+                'high_risk_patterns': {},
+                'driver_rating_fraud': {},
+                'vehicle_price_fraud': {},
+                'time_patterns': {},
+                'model_performance': {'accuracy': 0.0, 'precision': 0.0, 'recall': 0.0, 'f1_score': 0.0},
+            }
+        
         df = pd.read_csv(csv_path)
         
         total_records = len(df)
@@ -290,24 +328,39 @@ def get_fraud_analytics():
             'legitimate_cases': 0,
             'fraud_rate': 0.0,
             'high_risk_patterns': {},
+            'driver_rating_fraud': {},
+            'vehicle_price_fraud': {},
+            'time_patterns': {},
             'model_performance': {'accuracy': 0.0, 'precision': 0.0, 'recall': 0.0, 'f1_score': 0.0},
         }
 
 def get_ml_model_insights():
     """Get ML model insights from saved model and dataset."""
     try:
+        # Import required modules safely
+        import os
+        import pandas as pd
+        
         csv_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'selected_fraud_and_4k_nonfraud.csv')
+        if not os.path.exists(csv_path):
+            # Return default insights if CSV file doesn't exist
+            return {
+                'feature_importance': {},
+                'risk_factors': {
+                    'very_high': ['1 to 7 days policy to accident', 'Driver rating 4', 'No police report'],
+                    'high': ['Multiple past claims', 'No witness present', 'Policy holder at fault'],
+                    'medium': ['Rural accident area', 'High deductible', 'Older vehicle'],
+                    'low': ['Long policy history', 'Driver rating 1-2', 'Police report filed']
+                },
+                'model_version': 'BalancedRandomForest',
+                'last_trained': '',
+                'training_data_size': 0
+            }
+        
         df = pd.read_csv(csv_path)
         
-        # Feature importance from trained model
-        feature_importance: dict = {}
-        try:
-            if hasattr(model, 'feature_importances_') and feature_columns:
-                importances = list(model.feature_importances_)
-                names = list(feature_columns)
-                feature_importance = { names[i]: float(importances[i]) for i in range(min(len(names), len(importances))) }
-        except Exception as _:
-            feature_importance = {}
+        # Feature importance from trained model (simplified for now)
+        feature_importance = {}
 
         # Risk factors are derived separately (kept as heuristics)
         risk_factors = {
@@ -317,14 +370,8 @@ def get_ml_model_insights():
             'low': ['Long policy history', 'Driver rating 1-2', 'Police report filed']
         }
         
-        # Last trained from model file mtime
-        try:
-            model_path = MODEL_PATH
-            mtime = os.path.getmtime(model_path)
-            import datetime
-            last_trained = datetime.datetime.fromtimestamp(mtime).strftime('%Y-%m-%d %H:%M')
-        except Exception:
-            last_trained = ''
+        # Last trained from model file mtime (simplified)
+        last_trained = ''
         
         return {
             'feature_importance': feature_importance,

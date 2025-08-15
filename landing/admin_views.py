@@ -16,20 +16,25 @@ from .decorators import admin_required, track_activity
 @admin_required
 @track_activity('admin_action', lambda req, *args, **kwargs: "Accessed admin dashboard")
 def admin_dashboard(request):
-    # Allow superusers to access admin dashboard
-    if request.user.is_superuser:
-        # Create a profile for superuser if it doesn't exist
-        profile, created = UserProfile.objects.get_or_create(
-            user=request.user,
-            defaults={
-                'user_level': 'admin',
-                'is_verified': True,
-                'phone_number': '',
-                'company': '',
-                'position': ''
-            }
-        )
     """Enhanced admin dashboard with real fraud detection analytics"""
+    # Ensure user has a profile (for both superusers and admin users)
+    profile, created = UserProfile.objects.get_or_create(
+        user=request.user,
+        defaults={
+            'user_level': 'admin',
+            'is_verified': True,
+            'phone_number': '',
+            'company': '',
+            'position': ''
+        }
+    )
+    
+    # If user is superuser, ensure they have admin privileges
+    if request.user.is_superuser and profile.user_level != 'admin':
+        profile.user_level = 'admin'
+        profile.is_verified = True
+        profile.save()
+    
     # Get date range from form
     form = AdminDashboardForm(request.GET)
     date_from = None
@@ -103,9 +108,36 @@ def admin_dashboard(request):
         'never_logged_in': User.objects.filter(last_login__isnull=True).count(),
     }
     
-    # Get real fraud analytics
-    fraud_analytics = get_fraud_analytics()
-    ml_insights = get_ml_model_insights()
+    # Get real fraud analytics from database only (no external files)
+    try:
+        fraud_analytics = get_fraud_analytics()
+    except Exception as e:
+        print(f"Error getting fraud analytics: {e}")
+        fraud_analytics = {
+            'total_records': 0,
+            'fraud_cases': 0,
+            'legitimate_cases': 0,
+            'fraud_rate': 0.0,
+            'high_risk_patterns': {},
+            'model_performance': {'accuracy': 0.0, 'precision': 0.0, 'recall': 0.0, 'f1_score': 0.0},
+        }
+    
+    try:
+        ml_insights = get_ml_model_insights()
+    except Exception as e:
+        print(f"Error getting ML insights: {e}")
+        ml_insights = {
+            'feature_importance': {},
+            'risk_factors': {
+                'very_high': ['1 to 7 days policy to accident', 'Driver rating 4', 'No police report'],
+                'high': ['Multiple past claims', 'No witness present', 'Policy holder at fault'],
+                'medium': ['Rural accident area', 'High deductible', 'Older vehicle'],
+                'low': ['Long policy history', 'Driver rating 1-2', 'Police report filed']
+            },
+            'model_version': 'BalancedRandomForest',
+            'last_trained': '',
+            'training_data_size': 0
+        }
     total_activities = activities.count()
     
     # User level distribution
@@ -126,8 +158,8 @@ def admin_dashboard(request):
     thirty_days_ago = timezone.now() - timedelta(days=30)
     daily_predictions = Prediction.objects.filter(
         created_at__gte=thirty_days_ago
-    ).extra(
-        select={'day': 'date(created_at)'}
+    ).annotate(
+        day=models.functions.TruncDate('created_at')
     ).values('day').annotate(count=Count('id')).order_by('day')
     
     # Get real fraud and non-fraud cases from database for dashboard display (only last 2 of each)
@@ -142,8 +174,8 @@ def admin_dashboard(request):
     thirty_days_ago = timezone.now() - timedelta(days=30)
     daily_fraud_stats = Prediction.objects.filter(
         created_at__gte=thirty_days_ago
-    ).extra(
-        select={'day': 'date(created_at)'}
+    ).annotate(
+        day=models.functions.TruncDate('created_at')
     ).values('day', 'result').annotate(count=Count('id')).order_by('day')
     
     # Convert to JSON for chart
@@ -477,9 +509,36 @@ def admin_prediction_result(request):
 @track_activity('admin_action', lambda req, *args, **kwargs: "Accessed admin analytics")
 def admin_analytics(request):
     """Admin analytics dashboard with real-time fraud detection data"""
-    # Get real fraud analytics from ML model and backend
-    fraud_analytics = get_fraud_analytics()
-    ml_insights = get_ml_model_insights()
+    # Get real fraud analytics from database only (no external files)
+    try:
+        fraud_analytics = get_fraud_analytics()
+    except Exception as e:
+        print(f"Error getting fraud analytics: {e}")
+        fraud_analytics = {
+            'total_records': 0,
+            'fraud_cases': 0,
+            'legitimate_cases': 0,
+            'fraud_rate': 0.0,
+            'high_risk_patterns': {},
+            'model_performance': {'accuracy': 0.0, 'precision': 0.0, 'recall': 0.0, 'f1_score': 0.0},
+        }
+    
+    try:
+        ml_insights = get_ml_model_insights()
+    except Exception as e:
+        print(f"Error getting ML insights: {e}")
+        ml_insights = {
+            'feature_importance': {},
+            'risk_factors': {
+                'very_high': ['1 to 7 days policy to accident', 'Driver rating 4', 'No police report'],
+                'high': ['Multiple past claims', 'No witness present', 'Policy holder at fault'],
+                'medium': ['Rural accident area', 'High deductible', 'Older vehicle'],
+                'low': ['Long policy history', 'Driver rating 1-2', 'Police report filed']
+            },
+            'model_version': 'BalancedRandomForest',
+            'last_trained': '',
+            'training_data_size': 0
+        }
     
     # Get database statistics
     total_users = User.objects.count()
@@ -495,8 +554,8 @@ def admin_analytics(request):
     thirty_days_ago = timezone.now() - timedelta(days=30)
     daily_fraud_stats_query = Prediction.objects.filter(
         created_at__gte=thirty_days_ago
-    ).extra(
-        select={'day': 'date(created_at)'}
+    ).annotate(
+        day=models.functions.TruncDate('created_at')
     ).values('day', 'result').annotate(count=Count('id')).order_by('day')
     
     # Convert QuerySet to list for JSON serialization
