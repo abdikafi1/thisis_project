@@ -551,10 +551,7 @@
                         {{ user.first_name|first|default:user.username|first|upper }}
                     </a>
                 </div>
-                <a href="{% url 'logout' %}" class="logout-btn flex items-center justify-center">
-                    <i class="fas fa-sign-out-alt mr-2"></i>
-                    Logout
-                </a>
+                <!-- Logout button hidden as requested -->
             {% else %}
                 <div class="flex items-center justify-center mb-4">
                     <a href="{% url 'login' %}" class="user-avatar hover:scale-110 transition-transform duration-200 cursor-pointer" title="Login">
@@ -607,9 +604,7 @@
                                 <!-- <a href="{% url 'user_settings' %}" class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors" title="Settings">
                                     <i class="fas fa-cog text-lg"></i>
                                 </a> -->
-                                <a href="{% url 'logout' %}" class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Sign Out">
-                                    <i class="fas fa-sign-out-alt text-lg"></i>
-                                </a>
+                                <!-- Logout button hidden as requested -->
                             </div>
                         </div>
                     {% endif %}
