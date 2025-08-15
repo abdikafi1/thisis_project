@@ -380,17 +380,7 @@
                             <i class="fas fa-chevron-right text-white/40 group-hover:text-white transition-colors"></i>
                         </a>
 
-                        <a href="{% url 'unified_profile' %}" {% if request.resolver_match.url_name == 'unified_profile' %}aria-current="page"{% endif %}
-                           class="nav-item-hover flex items-center px-4 py-3 text-white/80 hover:text-white rounded-xl transition-all duration-200 {% if request.resolver_match.url_name == 'unified_profile' %}nav-item-active{% endif %} group">
-                            <div class="w-8 h-8 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
-                                <i class="fas fa-user-edit text-white text-sm"></i>
-                            </div>
-                            <div class="flex-1">
-                                <span class="font-medium">Edit Profile</span>
-                                <p class="text-xs text-white/50 mt-1">Update your profile</p>
-                            </div>
-                            <i class="fas fa-chevron-right text-white/40 group-hover:text-white transition-colors"></i>
-                        </a>
+                      
                     </div>
 
                     <!-- User Features Section for Admins -->
