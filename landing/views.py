@@ -463,11 +463,8 @@ def feature_impact_view(request):
 @track_activity('prediction', lambda req, *args, **kwargs: "Made fraud detection prediction")
 def prediction_view(request):
     """🎯 Main prediction view - handles insurance claim fraud detection using ML model"""
-    # Check if user is verified
+    # Get user profile (verification not required)
     profile, created = UserProfile.objects.get_or_create(user=request.user)
-    if not profile.is_verified:
-        messages.error(request, 'Your account needs to be verified to make predictions. Please contact an administrator.')
-        return redirect('user_dashboard')
     
     if request.method == 'POST':
         form = PredictionForm(request.POST)
@@ -509,11 +506,8 @@ def prediction_view(request):
 @login_required
 def history_view(request):
     """📋 View prediction history with filtering and search capabilities"""
-    # Check if user is verified
+    # Get user profile (verification not required)
     profile, created = UserProfile.objects.get_or_create(user=request.user)
-    if not profile.is_verified:
-        messages.error(request, 'Your account needs to be verified to view prediction history. Please contact an administrator.')
-        return redirect('user_dashboard')
     
     # Get filter parameters
     filter_result = request.GET.get('filter_result', 'all')
@@ -1029,18 +1023,12 @@ def user_dashboard_view(request):
     # Get or create user profile
     profile, created = UserProfile.objects.get_or_create(user=user)
     
-    # Check verification status and provide appropriate messaging
+    # User status (verification not required)
     verification_status = {
         'is_verified': profile.is_verified,
-        'message': '',
+        'message': 'Your account is active and ready to use.',
         'show_contact_admin': False
     }
-    
-    if not profile.is_verified:
-        verification_status['message'] = 'Your account is not verified. Please contact admin for verification.'
-        verification_status['show_contact_admin'] = True
-    else:
-        verification_status['message'] = 'Your account is verified and active.'
     
     # Get user statistics from database
     user_predictions = Prediction.objects.filter(user=user)
@@ -1126,7 +1114,7 @@ def user_reports_view(request):
     from django.db.models import Count, Q
     import json
     
-    # Get user-specific statistics
+    # Get user-specific statistics (verification not required)
     user_predictions = Prediction.objects.filter(user=request.user).order_by('-created_at')
     total_user_predictions = user_predictions.count()
     user_fraud_count = user_predictions.filter(result='Fraud').count()

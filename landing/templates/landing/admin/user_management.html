@@ -1201,7 +1201,7 @@ document.addEventListener('DOMContentLoaded', function() {
     window.goToPage = function() {
         const pageInput = document.getElementById('pageJump');
         const pageNum = parseInt(pageInput.value);
-        const maxPages = {{ page_obj.paginator.num_pages }};
+        const maxPages = parseInt('{{ page_obj.paginator.num_pages }}') || 1;
         
         if (pageNum >= 1 && pageNum <= maxPages) {
             const currentUrl = new URL(window.location);
@@ -1214,24 +1214,21 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     // Allow Enter key to submit
-    document.addEventListener('DOMContentLoaded', function() {
-        const pageInput = document.getElementById('pageJump');
-        if (pageInput) {
-            pageInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    goToPage();
-                }
-            });
-        }
-    });
+    const pageInput = document.getElementById('pageJump');
+    if (pageInput) {
+        pageInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                goToPage();
+            }
+        });
+    }
 
     // ========================================
     // INITIALIZATION
     // ========================================
     updateCounts();
     
-
-});
+}); // Close the DOMContentLoaded event listener
 </script>
 {% endblock %}
 

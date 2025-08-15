@@ -54,18 +54,12 @@ def admin_or_basic_required(view_func):
     return _wrapped_view
 
 def verified_user_required(view_func):
-    """Decorator to require verified user status"""
+    """Decorator to require verified user status (DEPRECATED - No longer enforced)"""
     @wraps(view_func)
     def _wrapped_view(request, *args, **kwargs):
+        # Verification no longer required - all authenticated users can access
         if not request.user.is_authenticated:
             return redirect('login')
-        
-        from .models import UserProfile
-        profile, created = UserProfile.objects.get_or_create(user=request.user)
-        
-        if not profile.is_verified:
-            messages.error(request, 'Your account needs to be verified to access this feature.')
-            return HttpResponseForbidden("Account verification required.")
         
         return view_func(request, *args, **kwargs)
     return _wrapped_view

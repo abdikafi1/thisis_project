@@ -389,8 +389,8 @@
                                 <i class="fas fa-user-check text-emerald-400 text-xs"></i>
                             </div>
                         </div>
-                        <a href="{% url 'admin_user_verification' %}" {% if request.resolver_match.url_name == 'admin_user_verification' %}aria-current="page"{% endif %}
-                           class="nav-item-hover flex items-center px-4 py-3 text-white/80 hover:text-white rounded-xl transition-all duration-200 {% if request.resolver_match.url_name == 'admin_user_verification' %}nav-item-active{% endif %} group">
+                        <a href="{% url 'user_verification_management' %}" {% if request.resolver_match.url_name == 'user_verification_management' %}aria-current="page"{% endif %}
+                           class="nav-item-hover flex items-center px-4 py-3 text-white/80 hover:text-white rounded-xl transition-all duration-200 {% if request.resolver_match.url_name == 'user_verification_management' %}nav-item-active{% endif %} group">
                             <div class="w-8 h-8 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
                                 <i class="fas fa-user-check text-white text-sm"></i>
                             </div>
@@ -526,30 +526,6 @@
                 }, index * 100);
             });
 
-            // Update header based on selected sidebar item
-            function updateHeaderFromSidebar() {
-                const currentSection = document.querySelector('.nav-item-active');
-                if (currentSection) {
-                    const sectionText = currentSection.querySelector('span.font-medium');
-                    if (sectionText) {
-                        const currentSectionSpan = document.getElementById('current-section');
-                        if (currentSectionSpan) {
-                            // Update the header with the selected sidebar item
-                            currentSectionSpan.textContent = sectionText.textContent;
-                            
-                            // Also update the page title if it exists
-                            const pageTitle = document.querySelector('h1');
-                            if (pageTitle) {
-                                pageTitle.textContent = sectionText.textContent;
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Update header when page loads
-            updateHeaderFromSidebar();
-
             // Dynamic header update function
             function updateHeaderFromSidebar() {
                 const activeItem = document.querySelector('.nav-item-active');
@@ -597,6 +573,18 @@
                                 'Predictions': {
                                     title: 'Admin Predictions',
                                     description: 'Make fraud detection predictions with admin privileges'
+                                },
+                                'New Prediction': {
+                                    title: 'New Prediction',
+                                    description: 'Start a new fraud analysis with admin privileges'
+                                },
+                                'Fraud Analytics': {
+                                    title: 'Fraud Analytics',
+                                    description: 'View fraud detection analytics and system performance metrics'
+                                },
+                                'Analytics Dashboard': {
+                                    title: 'Analytics Dashboard',
+                                    description: 'System overview and metrics'
                                 }
                             };
                             
@@ -683,47 +671,10 @@
                 }
             }
 
-                                        // Update header when page loads
-                            updateHeaderFromURL();
+            // Update header when page loads
+            updateHeaderFromURL();
 
-                            // Update header based on current page URL
-                            function updateHeaderFromURL() {
-                                const currentPath = window.location.pathname;
-                                let sectionName = 'Dashboard';
-                                
-                                // Map URL paths to section names
-                                if (currentPath.includes('/manage/dashboard/')) {
-                                    sectionName = 'Dashboard';
-                                } else if (currentPath.includes('/manage/users/')) {
-                                    sectionName = 'User Management';
-                                } else if (currentPath.includes('/manage/verification/')) {
-                                    sectionName = 'User Verification';
-                                } else if (currentPath.includes('/manage/analytics/')) {
-                                    sectionName = 'Analytics';
-                                } else if (currentPath.includes('/manage/reports/')) {
-                                    sectionName = 'Reports';
-                                } else if (currentPath.includes('/manage/activity/')) {
-                                    sectionName = 'Activity Logs';
-                                } else if (currentPath.includes('/manage/settings/')) {
-                                    sectionName = 'System Settings';
-                                } else if (currentPath.includes('/manage/predict/')) {
-                                    sectionName = 'Predictions';
-                                }
-                                
-                                // Find and activate the corresponding sidebar item
-                                const itemToActivate = Array.from(navItems).find(item => {
-                                    const text = item.querySelector('span.font-medium');
-                                    return text && text.textContent.trim() === sectionName;
-                                });
-                                
-                                if (itemToActivate) {
-                                    navItems.forEach(nav => nav.classList.remove('nav-item-active'));
-                                    itemToActivate.classList.add('nav-item-active');
-                                    updateHeaderFromSidebar();
-                                }
-                            }
-
-                            // Smart message auto-hide system
+            // Smart message auto-hide system
             function autoHideMessages() {
                 const messages = document.querySelectorAll('.message-auto-hide');
                 messages.forEach((message, index) => {
