@@ -1630,7 +1630,7 @@ def unified_profile_view(request):
     user_non_fraud_predictions = Prediction.objects.filter(user=user, result='Not Fraud').count()
     
     # Check if user is admin
-            is_admin = user.is_superuser or profile.user_level == 'admin'
+    is_admin = user.is_superuser or profile.user_level == 'admin'
     
     context = {
         'form': form,
