@@ -29,6 +29,8 @@ categorical_cols = None
 feature_columns = None
 numeric_cols = None
 
+# Model will be loaded on first use with retry mechanism
+
 def load_ml_model():
     """🚀 Load ML model and encoders only when needed (lazy loading for performance)"""
     global model, encoders, categorical_cols, feature_columns, numeric_cols
@@ -78,6 +80,22 @@ def load_ml_model():
             print("✅ Numeric columns loaded successfully")
         
         print("🎉 All ML model components loaded successfully!")
+        
+        # Validate that the model is working
+        try:
+            # Simple validation - just check if model has required attributes
+            if not hasattr(model, 'predict'):
+                print("❌ Model validation failed: model missing 'predict' method")
+                return False
+            if not hasattr(model, 'predict_proba'):
+                print("❌ Model validation failed: model missing 'predict_proba' method")
+                return False
+            print("✅ Model validation successful - all required methods present")
+            
+        except Exception as e:
+            print(f"❌ Model validation failed: {e}")
+            return False
+        
         return True
         
     except Exception as e:
