@@ -41,20 +41,18 @@ class UserProfile(models.Model):
         # Disconnect the signal to prevent recursion
         post_save.disconnect(save_user_profile, sender=User)
         
-        # NEVER change is_superuser if it's already set - only set defaults for new users
+        # NEVER change is_superuser - only handle staff and user_level
         if self.user_level == 'admin':
-            # If user_level is admin, ensure Django admin fields are False
-            # BUT don't change is_superuser if it's already True
-            if not self.user.is_superuser:  # Only set to False if not already True
-                self.user.is_superuser = False
+            # If user_level is admin, only set staff to False if not already True
+            # NEVER touch is_superuser - keep whatever it is
             if not self.user.is_staff:      # Only set to False if not already True
                 self.user.is_staff = False
-            self.user.save(update_fields=['is_superuser', 'is_staff']) # This save will not trigger the signal now
+            self.user.save(update_fields=['is_staff']) # This save will not trigger the signal now
         elif self.user.is_superuser or self.user.is_staff:
             # If Django admin fields are true, ensure user_level is basic
-            # BUT NEVER change is_superuser if it's already True
+            # BUT NEVER change is_superuser - keep whatever it is
             self.user_level = 'basic'
-            # Don't change is_superuser if it's already True
+            # Don't change is_superuser - keep whatever it is
             if not self.user.is_staff:      # Only set to False if not already True
                 self.user.is_staff = False
             self.user.save(update_fields=['is_staff']) # This save will not trigger the signal now
@@ -83,9 +81,8 @@ class UserProfile(models.Model):
             profile.save()
         else:
             # Custom admin: set custom level, ensure Django fields are False
-            # BUT NEVER change is_superuser if it's already True
-            if user.is_superuser:  # Only set to False if not already True
-                user.is_superuser = False
+            # BUT NEVER change is_superuser - keep whatever it is
+            # Only set staff to False if not already True
             if user.is_staff:      # Only set to False if not already True
                 user.is_staff = False
             user.save()
