@@ -238,6 +238,29 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
         
+        /* Dynamic Header Transitions */
+        #dynamic-header-title,
+        #dynamic-header-description,
+        #current-section {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        /* Header Update Animation */
+        .header-update {
+            animation: headerUpdate 0.3s ease-out;
+        }
+        
+        @keyframes headerUpdate {
+            0% {
+                transform: translateY(-5px);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
         /* Section Title Styling */
         .section-title {
             font-size: 0.6875rem;
@@ -593,12 +616,115 @@
                 }
             }
 
+            // Function to update header immediately when sidebar item is clicked
+            function updateHeaderOnSidebarClick(sectionName) {
+                const headerTitle = document.getElementById('dynamic-header-title');
+                const headerDescription = document.getElementById('dynamic-header-description');
+                const currentSection = document.getElementById('current-section');
+                
+                if (headerTitle && headerDescription && currentSection) {
+                    // Enhanced header content mapping for admin sections
+                    const headerContent = {
+                        'Analytics Dashboard': {
+                            title: 'Analytics Dashboard',
+                            description: 'Monitor and manage your fraud detection system performance'
+                        },
+                        'User Management': {
+                            title: 'User Management',
+                            description: 'Manage user accounts, permissions, and access control'
+                        },
+                        'User Verification': {
+                            title: 'User Verification Management',
+                            description: 'Monitor and manage user verification status and access control'
+                        },
+                        'Analytics': {
+                            title: 'System Analytics',
+                            description: 'View fraud detection analytics and system performance metrics'
+                        },
+                        'Reports': {
+                            title: 'System Reports',
+                            description: 'Generate and view comprehensive system reports'
+                        },
+                        'Activity Logs': {
+                            title: 'Activity Logs',
+                            description: 'Monitor user activities and system events'
+                        },
+                        'System Settings': {
+                            title: 'System Settings',
+                            description: 'Configure system parameters and preferences'
+                        },
+                        'Predictions': {
+                            title: 'Admin Predictions',
+                            description: 'Make fraud detection predictions with admin privileges'
+                        },
+                        'New Prediction': {
+                            title: 'New Prediction',
+                            description: 'Start a new fraud analysis with admin privileges'
+                        },
+                        'Fraud Analytics': {
+                            title: 'Fraud Analytics',
+                            description: 'View fraud detection analytics and system performance metrics'
+                        },
+                        'Dashboard': {
+                            title: 'Admin Dashboard',
+                            description: 'Monitor and manage your fraud detection system'
+                        }
+                    };
+                    
+                    // Update header content with smooth animation
+                    const content = headerContent[sectionName] || {
+                        title: sectionName,
+                        description: `Manage ${sectionName.toLowerCase()} functionality`
+                    };
+                    
+                    // Add visual feedback for header update
+                    headerTitle.style.borderLeft = '4px solid #3b82f6';
+                    headerDescription.style.borderLeft = '4px solid #3b82f6';
+                    currentSection.style.borderLeft = '4px solid #3b82f6';
+                    
+                    // Add custom animation class
+                    headerTitle.classList.add('header-update');
+                    headerDescription.classList.add('header-update');
+                    currentSection.classList.add('header-update');
+                    
+                    // Update content immediately for instant feedback
+                    headerTitle.textContent = content.title;
+                    headerDescription.textContent = content.description;
+                    currentSection.textContent = sectionName;
+                    
+                    // Remove animation class and border after animation completes
+                    setTimeout(() => {
+                        headerTitle.classList.remove('header-update');
+                        headerDescription.classList.remove('header-update');
+                        currentSection.classList.remove('header-update');
+                        headerTitle.style.borderLeft = '';
+                        headerDescription.style.borderLeft = '';
+                        currentSection.style.borderLeft = '';
+                    }, 300);
+                    
+                    // Add a subtle highlight effect to the current section badge
+                    currentSection.style.background = 'linear-gradient(135deg, #3b82f6, #1d4ed8)';
+                    currentSection.style.color = 'white';
+                    currentSection.style.transform = 'scale(1.05)';
+                    
+                    setTimeout(() => {
+                        currentSection.style.background = '';
+                        currentSection.style.color = '';
+                        currentSection.style.transform = '';
+                    }, 500);
+                }
+            }
+
             // Enhanced sidebar item click handling with dynamic selection
             navItems.forEach(item => {
                 item.addEventListener('click', function(e) {
                     // Prevent default only if it's a navigation item (not logout)
                     if (this.getAttribute('href') && !this.getAttribute('href').includes('logout')) {
                         e.preventDefault();
+                        
+                        // Get the section name before making changes
+                        const activeText = this.querySelector('span.font-medium');
+                        const sectionName = activeText ? activeText.textContent.trim() : 'Dashboard';
                         
                         // Remove active class from all items and reset styles
                         navItems.forEach(nav => {
@@ -612,11 +738,10 @@
                         this.style.transform = 'translateX(4px)';
                         this.style.boxShadow = '0 8px 25px rgba(59, 130, 246, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)';
                         
-                        // Update header immediately
-                        updateHeaderFromSidebar();
+                        // Update header immediately with the selected section
+                        updateHeaderOnSidebarClick(sectionName);
                         
                         // Store active state in sessionStorage for persistence
-                        const activeText = this.querySelector('span.font-medium');
                         if (activeText) {
                             sessionStorage.setItem('activeAdminSidebarItem', activeText.textContent);
                         }
@@ -639,7 +764,8 @@
                 if (itemToActivate) {
                     navItems.forEach(nav => nav.classList.remove('nav-item-active'));
                     itemToActivate.classList.add('nav-item-active');
-                    updateHeaderFromSidebar();
+                    // Use the new function for immediate header update
+                    updateHeaderOnSidebarClick(lastActiveItem);
                 }
             }
 
@@ -790,17 +916,104 @@
                 setTimeout(updateHeaderFromURL, 100);
             });
 
-            // Add hover effects for better user experience
+            // Add hover effects for better user experience with header preview
             navItems.forEach(item => {
                 item.addEventListener('mouseenter', function() {
                     if (!this.classList.contains('nav-item-active')) {
                         this.style.transform = 'translateX(4px) scale(1.02)';
+                        
+                        // Show header preview on hover (subtle effect)
+                        const itemText = this.querySelector('span.font-medium');
+                        if (itemText) {
+                            const sectionName = itemText.textContent.trim();
+                            const headerTitle = document.getElementById('dynamic-header-title');
+                            const headerDescription = document.getElementById('dynamic-header-description');
+                            
+                            if (headerTitle && headerDescription) {
+                                // Store original content
+                                if (!this.dataset.originalTitle) {
+                                    this.dataset.originalTitle = headerTitle.textContent;
+                                    this.dataset.originalDescription = headerDescription.textContent;
+                                }
+                                
+                                // Show preview with subtle opacity change
+                                headerTitle.style.opacity = '0.7';
+                                headerDescription.style.opacity = '0.7';
+                                
+                                // Update content for preview
+                                const headerContent = {
+                                    'Analytics Dashboard': {
+                                        title: 'Analytics Dashboard',
+                                        description: 'Monitor and manage your fraud detection system performance'
+                                    },
+                                    'User Management': {
+                                        title: 'User Management',
+                                        description: 'Manage user accounts, permissions, and access control'
+                                    },
+                                    'User Verification': {
+                                        title: 'User Verification Management',
+                                        description: 'Monitor and manage user verification status and access control'
+                                    },
+                                    'Analytics': {
+                                        title: 'System Analytics',
+                                        description: 'View fraud detection analytics and system performance metrics'
+                                    },
+                                    'Reports': {
+                                        title: 'System Reports',
+                                        description: 'Generate and view comprehensive system reports'
+                                    },
+                                    'Activity Logs': {
+                                        title: 'Activity Logs',
+                                        description: 'Monitor user activities and system events'
+                                    },
+                                    'System Settings': {
+                                        title: 'System Settings',
+                                        description: 'Configure system parameters and preferences'
+                                    },
+                                    'Predictions': {
+                                        title: 'Admin Predictions',
+                                        description: 'Make fraud detection predictions with admin privileges'
+                                    },
+                                    'New Prediction': {
+                                        title: 'New Prediction',
+                                        description: 'Start a new fraud analysis with admin privileges'
+                                    },
+                                    'Fraud Analytics': {
+                                        title: 'Fraud Analytics',
+                                        description: 'View fraud detection analytics and system performance metrics'
+                                    },
+                                    'Dashboard': {
+                                        title: 'Admin Dashboard',
+                                        description: 'Monitor and manage your fraud detection system'
+                                    }
+                                };
+                                
+                                const content = headerContent[sectionName] || {
+                                    title: sectionName,
+                                    description: `Manage ${sectionName.toLowerCase()} functionality`
+                                };
+                                
+                                headerTitle.textContent = content.title;
+                                headerDescription.textContent = content.description;
+                            }
+                        }
                     }
                 });
                 
                 item.addEventListener('mouseleave', function() {
                     if (!this.classList.contains('nav-item-active')) {
                         this.style.transform = 'translateX(0) scale(1)';
+                        
+                        // Restore original header content if not active
+                        const headerTitle = document.getElementById('dynamic-header-title');
+                        const headerDescription = document.getElementById('dynamic-header-description');
+                        
+                        if (headerTitle && headerDescription && this.dataset.originalTitle) {
+                            headerTitle.textContent = this.dataset.originalTitle;
+                            headerDescription.textContent = this.dataset.originalDescription;
+                            headerTitle.style.opacity = '1';
+                            headerDescription.style.opacity = '1';
+                        }
                     }
                 });
             });

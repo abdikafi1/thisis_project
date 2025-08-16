@@ -1792,25 +1792,29 @@ def export_pdf_report(request):
     styles = getSampleStyleSheet()
     story = []
     
-    # Enhanced Title with styling
+    # Enhanced Title with better spacing and organization
     title_style = ParagraphStyle(
         'CustomTitle',
         parent=styles['Heading1'],
-        fontSize=28,
-        spaceAfter=30,
+        fontSize=32,
+        spaceAfter=40,
+        spaceBefore=20,
         alignment=1,  # Center alignment
         textColor=colors.HexColor('#1e40af'),  # Blue color
-        fontName='Helvetica-Bold'
+        fontName='Helvetica-Bold',
+        leading=36
     )
     
     subtitle_style = ParagraphStyle(
         'CustomSubtitle',
         parent=styles['Normal'],
-        fontSize=14,
-        spaceAfter=20,
+        fontSize=16,
+        spaceAfter=30,
+        spaceBefore=10,
         alignment=1,
         textColor=colors.HexColor('#6b7280'),  # Gray color
-        fontName='Helvetica'
+        fontName='Helvetica',
+        leading=20
     )
     
     story.append(Paragraph("🚨 Fraud Detection System", title_style))
@@ -1820,7 +1824,7 @@ def export_pdf_report(request):
     
     # Executive Summary Section
     story.append(Paragraph("📊 Executive Summary", styles['Heading2']))
-    story.append(Spacer(1, 15))
+    story.append(Spacer(1, 25))
     
     summary_data = [
         ['Metric', 'Value', 'Status'],
@@ -1841,78 +1845,82 @@ def export_pdf_report(request):
         ['Peak Activity Count', str(peak_activity), '📈 Peak Usage'],
     ]
     
-    summary_table = Table(summary_data, colWidths=[2.5*inch, 1.5*inch, 1.5*inch])
+    summary_table = Table(summary_data, colWidths=[2.8*inch, 1.4*inch, 1.8*inch])
     summary_table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1e40af')),  # Blue header
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('ALIGN', (0, 0), (-1, 0), 'CENTER'),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('FONTSIZE', (0, 0), (-1, 0), 12),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('FONTSIZE', (0, 0), (-1, 0), 13),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 15),
+        ('TOPPADDING', (0, 0), (-1, 0), 15),
         ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#f8fafc')),  # Light blue background
-        ('GRID', (0, 0), (-1, -1), 1, colors.HexColor('#cbd5e1')),
-        ('FONTSIZE', (0, 1), (-1, -1), 10),
+        ('GRID', (0, 0), (-1, -1), 1.5, colors.HexColor('#cbd5e1')),
+        ('FONTSIZE', (0, 1), (-1, -1), 11),
+        ('BOTTOMPADDING', (0, 1), (-1, -1), 12),
+        ('TOPPADDING', (0, 1), (-1, -1), 12),
         ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#f1f5f9')]),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
     ]))
     
     story.append(summary_table)
-    story.append(Spacer(1, 25))
+    story.append(Spacer(1, 35))
     
     # Beautiful Pie Chart for Fraud vs Clean Cases
     if total_user_predictions > 0:
         story.append(Paragraph("🍰 Fraud vs Clean Cases Distribution", styles['Heading2']))
-        story.append(Spacer(1, 15))
+        story.append(Spacer(1, 25))
         
-        # Create pie chart
+        # Create pie chart with better positioning
         pie = Pie()
-        pie.x = 3*inch
-        pie.y = 1*inch
-        pie.width = 3*inch
-        pie.height = 3*inch
+        pie.x = 3.5*inch
+        pie.y = 1.5*inch
+        pie.width = 2.8*inch
+        pie.height = 2.8*inch
         
         if user_fraud_count > 0 and user_not_fraud_count > 0:
             pie.data = [user_fraud_count, user_not_fraud_count]
             pie.labels = ['Fraud Cases', 'Clean Cases']
-            pie.slices.strokeWidth = 2
+            pie.slices.strokeWidth = 2.5
             pie.slices.strokeColor = colors.white
             pie.slices[0].fillColor = colors.HexColor('#dc2626')  # Red for fraud
             pie.slices[1].fillColor = colors.HexColor('#059669')  # Green for clean
         elif user_fraud_count > 0:
             pie.data = [user_fraud_count]
             pie.labels = ['Fraud Cases']
-            pie.slices.strokeWidth = 2
+            pie.slices.strokeWidth = 2.5
             pie.slices.strokeColor = colors.white
             pie.slices[0].fillColor = colors.HexColor('#dc2626')
         elif user_not_fraud_count > 0:
             pie.data = [user_not_fraud_count]
             pie.labels = ['Clean Cases']
-            pie.slices.strokeWidth = 2
+            pie.slices.strokeWidth = 2.5
             pie.slices.strokeColor = colors.white
             pie.slices[0].fillColor = colors.HexColor('#059669')
         
-        # Add legend
+        # Add legend with better positioning
         legend = Legend()
-        legend.x = 1*inch
-        legend.y = 2*inch
-        legend.alignment = 'right'
-        legend.fontName = 'Helvetica'
-        legend.fontSize = 10
+        legend.x = 0.5*inch
+        legend.y = 2.5*inch
+        legend.alignment = 'left'
+        legend.fontName = 'Helvetica-Bold'
+        legend.fontSize = 11
         legend.colorNamePairs = [
             (colors.HexColor('#dc2626'), 'Fraud Cases'),
             (colors.HexColor('#059669'), 'Clean Cases')
         ]
         
-        # Create drawing container
-        drawing = Drawing(6*inch, 4*inch)
+        # Create drawing container with better spacing
+        drawing = Drawing(6.5*inch, 4.5*inch)
         drawing.add(pie)
         drawing.add(legend)
         
         story.append(drawing)
-        story.append(Spacer(1, 25))
+        story.append(Spacer(1, 35))
     
     # Monthly Trends Section
     story.append(Paragraph("📈 Monthly Trends Analysis", styles['Heading2']))
-    story.append(Spacer(1, 15))
+    story.append(Spacer(1, 25))
     
     # Calculate monthly trends using Nairobi timezone
     monthly_trends = []
@@ -1945,33 +1953,37 @@ def export_pdf_report(request):
                 f"{trend['fraud_rate']}%"
             ])
         
-        trends_table = Table(trends_data, colWidths=[1.5*inch, 1*inch, 1*inch, 1*inch, 1.2*inch])
+        trends_table = Table(trends_data, colWidths=[1.8*inch, 1.1*inch, 1.1*inch, 1.1*inch, 1.3*inch])
         trends_table.setStyle(TableStyle([
             ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#059669')),  # Green header
             ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
             ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
             ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-            ('FONTSIZE', (0, 0), (-1, 0), 11),
-            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+            ('FONTSIZE', (0, 0), (-1, 0), 12),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 15),
+            ('TOPPADDING', (0, 0), (-1, 0), 15),
             ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#f0fdf4')),  # Light green background
-            ('GRID', (0, 0), (-1, -1), 1, colors.HexColor('#bbf7d0')),
-            ('FONTSIZE', (0, 1), (-1, -1), 9),
+            ('GRID', (0, 0), (-1, -1), 1.5, colors.HexColor('#bbf7d0')),
+            ('FONTSIZE', (0, 1), (-1, -1), 10),
+            ('BOTTOMPADDING', (0, 1), (-1, -1), 12),
+            ('TOPPADDING', (0, 1), (-1, -1), 12),
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
         ]))
         
         story.append(trends_table)
-        story.append(Spacer(1, 25))
+        story.append(Spacer(1, 35))
     
     # Weekly Trends Chart
     if weekly_data and any(w['total'] > 0 for w in weekly_data):
         story.append(Paragraph("📊 Weekly Activity Trends", styles['Heading2']))
-        story.append(Spacer(1, 15))
+        story.append(Spacer(1, 25))
         
-        # Create bar chart for weekly trends
+        # Create bar chart for weekly trends with better spacing
         chart = VerticalBarChart()
-        chart.x = 1*inch
-        chart.y = 1*inch
-        chart.width = 5*inch
-        chart.height = 3*inch
+        chart.x = 1.2*inch
+        chart.y = 1.2*inch
+        chart.width = 4.8*inch
+        chart.height = 3.2*inch
         
         # Prepare data for chart
         weeks = [w['week'] for w in weekly_data if w['total'] > 0]
@@ -1985,21 +1997,21 @@ def export_pdf_report(request):
             chart.valueAxis.valueMax = max(max(fraud_counts), max(clean_counts)) + 1 if fraud_counts and clean_counts else 1
             chart.valueAxis.valueStep = 1
             
-            # Style the chart
+            # Style the chart with better appearance
             chart.bars[0].fillColor = colors.HexColor('#dc2626')  # Red for fraud
             chart.bars[1].fillColor = colors.HexColor('#059669')  # Green for clean
-            chart.bars[0].strokeWidth = 1
-            chart.bars[1].strokeWidth = 1
+            chart.bars[0].strokeWidth = 1.5
+            chart.bars[1].strokeWidth = 1.5
             
-            # Add chart to story
-            drawing = Drawing(6*inch, 4*inch)
+            # Add chart to story with better container
+            drawing = Drawing(6.2*inch, 4.2*inch)
             drawing.add(chart)
             story.append(drawing)
-            story.append(Spacer(1, 25))
+            story.append(Spacer(1, 35))
     
     # Recent Predictions Section
     story.append(Paragraph("🔍 Recent Predictions Analysis", styles['Heading2']))
-    story.append(Spacer(1, 15))
+    story.append(Spacer(1, 25))
     
     if user_predictions.exists():
         # Enhanced table headers with more comprehensive information
@@ -2065,27 +2077,31 @@ def export_pdf_report(request):
                 data_summary
             ])
         
-        # Create enhanced table with new column
-        pred_table = Table(table_data, colWidths=[1.2*inch, 0.7*inch, 0.8*inch, 0.9*inch, 0.8*inch, 2.2*inch])
+        # Create enhanced table with better column widths and spacing
+        pred_table = Table(table_data, colWidths=[1.3*inch, 0.8*inch, 0.9*inch, 1.0*inch, 0.9*inch, 2.1*inch])
         pred_table.setStyle(TableStyle([
             ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#dc2626')),  # Red header
             ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
             ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
             ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-            ('FONTSIZE', (0, 0), (-1, 0), 10),
-            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+            ('FONTSIZE', (0, 0), (-1, 0), 11),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 15),
+            ('TOPPADDING', (0, 0), (-1, 0), 15),
             ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#fef2f2')),  # Light red background
-            ('GRID', (0, 0), (-1, -1), 1, colors.HexColor('#fecaca')),
-            ('FONTSIZE', (0, 1), (-1, -1), 8),
+            ('GRID', (0, 0), (-1, -1), 1.5, colors.HexColor('#fecaca')),
+            ('FONTSIZE', (0, 1), (-1, -1), 9),
+            ('BOTTOMPADDING', (0, 1), (-1, -1), 12),
+            ('TOPPADDING', (0, 1), (-1, -1), 12),
             ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#fef2f2')]),
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
         ]))
         
         story.append(pred_table)
-        story.append(Spacer(1, 25))
+        story.append(Spacer(1, 35))
     
     # Risk Assessment Section
     story.append(Paragraph("⚠️ Risk Assessment & Recommendations", styles['Heading2']))
-    story.append(Spacer(1, 15))
+    story.append(Spacer(1, 25))
     
     # Calculate risk levels
     high_risk_cases = user_predictions.filter(result='Fraud', confidence_score__gte=80).count()
@@ -2099,25 +2115,29 @@ def export_pdf_report(request):
         ['Low Risk', str(low_risk_cases), f"{(low_risk_cases/total_user_predictions*100):.1f}%" if total_user_predictions > 0 else "0%", 'Regular review'],
     ]
     
-    risk_table = Table(risk_data, colWidths=[1.2*inch, 1*inch, 1.2*inch, 2.5*inch])
+    risk_table = Table(risk_data, colWidths=[1.3*inch, 1.1*inch, 1.3*inch, 2.3*inch])
     risk_table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#7c2d12')),  # Brown header
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
         ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('FONTSIZE', (0, 0), (-1, 0), 10),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('FONTSIZE', (0, 0), (-1, 0), 11),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 15),
+        ('TOPPADDING', (0, 0), (-1, 0), 15),
         ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#fef3c7')),  # Light yellow background
-        ('GRID', (0, 0), (-1, -1), 1, colors.HexColor('#fde68a')),
-        ('FONTSIZE', (0, 1), (-1, -1), 9),
+        ('GRID', (0, 0), (-1, -1), 1.5, colors.HexColor('#fde68a')),
+        ('FONTSIZE', (0, 1), (-1, -1), 10),
+        ('BOTTOMPADDING', (0, 1), (-1, -1), 12),
+        ('TOPPADDING', (0, 1), (-1, -1), 12),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
     ]))
     
     story.append(risk_table)
-    story.append(Spacer(1, 25))
+    story.append(Spacer(1, 35))
     
     # Confidence Score Distribution Analysis
     story.append(Paragraph("🎯 Confidence Score Distribution Analysis", styles['Heading2']))
-    story.append(Spacer(1, 15))
+    story.append(Spacer(1, 25))
     
     confidence_distribution = [
         ['Confidence Range', 'Count', 'Percentage', 'Quality Assessment'],
@@ -2126,36 +2146,41 @@ def export_pdf_report(request):
         ['0-59% (Low)', str(low_confidence_predictions), f"{(low_confidence_predictions/total_user_predictions*100):.1f}%" if total_user_predictions > 0 else "0%", '❓ Needs Review'],
     ]
     
-    confidence_table = Table(confidence_distribution, colWidths=[1.5*inch, 1*inch, 1.2*inch, 2.2*inch])
+    confidence_table = Table(confidence_distribution, colWidths=[1.6*inch, 1.1*inch, 1.3*inch, 2.0*inch])
     confidence_table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#7c3aed')),  # Purple header
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
         ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('FONTSIZE', (0, 0), (-1, 0), 10),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('FONTSIZE', (0, 0), (-1, 0), 11),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 15),
+        ('TOPPADDING', (0, 0), (-1, 0), 15),
         ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#f3f4f6')),  # Light gray background
-        ('GRID', (0, 0), (-1, -1), 1, colors.HexColor('#d1d5db')),
-        ('FONTSIZE', (0, 1), (-1, -1), 9),
+        ('GRID', (0, 0), (-1, -1), 1.5, colors.HexColor('#d1d5db')),
+        ('FONTSIZE', (0, 1), (-1, -1), 10),
+        ('BOTTOMPADDING', (0, 1), (-1, -1), 12),
+        ('TOPPADDING', (0, 1), (-1, -1), 12),
         ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#f9fafb')]),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
     ]))
     
     story.append(confidence_table)
-    story.append(Spacer(1, 25))
+    story.append(Spacer(1, 35))
     
     # Enhanced Footer with comprehensive information
     footer_style = ParagraphStyle(
         'Footer',
         parent=styles['Normal'],
-        fontSize=9,
+        fontSize=10,
         textColor=colors.HexColor('#6b7280'),
         alignment=1,
-        fontName='Helvetica'
+        fontName='Helvetica',
+        leading=14
     )
     
-    # Add system information
+    # Add system information with better spacing
     story.append(Paragraph("🔧 System Information", styles['Heading3']))
-    story.append(Spacer(1, 10))
+    story.append(Spacer(1, 20))
     
     system_info = [
         ['Component', 'Details'],
@@ -2169,28 +2194,36 @@ def export_pdf_report(request):
         ['Data Freshness', 'Real-time from PostgreSQL'],
     ]
     
-    system_table = Table(system_info, colWidths=[2*inch, 4*inch])
+    system_table = Table(system_info, colWidths=[2.2*inch, 3.8*inch])
     system_table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#374151')),  # Dark gray header
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
         ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('FONTSIZE', (0, 0), (-1, 0), 9),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 8),
+        ('FONTSIZE', (0, 0), (-1, 0), 10),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('TOPPADDING', (0, 0), (-1, 0), 12),
         ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#f9fafb')),  # Light background
-        ('GRID', (0, 0), (-1, -1), 1, colors.HexColor('#d1d5db')),
-        ('FONTSIZE', (0, 1), (-1, -1), 8),
+        ('GRID', (0, 0), (-1, -1), 1.5, colors.HexColor('#d1d5db')),
+        ('FONTSIZE', (0, 1), (-1, -1), 9),
+        ('BOTTOMPADDING', (0, 1), (-1, -1), 10),
+        ('TOPPADDING', (0, 1), (-1, -1), 10),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
     ]))
     
     story.append(system_table)
-    story.append(Spacer(1, 20))
+    story.append(Spacer(1, 30))
     
     story.append(Paragraph("--- End of Comprehensive Report ---", footer_style))
-    story.append(Spacer(1, 10))
+    story.append(Spacer(1, 15))
     story.append(Paragraph("🚀 This report was generated automatically by the Advanced Fraud Detection System", footer_style))
+    story.append(Spacer(1, 8))
     story.append(Paragraph("📊 All data is sourced directly from PostgreSQL database with real-time analytics", footer_style))
+    story.append(Spacer(1, 8))
     story.append(Paragraph("🎯 Machine Learning model provides intelligent fraud detection with confidence scoring", footer_style))
+    story.append(Spacer(1, 8))
     story.append(Paragraph("⏰ All timestamps are displayed in East Africa Time (EAT) for local accuracy", footer_style))
+    story.append(Spacer(1, 8))
     story.append(Paragraph("🔒 For technical support or data inquiries, contact your system administrator", footer_style))
     
     # Build PDF
