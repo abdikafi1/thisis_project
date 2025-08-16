@@ -593,21 +593,38 @@
                 }
             }
 
-            // Enhanced sidebar item click handling
+            // Enhanced sidebar item click handling with dynamic selection
             navItems.forEach(item => {
-                item.addEventListener('click', function() {
-                    // Remove active class from all items
-                    navItems.forEach(nav => nav.classList.remove('nav-item-active'));
-                    // Add active class to clicked item
-                    this.classList.add('nav-item-active');
-                    
-                    // Update header immediately
-                    updateHeaderFromSidebar();
-                    
-                    // Store active state in sessionStorage for persistence
-                    const activeText = this.querySelector('span.font-medium');
-                    if (activeText) {
-                        sessionStorage.setItem('activeAdminSidebarItem', activeText.textContent);
+                item.addEventListener('click', function(e) {
+                    // Prevent default only if it's a navigation item (not logout)
+                    if (this.getAttribute('href') && !this.getAttribute('href').includes('logout')) {
+                        e.preventDefault();
+                        
+                        // Remove active class from all items and reset styles
+                        navItems.forEach(nav => {
+                            nav.classList.remove('nav-item-active');
+                            nav.style.transform = 'translateX(0) scale(1)';
+                            nav.style.boxShadow = '';
+                        });
+                        
+                        // Add active class to clicked item with visual feedback
+                        this.classList.add('nav-item-active');
+                        this.style.transform = 'translateX(4px)';
+                        this.style.boxShadow = '0 8px 25px rgba(59, 130, 246, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)';
+                        
+                        // Update header immediately
+                        updateHeaderFromSidebar();
+                        
+                        // Store active state in sessionStorage for persistence
+                        const activeText = this.querySelector('span.font-medium');
+                        if (activeText) {
+                            sessionStorage.setItem('activeAdminSidebarItem', activeText.textContent);
+                        }
+                        
+                        // Navigate to the URL after a brief delay for smooth transition
+                        setTimeout(() => {
+                            window.location.href = this.getAttribute('href');
+                        }, 200);
                     }
                 });
             });
@@ -626,15 +643,15 @@
                 }
             }
 
-            // Enhanced URL-based header update
+            // Enhanced URL-based header update with better path matching
             function updateHeaderFromURL() {
                 const currentPath = window.location.pathname;
                 let sectionName = 'Dashboard'; // Default
                 
-                // Map URL paths to section names
+                // Map URL paths to section names with exact matching
                 if (currentPath.includes('/manage/dashboard/')) {
                     sectionName = 'Analytics Dashboard';
-                } else if (currentPath.includes('/manage/users/')) {
+                } else if (currentPath.includes('/manage/users/') && !currentPath.includes('/edit/') && !currentPath.includes('/delete/')) {
                     sectionName = 'User Management';
                 } else if (currentPath.includes('/manage/verification/')) {
                     sectionName = 'User Verification';
@@ -642,9 +659,9 @@
                     sectionName = 'Fraud Analytics';
                 } else if (currentPath.includes('/manage/reports/')) {
                     sectionName = 'Reports';
-                } else if (currentPath.includes('/manage/activity/')) {
+                } else if (currentPath.includes('/manage/activity-logs/')) {
                     sectionName = 'Activity Logs';
-                } else if (currentPath.includes('/manage/settings/')) {
+                } else if (currentPath.includes('/manage/settings/') && !currentPath.includes('/edit/')) {
                     sectionName = 'System Settings';
                 } else if (currentPath.includes('/manage/predict/')) {
                     sectionName = 'New Prediction';
@@ -657,14 +674,121 @@
                 });
                 
                 if (itemToActivate) {
-                    navItems.forEach(nav => nav.classList.remove('nav-item-active'));
+                    // Remove active class from all items first
+                    navItems.forEach(nav => {
+                        nav.classList.remove('nav-item-active');
+                        nav.style.transform = 'translateX(0) scale(1)';
+                    });
+                    
+                    // Add active class to the correct item
                     itemToActivate.classList.add('nav-item-active');
+                    itemToActivate.style.transform = 'translateX(4px)';
+                    
+                    // Update header immediately
                     updateHeaderFromSidebar();
+                    
+                    // Update sessionStorage with current selection
+                    const activeText = itemToActivate.querySelector('span.font-medium');
+                    if (activeText) {
+                        sessionStorage.setItem('activeAdminSidebarItem', activeText.textContent);
+                    }
+                    
+                    // Add visual feedback for the active item
+                    itemToActivate.style.boxShadow = '0 8px 25px rgba(59, 130, 246, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)';
                 }
             }
 
             // Update header when page loads
             updateHeaderFromURL();
+            
+            // Also update when browser back/forward buttons are used
+            window.addEventListener('popstate', function() {
+                setTimeout(updateHeaderFromURL, 100);
+                setTimeout(updateHeaderFromURL, 300);
+                setTimeout(updateHeaderFromURL, 500);
+            });
+            
+            // Handle browser navigation events
+            window.addEventListener('beforeunload', function() {
+                // Store current URL before navigation
+                sessionStorage.setItem('lastAdminUrl', window.location.href);
+            });
+            
+            // Restore sidebar state when returning to admin pages
+            if (sessionStorage.getItem('lastAdminUrl')) {
+                const lastUrl = sessionStorage.getItem('lastAdminUrl');
+                if (lastUrl !== window.location.href) {
+                    setTimeout(updateHeaderFromURL, 100);
+                }
+            }
+            
+            // Real-time URL change detection for dynamic sidebar updates
+            let currentUrl = window.location.href;
+            const urlObserver = new MutationObserver(function() {
+                if (currentUrl !== window.location.href) {
+                    currentUrl = window.location.href;
+                    setTimeout(updateHeaderFromURL, 100);
+                }
+            });
+            
+            // Observe changes to the document body (for SPA-like behavior)
+            urlObserver.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+            
+            // Also check URL changes periodically for better reliability
+            setInterval(function() {
+                if (currentUrl !== window.location.href) {
+                    currentUrl = window.location.href;
+                    updateHeaderFromURL();
+                }
+            }, 500);
+            
+            // Handle page visibility changes (when user switches tabs and comes back)
+            document.addEventListener('visibilitychange', function() {
+                if (!document.hidden) {
+                    setTimeout(updateHeaderFromURL, 100);
+                }
+            });
+            
+            // Ensure sidebar is properly synchronized on page load with multiple attempts
+            let syncAttempts = 0;
+            const maxSyncAttempts = 5;
+            const syncSidebar = () => {
+                if (syncAttempts < maxSyncAttempts) {
+                    syncAttempts++;
+                    setTimeout(updateHeaderFromURL, 200 * syncAttempts);
+                }
+            };
+            
+            // Initial sync attempts
+            syncSidebar();
+            syncSidebar();
+            
+            // Handle manual URL changes in the browser
+            let lastPathname = window.location.pathname;
+            const checkPathnameChange = () => {
+                if (lastPathname !== window.location.pathname) {
+                    lastPathname = window.location.pathname;
+                    setTimeout(updateHeaderFromURL, 100);
+                }
+            };
+            
+            // Check for pathname changes more frequently
+            setInterval(checkPathnameChange, 100);
+            
+            // Handle page refresh and direct URL access
+            window.addEventListener('load', function() {
+                setTimeout(updateHeaderFromURL, 50);
+                setTimeout(updateHeaderFromURL, 200);
+                setTimeout(updateHeaderFromURL, 500);
+            });
+            
+            // Handle DOM content loaded event
+            document.addEventListener('DOMContentLoaded', function() {
+                setTimeout(updateHeaderFromURL, 100);
+            });
 
             // Add hover effects for better user experience
             navItems.forEach(item => {

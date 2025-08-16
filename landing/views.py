@@ -14,6 +14,7 @@ from .models import Prediction, UserProfile, UserActivity
 import json
 from django.db.models import Q
 from datetime import timedelta
+import pytz
 
 MODEL_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'ml_model')
 MODEL_PATH = os.path.join(MODEL_DIR, 'model.pkl')
@@ -1201,8 +1202,9 @@ def user_reports_view(request):
     # Get recent predictions
     recent_predictions = user_predictions[:10]
     
-    # Time-based analytics
-    now = timezone.now()
+    # Time-based analytics using Nairobi timezone
+    nairobi_tz = pytz.timezone('Africa/Nairobi')
+    now = timezone.now().astimezone(nairobi_tz)
     this_month_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
     last_month_start = (this_month_start - timedelta(days=1)).replace(day=1)
     
@@ -1519,6 +1521,12 @@ def export_pdf_report(request):
     from reportlab.graphics.charts.piecharts import Pie
     from reportlab.graphics.charts.barcharts import VerticalBarChart
     import json
+    from django.utils import timezone
+    import pytz
+    
+    # Set timezone to Africa/Nairobi
+    nairobi_tz = pytz.timezone('Africa/Nairobi')
+    now = timezone.now().astimezone(nairobi_tz)
     
     # Get comprehensive user data from PostgreSQL database
     user_predictions = Prediction.objects.filter(user=request.user).order_by('-created_at')
@@ -1538,8 +1546,7 @@ def export_pdf_report(request):
     confidence_scores = [p.confidence_score for p in user_predictions if p.confidence_score]
     avg_confidence = round(sum(confidence_scores) / len(confidence_scores), 2) if confidence_scores else 0
     
-    # Time-based analysis
-    now = timezone.now()
+    # Time-based analysis using Nairobi timezone
     this_month_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
     last_month_start = (this_month_start - timedelta(days=1)).replace(day=1)
     
@@ -1551,7 +1558,7 @@ def export_pdf_report(request):
     
     # Create the HttpResponse object with PDF headers
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="fraud_detection_comprehensive_report_{timezone.now().strftime("%Y%m%d_%H%M%S")}.pdf"'
+    response['Content-Disposition'] = f'attachment; filename="fraud_detection_comprehensive_report_{now.strftime("%Y%m%d_%H%M%S")}.pdf"'
     
     # Create the PDF object
     doc = SimpleDocTemplate(response, pagesize=A4)
@@ -1581,7 +1588,7 @@ def export_pdf_report(request):
     
     story.append(Paragraph("🚨 Fraud Detection System", title_style))
     story.append(Paragraph("Comprehensive Analysis Report", subtitle_style))
-    story.append(Paragraph(f"Generated on {timezone.now().strftime('%B %d, %Y at %H:%M')}", subtitle_style))
+    story.append(Paragraph(f"Generated on {now.strftime('%B %d, %Y at %H:%M')} (EAT - East Africa Time)", subtitle_style))
     story.append(Spacer(1, 30))
     
     # Executive Summary Section
@@ -1622,7 +1629,7 @@ def export_pdf_report(request):
     story.append(Paragraph("📈 Monthly Trends Analysis", styles['Heading2']))
     story.append(Spacer(1, 15))
     
-    # Calculate monthly trends
+    # Calculate monthly trends using Nairobi timezone
     monthly_trends = []
     for i in range(6):
         month_start = this_month_start - timedelta(days=30*i)
@@ -1675,7 +1682,7 @@ def export_pdf_report(request):
     
     if user_predictions.exists():
         # Table headers
-        table_data = [['Date & Time', 'Result', 'Confidence', 'Processing Time', 'Input Summary']]
+        table_data = [['Date & Time (EAT)', 'Result', 'Confidence', 'Processing Time', 'Input Summary']]
         
         # Add recent predictions (limit to 15 for PDF readability)
         for prediction in user_predictions[:15]:
@@ -1689,8 +1696,11 @@ def export_pdf_report(request):
             confidence = f"{prediction.confidence_score:.1f}%" if prediction.confidence_score else "N/A"
             proc_time = f"{prediction.processing_time:.2f}s" if prediction.processing_time else "N/A"
             
+            # Convert to Nairobi timezone
+            nairobi_time = prediction.created_at.astimezone(nairobi_tz)
+            
             table_data.append([
-                prediction.created_at.strftime("%Y-%m-%d %H:%M"),
+                nairobi_time.strftime("%Y-%m-%d %H:%M"),
                 prediction.result,
                 confidence,
                 proc_time,
@@ -1760,6 +1770,7 @@ def export_pdf_report(request):
     story.append(Paragraph("--- End of Report ---", footer_style))
     story.append(Spacer(1, 10))
     story.append(Paragraph("This report was generated automatically by the Fraud Detection System", footer_style))
+    story.append(Paragraph(f"All times are displayed in East Africa Time (EAT) - {now.strftime('%Z')}", footer_style))
     story.append(Paragraph("For technical support, contact your system administrator", footer_style))
     
     # Build PDF
@@ -1772,13 +1783,19 @@ def export_csv_report(request):
     from django.http import HttpResponse
     import csv
     import json
+    from django.utils import timezone
+    import pytz
+    
+    # Set timezone to Africa/Nairobi
+    nairobi_tz = pytz.timezone('Africa/Nairobi')
+    now = timezone.now().astimezone(nairobi_tz)
     
     # Get comprehensive user data from PostgreSQL database
     user_predictions = Prediction.objects.filter(user=request.user).order_by('-created_at')
     
     # Create the HttpResponse object with CSV headers
     response = HttpResponse(content_type='text/csv; charset=utf-8')
-    response['Content-Disposition'] = f'attachment; filename="fraud_detection_comprehensive_data_{timezone.now().strftime("%Y%m%d_%H%M%S")}.csv"'
+    response['Content-Disposition'] = f'attachment; filename="fraud_detection_comprehensive_data_{now.strftime("%Y%m%d_%H%M%S")}.csv"'
     
     # Add BOM for proper Excel encoding
     response.write('\ufeff')
@@ -1789,9 +1806,10 @@ def export_csv_report(request):
     # Write comprehensive headers with better organization
     writer.writerow([
         '=== FRAUD DETECTION SYSTEM - COMPREHENSIVE DATA EXPORT ===',
-        f'Generated on: {timezone.now().strftime("%B %d, %Y at %H:%M:%S")}',
+        f'Generated on: {now.strftime("%B %d, %Y at %H:%M:%S")} (EAT - East Africa Time)',
         f'User: {request.user.username}',
         f'Total Records: {user_predictions.count()}',
+        f'Timezone: Africa/Nairobi (EAT)',
         '',  # Empty row for spacing
     ])
     
@@ -1811,11 +1829,11 @@ def export_csv_report(request):
     # Write detailed data headers
     writer.writerow([
         'DETAILED PREDICTION DATA',
-        'All individual prediction records with complete information'
+        'All individual prediction records with complete information (Times in EAT)'
     ])
     writer.writerow([
         'Record ID',
-        'Date & Time',
+        'Date & Time (EAT)',
         'Result',
         'Confidence Score (%)',
         'Processing Time (seconds)',
@@ -1837,7 +1855,7 @@ def export_csv_report(request):
         'Accident Area',
         'Base Policy',
         'Input Data JSON',
-        'Created At (ISO)',
+        'Created At (EAT ISO)',
         'User ID'
     ])
     
@@ -1861,9 +1879,12 @@ def export_csv_report(request):
             confidence = f"{prediction.confidence_score:.1f}" if prediction.confidence_score else "N/A"
             proc_time = f"{prediction.processing_time:.3f}" if prediction.processing_time else "N/A"
             
+            # Convert to Nairobi timezone
+            nairobi_time = prediction.created_at.astimezone(nairobi_tz)
+            
             writer.writerow([
                 prediction.id,
-                prediction.created_at.strftime("%Y-%m-%d %H:%M:%S"),
+                nairobi_time.strftime("%Y-%m-%d %H:%M:%S"),
                 prediction.result,
                 confidence,
                 proc_time,
@@ -1885,14 +1906,15 @@ def export_csv_report(request):
                 input_data.get('AccidentArea', ''),
                 input_data.get('BasePolicy', ''),
                 prediction.input_data,  # Full JSON data for reference
-                prediction.created_at.isoformat(),
+                nairobi_time.isoformat(),
                 prediction.user.id if prediction.user else ''
             ])
         except Exception as e:
             # If JSON parsing fails, write basic info with error handling
+            nairobi_time = prediction.created_at.astimezone(nairobi_tz)
             writer.writerow([
                 prediction.id,
-                prediction.created_at.strftime("%Y-%m-%d %H:%M:%S"),
+                nairobi_time.strftime("%Y-%m-%d %H:%M:%S"),
                 prediction.result,
                 f"{prediction.confidence_score:.1f}" if prediction.confidence_score else "N/A",
                 f"{prediction.processing_time:.3f}" if prediction.processing_time else "N/A",
@@ -1908,6 +1930,7 @@ def export_csv_report(request):
     writer.writerow(['Model Version', 'Fraud Detection ML Model v1.0'])
     writer.writerow(['Data Source', 'User Prediction Database'])
     writer.writerow(['Export Format', 'UTF-8 CSV with BOM'])
+    writer.writerow(['Timezone', 'Africa/Nairobi (EAT)'])
     writer.writerow(['Compatible With', 'Excel, Google Sheets, Python pandas, R, etc.'])
     writer.writerow([''])  # Empty row for spacing
     writer.writerow(['END OF EXPORT'])
