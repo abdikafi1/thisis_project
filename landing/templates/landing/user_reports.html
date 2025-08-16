@@ -360,9 +360,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         <div class="flex flex-wrap gap-2 items-center">
                             <span class="text-slate-200 font-medium">Active filters:</span>
                             {% if search_query %}
-                            <span class="px-3 py-1 bg-blue-500/20 text-blue-200 rounded-full text-sm border border-blue-400/30 filter-badge">
-                                Search: "{{ search_query }}"
-                            </span>
+                                                    <span class="px-3 py-1 bg-blue-500/20 text-blue-200 rounded-full text-sm border border-blue-400/30 filter-badge">
+                            Search: "{{ search_query }}"
+                        </span>
                             {% endif %}
                             {% if date_from %}
                             <span class="px-3 py-1 bg-green-500/20 text-green-200 rounded-full text-sm border border-green-400/30 filter-badge">

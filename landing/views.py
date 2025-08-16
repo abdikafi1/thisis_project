@@ -1971,40 +1971,90 @@ def export_pdf_report(request):
             story.append(trends_table)
             story.append(Spacer(1, 35))
         
-        # Weekly Trends Chart
+        # Enhanced Charts Section with Better Layout
         if weekly_data and any(w['total'] > 0 for w in weekly_data):
-            story.append(Paragraph("📊 Weekly Activity Trends", styles['Heading2']))
+            story.append(Paragraph("📊 Visual Analytics & Charts", styles['Heading2']))
             story.append(Spacer(1, 25))
             
-            # Create bar chart for weekly trends with better spacing
-            chart = VerticalBarChart()
-            chart.x = 1.2*inch
-            chart.y = 1.2*inch
-            chart.width = 4.8*inch
-            chart.height = 3.2*inch
-            
-            # Prepare data for chart
+            # Create a comprehensive chart section with better organization
             weeks = [w['week'] for w in weekly_data if w['total'] > 0]
             fraud_counts = [w['fraud'] for w in weekly_data if w['total'] > 0]
             clean_counts = [w['clean'] for w in weekly_data if w['total'] > 0]
             
             if weeks:
+                # Create enhanced bar chart for weekly trends
+                chart = VerticalBarChart()
+                chart.x = 1.2*inch
+                chart.y = 1.2*inch
+                chart.width = 4.8*inch
+                chart.height = 3.2*inch
+                
                 chart.data = [fraud_counts, clean_counts]
                 chart.categoryAxis.categoryNames = weeks
                 chart.valueAxis.valueMin = 0
                 chart.valueAxis.valueMax = max(max(fraud_counts), max(clean_counts)) + 1 if fraud_counts and clean_counts else 1
                 chart.valueAxis.valueStep = 1
                 
-                # Style the chart with better appearance
+                # Enhanced chart styling
                 chart.bars[0].fillColor = colors.HexColor('#dc2626')  # Red for fraud
                 chart.bars[1].fillColor = colors.HexColor('#059669')  # Green for clean
-                chart.bars[0].strokeWidth = 1.5
-                chart.bars[1].strokeWidth = 1.5
+                chart.bars[0].strokeWidth = 2.0
+                chart.bars[1].strokeWidth = 2.0
+                chart.bars[0].strokeColor = colors.white
+                chart.bars[1].strokeColor = colors.white
                 
-                # Add chart to story with better container
+                # Add chart title and labels
+                chart.title = 'Weekly Activity Trends'
+                chart.title.fontSize = 14
+                chart.title.fontName = 'Helvetica-Bold'
+                chart.title.textColor = colors.HexColor('#1f2937')
+                
+                # Enhanced chart container
                 drawing = Drawing(6.2*inch, 4.2*inch)
                 drawing.add(chart)
+                
+                # Add chart description
+                chart_description = f"""
+                <b>📈 Chart Analysis:</b><br/>
+                • <b>Red Bars:</b> Fraud cases detected per week<br/>
+                • <b>Green Bars:</b> Clean transactions per week<br/>
+                • <b>Trend:</b> Shows weekly activity patterns<br/>
+                • <b>Total Period:</b> Last 4 weeks of data<br/>
+                • <b>Peak Week:</b> Week with highest activity
+                """
+                
                 story.append(drawing)
+                story.append(Spacer(1, 20))
+                
+                # Add chart explanation table
+                chart_info_data = [
+                    ['📊 Chart Information', 'Details'],
+                    ['Chart Type', 'Vertical Bar Chart - Weekly Trends'],
+                    ['Data Period', f"Last {len(weeks)} weeks"],
+                    ['Fraud Cases Total', f"{sum(fraud_counts)} cases"],
+                    ['Clean Cases Total', f"{sum(clean_counts)} cases"],
+                    ['Peak Activity Week', weeks[fraud_counts.index(max(fraud_counts))] if fraud_counts else 'N/A'],
+                    ['Lowest Activity Week', weeks[fraud_counts.index(min(fraud_counts))] if fraud_counts else 'N/A'],
+                ]
+                
+                chart_info_table = Table(chart_info_data, colWidths=[3.5*inch, 3.5*inch])
+                chart_info_table.setStyle(TableStyle([
+                    ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#6366f1')),
+                    ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+                    ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+                    ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                    ('FONTSIZE', (0, 0), (-1, 0), 11),
+                    ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+                    ('TOPPADDING', (0, 0), (-1, 0), 12),
+                    ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#f8fafc')),
+                    ('GRID', (0, 0), (-1, -1), 1.5, colors.HexColor('#cbd5e1')),
+                    ('FONTSIZE', (0, 1), (-1, -1), 10),
+                    ('BOTTOMPADDING', (0, 1), (-1, -1), 10),
+                    ('TOPPADDING', (0, 1), (-1, -1), 10),
+                    ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                ]))
+                
+                story.append(chart_info_table)
                 story.append(Spacer(1, 35))
         
         # Recent Predictions Section - Simplified table without input summary
@@ -2176,28 +2226,39 @@ def export_pdf_report(request):
     story.append(summary_table)
     story.append(Spacer(1, 35))
     
-    # Beautiful Pie Chart for Fraud vs Clean Cases
+    # Enhanced Pie Chart Section with Better Layout and Information
     if total_user_predictions > 0:
-        story.append(Paragraph("🍰 Fraud vs Clean Cases Distribution", styles['Heading2']))
+        story.append(Paragraph("🍰 Case Distribution Analysis", styles['Heading2']))
         story.append(Spacer(1, 25))
         
-        # Create pie chart with better positioning
+        # Create enhanced pie chart with better positioning and styling
         pie = Pie()
-        pie.x = 3.5*inch
+        pie.x = 2.5*inch
         pie.y = 1.5*inch
-        pie.width = 2.8*inch
-        pie.height = 2.8*inch
+        pie.width = 3.2*inch
+        pie.height = 3.2*inch
         
         if user_fraud_count > 0 and user_not_fraud_count > 0:
             pie.data = [user_fraud_count, user_not_fraud_count]
             pie.labels = ['Fraud Cases', 'Clean Cases']
-            pie.slices.strokeWidth = 2.5
+            pie.slices.strokeWidth = 3.0
             pie.slices.strokeColor = colors.white
             pie.slices[0].fillColor = colors.HexColor('#dc2626')  # Red for fraud
             pie.slices[1].fillColor = colors.HexColor('#059669')  # Green for clean
+            
+            # Enhanced pie chart styling
+            pie.slices[0].popout = 5
+            pie.slices[1].popout = 5
+            pie.slices[0].strokeWidth = 3
+            pie.slices[1].strokeWidth = 3
+            
         elif user_fraud_count > 0:
             pie.data = [user_fraud_count]
             pie.labels = ['Fraud Cases']
+            pie.slices.strokeWidth = 3.0
+            pie.slices.strokeColor = colors.white
+            pie.slices[0].fillColor = colors.HexColor('#dc2626')
+            pie.slices[0].popout = 5
             pie.slices.strokeWidth = 2.5
             pie.slices.strokeColor = colors.white
             pie.slices[0].fillColor = colors.HexColor('#dc2626')
