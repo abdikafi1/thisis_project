@@ -26,31 +26,31 @@
                         <option value="" {% if not request.GET.activity_type %}selected{% endif %}>📊 All Activities</option>
                         <option value="login" {% if request.GET.activity_type == 'login' %}selected{% endif %} 
                                 style="background-color: #e3f2fd; color: #1565c0;" 
-                                onmouseover="this.style.backgroundColor='#1976d2'; this.style.color='white';" 
+                                onmouseover="this.style.backgroundColor='#00bcd4'; this.style.color='white';" 
                                 onmouseout="this.style.backgroundColor='#e3f2fd'; this.style.color='#1565c0';">
                             🔐 Login
                         </option>
                         <option value="prediction" {% if request.GET.activity_type == 'prediction' %}selected{% endif %}
                                 style="background-color: #e8f5e8; color: #2e7d32;"
-                                onmouseover="this.style.backgroundColor='#43a047'; this.style.color='white';" 
+                                onmouseover="this.style.backgroundColor='#00bcd4'; this.style.color='white';" 
                                 onmouseout="this.style.backgroundColor='#e8f5e8'; this.style.color='#2e7d32';">
                             🔍 Prediction
                         </option>
                         <option value="report_export" {% if request.GET.activity_type == 'report_export' %}selected{% endif %}
                                 style="background-color: #fff3e0; color: #ef6c00;"
-                                onmouseover="this.style.backgroundColor='#ff9800'; this.style.color='white';" 
+                                onmouseover="this.style.backgroundColor='#00bcd4'; this.style.color='white';" 
                                 onmouseout="this.style.backgroundColor='#fff3e0'; this.style.color='#ef6c00';">
                             📄 Report Export
                         </option>
                         <option value="settings_change" {% if request.GET.activity_type == 'settings_change' %}selected{% endif %}
                                 style="background-color: #f3e5f5; color: #7b1fa2;"
-                                onmouseover="this.style.backgroundColor='#9c27b0'; this.style.color='white';" 
+                                onmouseover="this.style.backgroundColor='#00bcd4'; this.style.color='white';" 
                                 onmouseout="this.style.backgroundColor='#f3e5f5'; this.style.color='#7b1fa2';">
                             ⚙️ Settings Change
                         </option>
                         <option value="admin_action" {% if request.GET.activity_type == 'admin_action' %}selected{% endif %}
                                 style="background-color: #ffebee; color: #c62828;"
-                                onmouseover="this.style.backgroundColor='#d32f2f'; this.style.color='white';" 
+                                onmouseover="this.style.backgroundColor='#00bcd4'; this.style.color='white';" 
                                 onmouseout="this.style.backgroundColor='#ffebee'; this.style.color='#c62828';">
                             👑 AdminAction
                         </option>
