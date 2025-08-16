@@ -712,8 +712,6 @@
                         currentSection.style.color = '';
                         currentSection.style.transform = '';
                     }, 500);
-                    
-                    // No priority flag needed - URL-based updates should always work
                 }
             }
 
@@ -748,14 +746,10 @@
                             sessionStorage.setItem('activeAdminSidebarItem', activeText.textContent);
                         }
                         
-                        // Clear any manual selection flags to allow URL-based updates
-                        sessionStorage.removeItem('lastManualSidebarSelection');
-                        sessionStorage.removeItem('sidebarSelectionPriority');
-                        
                         // Navigate to the URL after a brief delay for smooth transition
                         setTimeout(() => {
                             window.location.href = this.getAttribute('href');
-                        }, 200);
+                        }, 300);
                     }
                 });
             });
@@ -777,9 +771,6 @@
 
             // Enhanced URL-based header update with better path matching
             function updateHeaderFromURL() {
-                // Always update header based on current URL when page loads or URL changes
-                // This ensures the header always shows the current page, not the last selected sidebar item
-                
                 const currentPath = window.location.pathname;
                 let sectionName = 'Dashboard'; // Default
                 
@@ -834,93 +825,17 @@
                 }
             }
 
-            // Update header when page loads - call multiple times to ensure it works
+            // Update header when page loads
             updateHeaderFromURL();
-            setTimeout(updateHeaderFromURL, 100);
-            setTimeout(updateHeaderFromURL, 300);
             
             // Also update when browser back/forward buttons are used
             window.addEventListener('popstate', function() {
                 setTimeout(updateHeaderFromURL, 100);
-                setTimeout(updateHeaderFromURL, 300);
-                setTimeout(updateHeaderFromURL, 500);
             });
-            
-            // Handle browser navigation events
-            window.addEventListener('beforeunload', function() {
-                // Store current URL before navigation
-                sessionStorage.setItem('lastAdminUrl', window.location.href);
-            });
-            
-            // Restore sidebar state when returning to admin pages
-            if (sessionStorage.getItem('lastAdminUrl')) {
-                const lastUrl = sessionStorage.getItem('lastAdminUrl');
-                if (lastUrl !== window.location.href) {
-                    setTimeout(updateHeaderFromURL, 100);
-                }
-            }
-            
-            // Real-time URL change detection for dynamic sidebar updates
-            let currentUrl = window.location.href;
-            const urlObserver = new MutationObserver(function() {
-                if (currentUrl !== window.location.href) {
-                    currentUrl = window.location.href;
-                    setTimeout(updateHeaderFromURL, 100);
-                }
-            });
-            
-            // Observe changes to the document body (for SPA-like behavior)
-            urlObserver.observe(document.body, {
-                childList: true,
-                subtree: true
-            });
-            
-            // Also check URL changes periodically for better reliability
-            setInterval(function() {
-                if (currentUrl !== window.location.href) {
-                    currentUrl = window.location.href;
-                    updateHeaderFromURL();
-                }
-            }, 1000); // Check every second for URL changes
-            
-            // Handle page visibility changes (when user switches tabs and comes back)
-            document.addEventListener('visibilitychange', function() {
-                if (!document.hidden) {
-                    setTimeout(updateHeaderFromURL, 100);
-                }
-            });
-            
-            // Ensure sidebar is properly synchronized on page load with multiple attempts
-            let syncAttempts = 0;
-            const maxSyncAttempts = 5;
-            const syncSidebar = () => {
-                if (syncAttempts < maxSyncAttempts) {
-                    syncAttempts++;
-                    setTimeout(updateHeaderFromURL, 200 * syncAttempts);
-                }
-            };
-            
-            // Initial sync attempts
-            syncSidebar();
-            syncSidebar();
-            
-            // Handle manual URL changes in the browser
-            let lastPathname = window.location.pathname;
-            const checkPathnameChange = () => {
-                if (lastPathname !== window.location.pathname) {
-                    lastPathname = window.location.pathname;
-                    setTimeout(updateHeaderFromURL, 100);
-                }
-            };
-            
-            // Check for pathname changes more frequently for better responsiveness
-            setInterval(checkPathnameChange, 500); // Check every 500ms
             
             // Handle page refresh and direct URL access
             window.addEventListener('load', function() {
-                setTimeout(updateHeaderFromURL, 50);
-                setTimeout(updateHeaderFromURL, 200);
-                setTimeout(updateHeaderFromURL, 500);
+                setTimeout(updateHeaderFromURL, 100);
             });
             
             // Handle DOM content loaded event
