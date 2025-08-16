@@ -2058,4 +2058,127 @@ def unified_profile_view(request):
     return render(request, 'landing/unified_profile.html', context) 
 
 
- 
+@login_required
+def reports_history_view(request):
+    """📊 Comprehensive reports history view that provides all data needed for user_reports.html"""
+    from django.db.models import Count, Q, Avg, Max, Min
+    import json
+    
+    # Get search parameters
+    search_query = request.GET.get('search', '')
+    date_from = request.GET.get('date_from', '')
+    date_to = request.GET.get('date_to', '')
+    result_filter = request.GET.get('result_filter', '')
+    
+    # Base queryset - get all predictions for comprehensive reports
+    all_predictions = Prediction.objects.all().order_by('-created_at')
+    
+    # Apply search filters
+    if search_query:
+        all_predictions = all_predictions.filter(
+            Q(input_data__icontains=search_query) |
+            Q(result__icontains=search_query)
+        )
+    
+    if date_from:
+        all_predictions = all_predictions.filter(created_at__gte=date_from)
+    
+    if date_to:
+        all_predictions = all_predictions.filter(created_at__gte=date_to)
+    
+    if result_filter:
+        all_predictions = all_predictions.filter(result=result_filter)
+    
+    # Get comprehensive statistics
+    total_predictions = all_predictions.count()
+    fraud_count = all_predictions.filter(result='Fraud').count()
+    not_fraud_count = all_predictions.filter(result='Not Fraud').count()
+    
+    # Calculate rates
+    fraud_detection_rate = (fraud_count / total_predictions * 100) if total_predictions > 0 else 0
+    success_rate = (not_fraud_count / total_predictions * 100) if total_predictions > 0 else 0
+    
+    # Get recent predictions for display
+    recent_predictions = all_predictions[:10]
+    
+    # Performance metrics using PostgreSQL aggregation
+    if all_predictions.exists():
+        processing_stats = all_predictions.aggregate(
+            avg_processing_time=Avg('processing_time'),
+            max_processing_time=Max('processing_time'),
+            min_processing_time=Min('processing_time')
+        )
+        
+        avg_processing_time = round(processing_stats['avg_processing_time'] or 0, 2)
+        max_processing_time = round(processing_stats['max_processing_time'] or 0, 2)
+        min_processing_time = round(processing_stats['min_processing_time'] or 0, 2)
+        
+        # Confidence score statistics
+        confidence_stats = all_predictions.aggregate(
+            avg_confidence=Avg('confidence_score'),
+            max_confidence=Max('confidence_score'),
+            min_confidence=Min('confidence_score')
+        )
+        
+        avg_confidence = round(confidence_stats['avg_confidence'] or 0, 1)
+        max_confidence = round(confidence_stats['max_confidence'] or 0, 1)
+        min_confidence = round(confidence_stats['min_confidence'] or 0, 1)
+        
+        # Model accuracy calculation
+        high_confidence_predictions = all_predictions.filter(confidence_score__gte=80).count()
+        total_with_confidence = all_predictions.exclude(confidence_score__isnull=True).count()
+        
+        if total_with_confidence > 0:
+            confidence_accuracy = (high_confidence_predictions / total_with_confidence) * 100
+            model_accuracy = round((success_rate + fraud_detection_rate + confidence_accuracy) / 3, 1)
+        else:
+            model_accuracy = round((success_rate + fraud_detection_rate) / 2, 1)
+        
+        # Response time calculation
+        response_times = []
+        for pred in all_predictions[:100]:  # Sample last 100 predictions
+            if pred.processing_time:
+                response_times.append(pred.processing_time + 0.5)  # Add 0.5s overhead
+        
+        avg_response_time = round(sum(response_times) / len(response_times), 2) if response_times else 0
+        
+        # Success rate based on predictions
+        successful_predictions = all_predictions.filter(
+            Q(result='Not Fraud') | 
+            (Q(result='Fraud') & Q(confidence_score__gte=70))
+        ).count()
+        
+        success_rate = round((successful_predictions / total_predictions) * 100, 1) if total_predictions > 0 else 0
+    else:
+        avg_processing_time = 0
+        max_processing_time = 0
+        min_processing_time = 0
+        avg_confidence = 0
+        max_confidence = 0
+        min_confidence = 0
+        model_accuracy = 0
+        avg_response_time = 0
+        success_rate = 0
+    
+    context = {
+        'total_user_predictions': total_predictions,
+        'user_fraud_count': fraud_count,
+        'user_not_fraud_count': not_fraud_count,
+        'success_rate': round(success_rate, 2),
+        'fraud_detection_rate': round(fraud_detection_rate, 2),
+        'recent_predictions': recent_predictions,
+        'avg_processing_time': avg_processing_time,
+        'max_processing_time': max_processing_time,
+        'min_processing_time': min_processing_time,
+        'avg_confidence': avg_confidence,
+        'max_confidence': max_confidence,
+        'min_confidence': min_confidence,
+        'model_accuracy': model_accuracy,
+        'avg_response_time': avg_response_time,
+        'search_query': search_query,
+        'date_from': date_from,
+        'date_to': date_to,
+        'result_filter': result_filter,
+    }
+    
+    return render(request, 'landing/history.html', context)
