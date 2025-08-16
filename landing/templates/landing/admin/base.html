@@ -712,6 +712,12 @@
                         currentSection.style.color = '';
                         currentSection.style.transform = '';
                     }, 500);
+                    
+                    // Set high priority flag to prevent URL-based interference
+                    sessionStorage.setItem('sidebarSelectionPriority', 'true');
+                    setTimeout(() => {
+                        sessionStorage.removeItem('sidebarSelectionPriority');
+                    }, 3000); // Priority lasts for 3 seconds
                 }
             }
 
@@ -744,7 +750,12 @@
                         // Store active state in sessionStorage for persistence
                         if (activeText) {
                             sessionStorage.setItem('activeAdminSidebarItem', activeText.textContent);
+                            // Mark this as a manual selection to prevent URL-based interference
+                            sessionStorage.setItem('lastManualSidebarSelection', Date.now().toString());
                         }
+                        
+                        // Clear any pending URL-based updates
+                        sessionStorage.setItem('skipNextURLUpdate', 'true');
                         
                         // Navigate to the URL after a brief delay for smooth transition
                         setTimeout(() => {
@@ -766,11 +777,31 @@
                     itemToActivate.classList.add('nav-item-active');
                     // Use the new function for immediate header update
                     updateHeaderOnSidebarClick(lastActiveItem);
+                    // Mark this as a manual selection to prevent URL interference
+                    sessionStorage.setItem('lastManualSidebarSelection', Date.now().toString());
                 }
             }
 
             // Enhanced URL-based header update with better path matching
             function updateHeaderFromURL() {
+                // Don't update if user has manually selected a sidebar item recently
+                const lastManualSelection = sessionStorage.getItem('lastManualSidebarSelection');
+                const currentTime = Date.now();
+                if (lastManualSelection && (currentTime - parseInt(lastManualSelection)) < 2000) {
+                    return; // Skip URL-based updates for 2 seconds after manual selection
+                }
+                
+                // Don't update if sidebar selection has priority
+                if (sessionStorage.getItem('sidebarSelectionPriority')) {
+                    return; // Skip URL-based updates when sidebar has priority
+                }
+                
+                // Don't update if explicitly skipped
+                if (sessionStorage.getItem('skipNextURLUpdate')) {
+                    sessionStorage.removeItem('skipNextURLUpdate');
+                    return; // Skip this URL update
+                }
+                
                 const currentPath = window.location.pathname;
                 let sectionName = 'Dashboard'; // Default
                 
@@ -863,13 +894,13 @@
                 subtree: true
             });
             
-            // Also check URL changes periodically for better reliability
+            // Also check URL changes periodically for better reliability (reduced frequency)
             setInterval(function() {
                 if (currentUrl !== window.location.href) {
                     currentUrl = window.location.href;
                     updateHeaderFromURL();
                 }
-            }, 500);
+            }, 2000); // Increased from 500ms to 2000ms to reduce interference
             
             // Handle page visibility changes (when user switches tabs and comes back)
             document.addEventListener('visibilitychange', function() {
@@ -901,8 +932,8 @@
                 }
             };
             
-            // Check for pathname changes more frequently
-            setInterval(checkPathnameChange, 100);
+            // Check for pathname changes less frequently to reduce interference
+            setInterval(checkPathnameChange, 1000); // Increased from 100ms to 1000ms
             
             // Handle page refresh and direct URL access
             window.addEventListener('load', function() {
