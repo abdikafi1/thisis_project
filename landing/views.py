@@ -2108,6 +2108,9 @@ def export_pdf_report(request):
         print(f"❌ PDF generation error: {str(e)}")
         messages.error(request, f'Error generating PDF report: {str(e)}')
         return redirect('predict')
+    
+    # Create summary data for the table
+    summary_data = [
         ['Average Confidence', f"{avg_confidence:.1f}%", '🎯 Accuracy'],
         ['Confidence Range', f"{min_confidence:.1f}% - {max_confidence:.1f}%", '📊 Reliability'],
         ['High Confidence Cases', f"{high_confidence_predictions}", '🔒 Reliable'],
