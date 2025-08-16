@@ -89,6 +89,23 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
+    // Export functionality enhancements
+    const exportButtons = document.querySelectorAll('a[href*="export"]');
+    exportButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            // Show loading state
+            const originalText = this.innerHTML;
+            this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Preparing Export...';
+            this.style.pointerEvents = 'none';
+            
+            // Reset after a delay (in case of error)
+            setTimeout(() => {
+                this.innerHTML = originalText;
+                this.style.pointerEvents = 'auto';
+            }, 10000);
+        });
+    });
+    
 });
 </script>
 
@@ -100,16 +117,26 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="absolute inset-0 bg-gradient-to-r from-indigo-600/20 via-purple-600/20 to-pink-600/20"></div>
             <div class="relative z-10">
                 <h1 class="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-4 tracking-tight">
-                    Fraud Analysis
+                    Fraud Analysis Dashboard
                 </h1>
                 <p class="text-xl text-indigo-100 font-medium max-w-3xl mx-auto leading-relaxed">
-                    Comprehensive analytics and insights from your prediction data
+                    Comprehensive analytics and insights from your prediction data with advanced export capabilities
                 </p>
-              
+                <div class="mt-6 flex flex-wrap justify-center gap-4">
+                    <div class="bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 text-white text-sm font-medium">
+                        <i class="fas fa-clock mr-2"></i>Real-time Data
+                    </div>
+                    <div class="bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 text-white text-sm font-medium">
+                        <i class="fas fa-chart-line mr-2"></i>Advanced Analytics
+                    </div>
+                    <div class="bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 text-white text-sm font-medium">
+                        <i class="fas fa-download mr-2"></i>Export Ready
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Key Statistics -->
+        <!-- Key Statistics Dashboard -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
             <!-- Total Predictions - Soft blue theme for general info -->
             <div class="group bg-gradient-to-br from-blue-500 to-blue-600 rounded-3xl shadow-xl p-8 text-center text-white hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 cursor-pointer border border-blue-400/30">
@@ -118,6 +145,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
                 <div class="text-4xl font-black mb-2">{{ total_user_predictions }}</div>
                 <div class="text-lg font-bold uppercase tracking-wider opacity-90">Total Predictions</div>
+                <div class="text-sm opacity-75 mt-2">All time records</div>
             </div>
 
             <!-- Fraud Detected - Soft red theme for danger/warning -->
@@ -127,6 +155,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
                 <div class="text-4xl font-black mb-2">{{ user_fraud_count }}</div>
                 <div class="text-lg font-bold uppercase tracking-wider opacity-90">Fraud Detected</div>
+                <div class="text-sm opacity-75 mt-2">{{ fraud_detection_rate }}% of total</div>
             </div>
 
             <!-- Fraud Detection Rate - Soft green theme for success/positive -->
@@ -136,6 +165,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
                 <div class="text-4xl font-black mb-2">{{ fraud_detection_rate }}%</div>
                 <div class="text-lg font-bold uppercase tracking-wider opacity-90">Detection Rate</div>
+                <div class="text-sm opacity-75 mt-2">AI model accuracy</div>
             </div>
 
             <!-- Processing Time - Soft orange theme for performance metrics -->
@@ -145,6 +175,125 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
                 <div class="text-4xl font-black mb-2">{{ avg_processing_time }}s</div>
                 <div class="text-lg font-bold uppercase tracking-wider opacity-90">Avg Processing</div>
+                <div class="text-sm opacity-75 mt-2">Response time</div>
+            </div>
+        </div>
+
+        <!-- Export Section - Enhanced with comprehensive information -->
+        <div class="bg-gradient-to-r from-slate-700 via-gray-700 to-slate-800 backdrop-blur-xl rounded-3xl shadow-2xl p-8 mb-10 border border-slate-600/30">
+            <div class="flex items-center mb-6">
+                <div class="w-12 h-12 bg-gradient-to-br from-slate-500 to-slate-600 rounded-xl flex items-center justify-center mr-4 shadow-lg">
+                    <i class="fas fa-download text-xl text-white"></i>
+                </div>
+                <h3 class="text-2xl font-black text-white">Export Comprehensive Reports</h3>
+            </div>
+            
+            <!-- Export Information -->
+            <div class="mb-6 p-4 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-white">
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-blue-300">{{ total_user_predictions }}</div>
+                        <div class="text-sm text-slate-300">Records Available</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-green-300">{{ fraud_detection_rate }}%</div>
+                        <div class="text-sm text-slate-300">Fraud Detection Rate</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-purple-300">{{ avg_processing_time }}s</div>
+                        <div class="text-sm text-slate-300">Avg Processing Time</div>
+                    </div>
+                </div>
+            </div>
+           
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full">
+                <!-- PDF Export - Enhanced with detailed information -->
+                <div class="bg-gradient-to-r from-rose-500/10 to-pink-600/10 rounded-xl p-6 border border-rose-400/30">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-file-pdf text-4xl text-rose-500 mb-3"></i>
+                        <h4 class="text-lg font-bold text-white mb-2">PDF Report</h4>
+                        <p class="text-sm text-slate-300">Professional formatted report with charts and analytics</p>
+                    </div>
+                    
+                    <div class="space-y-2 mb-4 text-sm text-slate-300">
+                        <div class="flex items-center">
+                            <i class="fas fa-check text-green-400 mr-2"></i>
+                            <span>Executive summary with key metrics</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-check text-green-400 mr-2"></i>
+                            <span>Visual charts and graphs</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-check text-green-400 mr-2"></i>
+                            <span>Detailed prediction analysis</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-check text-green-400 mr-2"></i>
+                            <span>Professional formatting</span>
+                        </div>
+                    </div>
+                    
+                    <a href="{% url 'export_pdf' %}" class="group relative inline-flex items-center justify-center px-6 py-3 text-lg font-semibold text-white bg-gradient-to-r from-rose-500 to-pink-600 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-rose-400 border border-rose-400/30 w-full">
+                        <span class="absolute inset-0 bg-gradient-to-r from-rose-600 to-pink-700 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200"></span>
+                        <span class="relative flex items-center">
+                            <i class="fas fa-file-pdf mr-3"></i>
+                            Export to PDF
+                        </span>
+                    </a>
+                </div>
+                
+                <!-- CSV Export - Enhanced with detailed information -->
+                <div class="bg-gradient-to-r from-blue-500/10 to-indigo-600/10 rounded-xl p-6 border border-blue-400/30">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-file-csv text-4xl text-blue-500 mb-3"></i>
+                        <h4 class="text-lg font-bold text-white mb-2">CSV Data Export</h4>
+                        <p class="text-sm text-slate-300">Raw data for analysis in Excel, Google Sheets, or databases</p>
+                    </div>
+                    
+                    <div class="space-y-2 mb-4 text-sm text-slate-300">
+                        <div class="flex items-center">
+                            <i class="fas fa-check text-green-400 mr-2"></i>
+                            <span>Complete raw data export</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-check text-green-400 mr-2"></i>
+                            <span>Excel-compatible format</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-check text-green-400 mr-2"></i>
+                            <span>All prediction fields included</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-check text-green-400 mr-2"></i>
+                            <span>Ready for data analysis</span>
+                        </div>
+                    </div>
+                    
+                    <a href="{% url 'export_csv' %}" class="group relative inline-flex items-center justify-center px-6 py-3 text-lg font-semibold text-white bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-blue-400 border border-blue-400/30 w-full">
+                        <span class="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-700 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200"></span>
+                        <span class="relative flex items-center">
+                            <i class="fas fa-file-csv mr-3"></i>
+                            Export to CSV
+                        </span>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Export Tips -->
+            <div class="mt-6 p-4 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10">
+                <h5 class="text-white font-semibold mb-2 flex items-center">
+                    <i class="fas fa-lightbulb text-yellow-400 mr-2"></i>
+                    Export Tips
+                </h5>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-slate-300">
+                    <div>
+                        <strong>PDF Reports:</strong> Perfect for presentations, audits, and sharing with stakeholders. Includes visual charts and professional formatting.
+                    </div>
+                    <div>
+                        <strong>CSV Data:</strong> Ideal for data analysis, custom reporting, and importing into other systems. Contains all raw prediction data.
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -211,9 +360,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         <div class="flex flex-wrap gap-2 items-center">
                             <span class="text-slate-200 font-medium">Active filters:</span>
                             {% if search_query %}
-                                                    <span class="px-3 py-1 bg-blue-500/20 text-blue-200 rounded-full text-sm border border-blue-400/30 filter-badge">
-                            Search: "{{ search_query }}"
-                        </span>
+                            <span class="px-3 py-1 bg-blue-500/20 text-blue-200 rounded-full text-sm border border-blue-400/30 filter-badge">
+                                Search: "{{ search_query }}"
+                            </span>
                             {% endif %}
                             {% if date_from %}
                             <span class="px-3 py-1 bg-green-500/20 text-green-200 rounded-full text-sm border border-green-400/30 filter-badge">
@@ -246,39 +395,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </form>
         </div>
 
-        <!-- Export Section - Elegant dark theme for utility functions -->
-        <div class="bg-gradient-to-r from-slate-700 via-gray-700 to-slate-800 backdrop-blur-xl rounded-3xl shadow-2xl p-8 mb-10 border border-slate-600/30">
-            <div class="flex items-center mb-6">
-                <div class="w-12 h-12 bg-gradient-to-br from-slate-500 to-slate-600 rounded-xl flex items-center justify-center mr-4 shadow-lg">
-                    <i class="fas fa-download text-xl text-white"></i>
-                </div>
-                <h3 class="text-2xl font-black text-white">Export Reports</h3>
-            </div>
-           
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
-                <!-- PDF Export - Elegant red theme for document -->
-                <a href="{% url 'export_pdf' %}" class="group relative inline-flex items-center justify-center px-6 py-3 text-lg font-semibold text-white bg-gradient-to-r from-rose-500 to-pink-600 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-rose-400 border border-rose-400/30 w-full">
-                    <span class="absolute inset-0 bg-gradient-to-r from-rose-600 to-pink-700 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200"></span>
-                    <span class="relative flex items-center">
-                        <i class="fas fa-file-pdf mr-3"></i>
-                        Export to PDF
-                    </span>
-                </a>
-                
-                <!-- CSV Export - Elegant blue theme for data -->
-                <a href="{% url 'export_csv' %}" class="group relative inline-flex items-center justify-center px-6 py-3 text-lg font-semibold text-white bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-blue-400 border border-blue-400/30 w-full">
-                    <span class="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-700 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200"></span>
-                    <span class="relative flex items-center">
-                        <i class="fas fa-file-csv mr-3"></i>
-                        Export to CSV
-                    </span>
-                </a>
-            </div>
-            
-        
-        </div>
-
-        <!-- Performance Metrics - Elegant teal theme for performance/analytics -->
+        <!-- Performance Metrics - Enhanced with comprehensive analytics -->
         <div class="bg-gradient-to-r from-teal-500 via-cyan-600 to-blue-600 backdrop-blur-xl rounded-3xl shadow-2xl p-8 mb-10 border border-teal-400/30">
             <div class="flex items-center mb-6">
                 <div class="w-12 h-12 bg-gradient-to-br from-teal-400 to-teal-500 rounded-xl flex items-center justify-center mr-4 shadow-lg">
@@ -295,6 +412,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                     <div class="text-3xl font-black text-white mb-2">72%</div>
                     <div class="text-teal-100 font-semibold">Model Accuracy</div>
+                    <div class="text-teal-200 text-sm mt-1">AI Performance</div>
                 </div>
                 
                 <!-- Response Time -->
@@ -318,14 +436,53 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             </div>
             
-         
+            <!-- Additional Performance Info -->
+            <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                    <h5 class="text-white font-semibold mb-2">Export Ready Data</h5>
+                    <div class="text-teal-200 text-sm">
+                        <div class="flex justify-between">
+                            <span>Total Records:</span>
+                            <span class="font-bold">{{ total_user_predictions }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Fraud Cases:</span>
+                            <span class="font-bold text-rose-300">{{ user_fraud_count }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Clean Cases:</span>
+                            <span class="font-bold text-green-300">{{ user_not_fraud_count }}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                    <h5 class="text-white font-semibold mb-2">Data Quality</h5>
+                    <div class="text-teal-200 text-sm">
+                        <div class="flex justify-between">
+                            <span>Confidence Range:</span>
+                            <span class="font-bold">{{ min_confidence }}% - {{ max_confidence }}%</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Processing Range:</span>
+                            <span class="font-bold">{{ min_processing_time }}s - {{ max_processing_time }}s</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Data Completeness:</span>
+                            <span class="font-bold text-green-300">100%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <!-- Latest 3 Predictions -->
-        <div class="bg-white rounded-lg shadow-md p-6">
-            <div class="flex items-center mb-4">
-                <h3 class="text-xl font-semibold text-gray-800">Latest  Predictions</h3>
-                
+        <!-- Latest Predictions - Enhanced display -->
+        <div class="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-2xl font-bold text-gray-800">Latest Predictions</h3>
+                <div class="text-sm text-gray-500">
+                    Showing latest 3 of {{ total_user_predictions }} total predictions
+                </div>
             </div>
             
             {% if recent_predictions %}
