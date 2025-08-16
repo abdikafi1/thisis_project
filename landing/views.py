@@ -1740,12 +1740,15 @@ def export_pdf_report(request):
     )
     
     # Enhanced styles with better typography and colors
-    styles = getSampleStyleSheet()
+    base_styles = getSampleStyleSheet()
+    
+    # Create a new styles dictionary that we can modify
+    styles = {}
     
     # Custom title style with enhanced appearance
     title_style = ParagraphStyle(
         'CustomTitle',
-        parent=styles['Title'],
+        parent=base_styles['Title'],
         fontSize=24,
         spaceAfter=35,
         spaceBefore=20,
@@ -1757,7 +1760,7 @@ def export_pdf_report(request):
     # Enhanced heading styles
     heading2_style = ParagraphStyle(
         'CustomHeading2',
-        parent=styles['Heading2'],
+        parent=base_styles['Heading2'],
         fontSize=16,
         spaceAfter=20,
         spaceBefore=25,
@@ -1771,7 +1774,7 @@ def export_pdf_report(request):
     # Enhanced normal style
     normal_style = ParagraphStyle(
         'CustomNormal',
-        parent=styles['Normal'],
+        parent=base_styles['Normal'],
         fontSize=11,
         spaceAfter=12,
         spaceBefore=6,
@@ -1780,10 +1783,21 @@ def export_pdf_report(request):
         alignment=0  # Left alignment
     )
     
-    # Update styles dictionary
+    # Add all styles to our dictionary
     styles['Title'] = title_style
     styles['Heading2'] = heading2_style
     styles['Normal'] = normal_style
+    styles['Heading1'] = base_styles['Heading1']
+    styles['Heading3'] = base_styles['Heading3']
+    styles['Heading4'] = base_styles['Heading4']
+    styles['Heading5'] = base_styles['Heading5']
+    styles['Heading6'] = base_styles['Heading6']
+    styles['Paragraph'] = base_styles['Paragraph']
+    styles['Bullet'] = base_styles['Bullet']
+    styles['Definition'] = base_styles['Definition']
+    styles['Code'] = base_styles['Code']
+    styles['Italic'] = base_styles['Italic']
+    styles['Bold'] = base_styles['Bold']
     
     # Story elements for PDF content
     story = []
