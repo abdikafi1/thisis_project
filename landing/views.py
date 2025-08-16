@@ -1787,17 +1787,38 @@ def export_pdf_report(request):
     styles['Title'] = title_style
     styles['Heading2'] = heading2_style
     styles['Normal'] = normal_style
-    styles['Heading1'] = base_styles['Heading1']
-    styles['Heading3'] = base_styles['Heading3']
-    styles['Heading4'] = base_styles['Heading4']
-    styles['Heading5'] = base_styles['Heading5']
-    styles['Heading6'] = base_styles['Heading6']
-    styles['Paragraph'] = base_styles['Paragraph']
-    styles['Bullet'] = base_styles['Bullet']
-    styles['Definition'] = base_styles['Definition']
-    styles['Code'] = base_styles['Code']
-    styles['Italic'] = base_styles['Italic']
-    styles['Bold'] = base_styles['Bold']
+    
+    # Copy only the styles that actually exist in base_styles
+    for style_name in ['Heading1', 'Heading3', 'Heading4', 'Heading5', 'Heading6']:
+        if style_name in base_styles:
+            styles[style_name] = base_styles[style_name]
+    
+    # Ensure we have the Normal style for parent references
+    if 'Normal' in base_styles:
+        styles['Normal'] = base_styles['Normal']
+    else:
+        # Create a fallback Normal style if it doesn't exist
+        styles['Normal'] = ParagraphStyle(
+            'FallbackNormal',
+            fontSize=11,
+            spaceAfter=12,
+            spaceBefore=6,
+            textColor=colors.HexColor('#4b5563'),
+            fontName='Helvetica',
+            alignment=0
+        )
+    
+    # Ensure we have Heading3 style since it's used in the footer
+    if 'Heading3' not in styles:
+        styles['Heading3'] = ParagraphStyle(
+            'FallbackHeading3',
+            fontSize=14,
+            spaceAfter=15,
+            spaceBefore=20,
+            textColor=colors.HexColor('#4b5563'),
+            fontName='Helvetica-Bold',
+            alignment=0
+        )
     
     # Story elements for PDF content
     story = []
