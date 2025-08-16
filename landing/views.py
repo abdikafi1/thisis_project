@@ -1508,106 +1508,259 @@ def notification_settings_view(request):
 
 @login_required
 def export_pdf_report(request):
-    """Export user predictions as PDF report"""
+    """Export user predictions as comprehensive PDF report with beautiful formatting"""
     from django.http import HttpResponse
     from reportlab.lib.pagesizes import letter, A4
-    from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+    from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, PageBreak
     from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
     from reportlab.lib.units import inch
     from reportlab.lib import colors
+    from reportlab.graphics.shapes import Drawing
+    from reportlab.graphics.charts.piecharts import Pie
+    from reportlab.graphics.charts.barcharts import VerticalBarChart
     import json
     
-    # Get user predictions
+    # Get comprehensive user data from PostgreSQL database
     user_predictions = Prediction.objects.filter(user=request.user).order_by('-created_at')
+    total_user_predictions = user_predictions.count()
+    user_fraud_count = user_predictions.filter(result='Fraud').count()
+    user_not_fraud_count = user_predictions.filter(result='Not Fraud').count()
+    
+    # Calculate advanced metrics
+    success_rate = (user_not_fraud_count / total_user_predictions * 100) if total_user_predictions > 0 else 0
+    fraud_detection_rate = (user_fraud_count / total_user_predictions * 100) if total_user_predictions > 0 else 0
+    
+    # Get processing time statistics
+    processing_times = [p.processing_time for p in user_predictions if p.processing_time]
+    avg_processing_time = round(sum(processing_times) / len(processing_times), 2) if processing_times else 0
+    
+    # Get confidence score statistics
+    confidence_scores = [p.confidence_score for p in user_predictions if p.confidence_score]
+    avg_confidence = round(sum(confidence_scores) / len(confidence_scores), 2) if confidence_scores else 0
+    
+    # Time-based analysis
+    now = timezone.now()
+    this_month_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    last_month_start = (this_month_start - timedelta(days=1)).replace(day=1)
+    
+    this_month_predictions = user_predictions.filter(created_at__gte=this_month_start).count()
+    last_month_predictions = user_predictions.filter(
+        created_at__gte=last_month_start,
+        created_at__lt=this_month_start
+    ).count()
     
     # Create the HttpResponse object with PDF headers
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="fraud_detection_report_{timezone.now().strftime("%Y%m%d_%H%M%S")}.pdf"'
+    response['Content-Disposition'] = f'attachment; filename="fraud_detection_comprehensive_report_{timezone.now().strftime("%Y%m%d_%H%M%S")}.pdf"'
     
     # Create the PDF object
     doc = SimpleDocTemplate(response, pagesize=A4)
     styles = getSampleStyleSheet()
     story = []
     
-    # Title
+    # Enhanced Title with styling
     title_style = ParagraphStyle(
         'CustomTitle',
         parent=styles['Heading1'],
-        fontSize=24,
+        fontSize=28,
         spaceAfter=30,
-        alignment=1  # Center alignment
+        alignment=1,  # Center alignment
+        textColor=colors.HexColor('#1e40af'),  # Blue color
+        fontName='Helvetica-Bold'
     )
-    story.append(Paragraph("Fraud Detection Report", title_style))
-    story.append(Spacer(1, 20))
     
-    # Summary
-    total_predictions = user_predictions.count()
-    fraud_count = user_predictions.filter(result='Fraud').count()
-    clean_count = user_predictions.filter(result='Not Fraud').count()
-    fraud_rate = (fraud_count / total_predictions * 100) if total_predictions > 0 else 0
+    subtitle_style = ParagraphStyle(
+        'CustomSubtitle',
+        parent=styles['Normal'],
+        fontSize=14,
+        spaceAfter=20,
+        alignment=1,
+        textColor=colors.HexColor('#6b7280'),  # Gray color
+        fontName='Helvetica'
+    )
+    
+    story.append(Paragraph("🚨 Fraud Detection System", title_style))
+    story.append(Paragraph("Comprehensive Analysis Report", subtitle_style))
+    story.append(Paragraph(f"Generated on {timezone.now().strftime('%B %d, %Y at %H:%M')}", subtitle_style))
+    story.append(Spacer(1, 30))
+    
+    # Executive Summary Section
+    story.append(Paragraph("📊 Executive Summary", styles['Heading2']))
+    story.append(Spacer(1, 15))
     
     summary_data = [
-        ['Metric', 'Value'],
-        ['Total Predictions', str(total_predictions)],
-        ['Fraud Detected', str(fraud_count)],
-        ['Clean Cases', str(clean_count)],
-        ['Fraud Detection Rate', f"{fraud_rate:.1f}%"],
-        ['Report Generated', timezone.now().strftime("%B %d, %Y at %H:%M")],
+        ['Metric', 'Value', 'Status'],
+        ['Total Predictions', str(total_user_predictions), '📈 Active'],
+        ['Fraud Detected', str(user_fraud_count), '⚠️ Alert'],
+        ['Clean Cases', str(user_not_fraud_count), '✅ Safe'],
+        ['Fraud Detection Rate', f"{fraud_detection_rate:.1f}%", '🎯 Performance'],
+        ['Success Rate', f"{success_rate:.1f}%", '🏆 Achievement'],
+        ['Average Processing Time', f"{avg_processing_time}s", '⚡ Speed'],
+        ['Average Confidence', f"{avg_confidence}%", '🎯 Accuracy'],
+        ['This Month Predictions', str(this_month_predictions), '📅 Current'],
+        ['Last Month Predictions', str(last_month_predictions), '📅 Previous'],
     ]
     
-    summary_table = Table(summary_data, colWidths=[2*inch, 2*inch])
+    summary_table = Table(summary_data, colWidths=[2.5*inch, 1.5*inch, 1.5*inch])
     summary_table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1e40af')),  # Blue header
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('FONTSIZE', (0, 0), (-1, 0), 14),
+        ('FONTSIZE', (0, 0), (-1, 0), 12),
         ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black)
+        ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#f8fafc')),  # Light blue background
+        ('GRID', (0, 0), (-1, -1), 1, colors.HexColor('#cbd5e1')),
+        ('FONTSIZE', (0, 1), (-1, -1), 10),
+        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#f1f5f9')]),
     ]))
     
-    story.append(Paragraph("Summary Statistics", styles['Heading2']))
     story.append(summary_table)
-    story.append(Spacer(1, 20))
+    story.append(Spacer(1, 25))
     
-    # Recent Predictions Table
+    # Monthly Trends Section
+    story.append(Paragraph("📈 Monthly Trends Analysis", styles['Heading2']))
+    story.append(Spacer(1, 15))
+    
+    # Calculate monthly trends
+    monthly_trends = []
+    for i in range(6):
+        month_start = this_month_start - timedelta(days=30*i)
+        month_end = month_start + timedelta(days=30)
+        month_predictions = user_predictions.filter(
+            created_at__gte=month_start,
+            created_at__lt=month_end
+        )
+        month_fraud = month_predictions.filter(result='Fraud').count()
+        month_total = month_predictions.count()
+        
+        monthly_trends.append({
+            'month': month_start.strftime('%B %Y'),
+            'total': month_total,
+            'fraud': month_fraud,
+            'clean': month_total - month_fraud,
+            'fraud_rate': round((month_fraud / month_total * 100) if month_total > 0 else 0, 1)
+        })
+    
+    if monthly_trends:
+        trends_data = [['Month', 'Total', 'Fraud', 'Clean', 'Fraud Rate']]
+        for trend in monthly_trends:
+            trends_data.append([
+                trend['month'],
+                str(trend['total']),
+                str(trend['fraud']),
+                str(trend['clean']),
+                f"{trend['fraud_rate']}%"
+            ])
+        
+        trends_table = Table(trends_data, colWidths=[1.5*inch, 1*inch, 1*inch, 1*inch, 1.2*inch])
+        trends_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#059669')),  # Green header
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, 0), 11),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+            ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#f0fdf4')),  # Light green background
+            ('GRID', (0, 0), (-1, -1), 1, colors.HexColor('#bbf7d0')),
+            ('FONTSIZE', (0, 1), (-1, -1), 9),
+        ]))
+        
+        story.append(trends_table)
+        story.append(Spacer(1, 25))
+    
+    # Recent Predictions Section
+    story.append(Paragraph("🔍 Recent Predictions Analysis", styles['Heading2']))
+    story.append(Spacer(1, 15))
+    
     if user_predictions.exists():
-        story.append(Paragraph("Recent Predictions", styles['Heading2']))
-        
         # Table headers
-        table_data = [['Date', 'Result', 'Input Data']]
+        table_data = [['Date & Time', 'Result', 'Confidence', 'Processing Time', 'Input Summary']]
         
-        # Add recent predictions (limit to 20 for PDF)
-        for prediction in user_predictions[:20]:
+        # Add recent predictions (limit to 15 for PDF readability)
+        for prediction in user_predictions[:15]:
             try:
                 input_data = json.loads(prediction.input_data)
-                # Create a summary of input data
-                data_summary = f"Age: {input_data.get('Age', 'N/A')}, Vehicle: {input_data.get('VehicleCategory', 'N/A')}"
+                # Create a comprehensive summary of input data
+                data_summary = f"Age: {input_data.get('Age', 'N/A')}, Vehicle: {input_data.get('VehicleCategory', 'N/A')}, Rating: {input_data.get('DriverRating', 'N/A')}"
             except:
                 data_summary = "Data unavailable"
+            
+            confidence = f"{prediction.confidence_score:.1f}%" if prediction.confidence_score else "N/A"
+            proc_time = f"{prediction.processing_time:.2f}s" if prediction.processing_time else "N/A"
             
             table_data.append([
                 prediction.created_at.strftime("%Y-%m-%d %H:%M"),
                 prediction.result,
+                confidence,
+                proc_time,
                 data_summary
             ])
         
-        # Create table
-        pred_table = Table(table_data, colWidths=[1.5*inch, 1*inch, 3*inch])
+        # Create enhanced table
+        pred_table = Table(table_data, colWidths=[1.3*inch, 0.8*inch, 0.8*inch, 1*inch, 2.5*inch])
         pred_table.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#dc2626')),  # Red header
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
             ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
             ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-            ('FONTSIZE', (0, 0), (-1, 0), 12),
+            ('FONTSIZE', (0, 0), (-1, 0), 10),
             ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-            ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-            ('GRID', (0, 0), (-1, -1), 1, colors.black),
-            ('FONTSIZE', (0, 1), (-1, -1), 10),
+            ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#fef2f2')),  # Light red background
+            ('GRID', (0, 0), (-1, -1), 1, colors.HexColor('#fecaca')),
+            ('FONTSIZE', (0, 1), (-1, -1), 8),
+            ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#fef2f2')]),
         ]))
         
         story.append(pred_table)
+        story.append(Spacer(1, 25))
+    
+    # Risk Assessment Section
+    story.append(Paragraph("⚠️ Risk Assessment & Recommendations", styles['Heading2']))
+    story.append(Spacer(1, 15))
+    
+    # Calculate risk levels
+    high_risk_cases = user_predictions.filter(result='Fraud', confidence_score__gte=80).count()
+    medium_risk_cases = user_predictions.filter(result='Fraud', confidence_score__gte=60, confidence_score__lt=80).count()
+    low_risk_cases = user_predictions.filter(result='Fraud', confidence_score__lt=60).count()
+    
+    risk_data = [
+        ['Risk Level', 'Count', 'Percentage', 'Recommendation'],
+        ['High Risk', str(high_risk_cases), f"{(high_risk_cases/total_user_predictions*100):.1f}%" if total_user_predictions > 0 else "0%", 'Immediate attention required'],
+        ['Medium Risk', str(medium_risk_cases), f"{(medium_risk_cases/total_user_predictions*100):.1f}%" if total_user_predictions > 0 else "0%", 'Monitor closely'],
+        ['Low Risk', str(low_risk_cases), f"{(low_risk_cases/total_user_predictions*100):.1f}%" if total_user_predictions > 0 else "0%", 'Regular review'],
+    ]
+    
+    risk_table = Table(risk_data, colWidths=[1.2*inch, 1*inch, 1.2*inch, 2.5*inch])
+    risk_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#7c2d12')),  # Brown header
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, 0), 10),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#fef3c7')),  # Light yellow background
+        ('GRID', (0, 0), (-1, -1), 1, colors.HexColor('#fde68a')),
+        ('FONTSIZE', (0, 1), (-1, -1), 9),
+    ]))
+    
+    story.append(risk_table)
+    story.append(Spacer(1, 25))
+    
+    # Footer with additional information
+    footer_style = ParagraphStyle(
+        'Footer',
+        parent=styles['Normal'],
+        fontSize=9,
+        textColor=colors.HexColor('#6b7280'),
+        alignment=1,
+        fontName='Helvetica'
+    )
+    
+    story.append(Paragraph("--- End of Report ---", footer_style))
+    story.append(Spacer(1, 10))
+    story.append(Paragraph("This report was generated automatically by the Fraud Detection System", footer_style))
+    story.append(Paragraph("For technical support, contact your system administrator", footer_style))
     
     # Build PDF
     doc.build(story)
@@ -1615,35 +1768,106 @@ def export_pdf_report(request):
 
 @login_required
 def export_csv_report(request):
-    """Export user predictions as CSV file"""
+    """Export user predictions as comprehensive CSV file with enhanced formatting"""
     from django.http import HttpResponse
     import csv
     import json
     
-    # Get user predictions
+    # Get comprehensive user data from PostgreSQL database
     user_predictions = Prediction.objects.filter(user=request.user).order_by('-created_at')
     
     # Create the HttpResponse object with CSV headers
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = f'attachment; filename="fraud_detection_data_{timezone.now().strftime("%Y%m%d_%H%M%S")}.csv"'
+    response = HttpResponse(content_type='text/csv; charset=utf-8')
+    response['Content-Disposition'] = f'attachment; filename="fraud_detection_comprehensive_data_{timezone.now().strftime("%Y%m%d_%H%M%S")}.csv"'
     
-    # Create CSV writer
+    # Add BOM for proper Excel encoding
+    response.write('\ufeff')
+    
+    # Create CSV writer with proper encoding
     writer = csv.writer(response)
     
-    # Write headers
-    writer.writerow(['Date', 'Result', 'Age', 'DriverRating', 'VehiclePrice', 'VehicleCategory', 
-                    'Days_Policy_Accident', 'Days_Policy_Claim', 'PastNumberOfClaims', 
-                    'PoliceReportFiled', 'WitnessPresent', 'NumberOfSuppliments', 
-                    'AddressChange_Claim', 'Deductible', 'AgeOfVehicle', 'Fault', 
-                    'AccidentArea', 'BasePolicy'])
+    # Write comprehensive headers with better organization
+    writer.writerow([
+        '=== FRAUD DETECTION SYSTEM - COMPREHENSIVE DATA EXPORT ===',
+        f'Generated on: {timezone.now().strftime("%B %d, %Y at %H:%M:%S")}',
+        f'User: {request.user.username}',
+        f'Total Records: {user_predictions.count()}',
+        '',  # Empty row for spacing
+    ])
     
-    # Write data
+    # Write summary statistics
+    total_predictions = user_predictions.count()
+    fraud_count = user_predictions.filter(result='Fraud').count()
+    clean_count = user_predictions.filter(result='Not Fraud').count()
+    fraud_rate = (fraud_count / total_predictions * 100) if total_predictions > 0 else 0
+    
+    writer.writerow(['SUMMARY STATISTICS'])
+    writer.writerow(['Metric', 'Value', 'Percentage'])
+    writer.writerow(['Total Predictions', total_predictions, '100%'])
+    writer.writerow(['Fraud Detected', fraud_count, f'{fraud_rate:.1f}%'])
+    writer.writerow(['Clean Cases', clean_count, f'{100-fraud_rate:.1f}%'])
+    writer.writerow([''])  # Empty row for spacing
+    
+    # Write detailed data headers
+    writer.writerow([
+        'DETAILED PREDICTION DATA',
+        'All individual prediction records with complete information'
+    ])
+    writer.writerow([
+        'Record ID',
+        'Date & Time',
+        'Result',
+        'Confidence Score (%)',
+        'Processing Time (seconds)',
+        'Risk Level',
+        'Age',
+        'Driver Rating',
+        'Vehicle Price',
+        'Vehicle Category',
+        'Days Since Policy Accident',
+        'Days Since Policy Claim',
+        'Past Number of Claims',
+        'Police Report Filed',
+        'Witness Present',
+        'Number of Suppliments',
+        'Address Change Claim',
+        'Deductible',
+        'Age of Vehicle',
+        'Fault',
+        'Accident Area',
+        'Base Policy',
+        'Input Data JSON',
+        'Created At (ISO)',
+        'User ID'
+    ])
+    
+    # Write comprehensive data rows
     for prediction in user_predictions:
         try:
             input_data = json.loads(prediction.input_data)
+            
+            # Determine risk level based on confidence score and result
+            if prediction.result == 'Fraud':
+                if prediction.confidence_score and prediction.confidence_score >= 80:
+                    risk_level = 'HIGH RISK'
+                elif prediction.confidence_score and prediction.confidence_score >= 60:
+                    risk_level = 'MEDIUM RISK'
+                else:
+                    risk_level = 'LOW RISK'
+            else:
+                risk_level = 'LOW RISK'
+            
+            # Format confidence and processing time
+            confidence = f"{prediction.confidence_score:.1f}" if prediction.confidence_score else "N/A"
+            proc_time = f"{prediction.processing_time:.3f}" if prediction.processing_time else "N/A"
+            
             writer.writerow([
+                prediction.id,
                 prediction.created_at.strftime("%Y-%m-%d %H:%M:%S"),
                 prediction.result,
+                confidence,
+                proc_time,
+                risk_level,
                 input_data.get('Age', ''),
                 input_data.get('DriverRating', ''),
                 input_data.get('VehiclePrice', ''),
@@ -1659,15 +1883,34 @@ def export_csv_report(request):
                 input_data.get('AgeOfVehicle', ''),
                 input_data.get('Fault', ''),
                 input_data.get('AccidentArea', ''),
-                input_data.get('BasePolicy', '')
+                input_data.get('BasePolicy', ''),
+                prediction.input_data,  # Full JSON data for reference
+                prediction.created_at.isoformat(),
+                prediction.user.id if prediction.user else ''
             ])
-        except:
-            # If JSON parsing fails, write basic info
+        except Exception as e:
+            # If JSON parsing fails, write basic info with error handling
             writer.writerow([
+                prediction.id,
                 prediction.created_at.strftime("%Y-%m-%d %H:%M:%S"),
                 prediction.result,
-                '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''
+                f"{prediction.confidence_score:.1f}" if prediction.confidence_score else "N/A",
+                f"{prediction.processing_time:.3f}" if prediction.processing_time else "N/A",
+                'ERROR' if prediction.result == 'Fraud' else 'LOW RISK',
+                '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''
             ])
+    
+    # Add footer with additional metadata
+    writer.writerow([''])  # Empty row for spacing
+    writer.writerow(['EXPORT METADATA'])
+    writer.writerow(['Export Type', 'Comprehensive CSV Data Export'])
+    writer.writerow(['Database', 'PostgreSQL (Neon)'])
+    writer.writerow(['Model Version', 'Fraud Detection ML Model v1.0'])
+    writer.writerow(['Data Source', 'User Prediction Database'])
+    writer.writerow(['Export Format', 'UTF-8 CSV with BOM'])
+    writer.writerow(['Compatible With', 'Excel, Google Sheets, Python pandas, R, etc.'])
+    writer.writerow([''])  # Empty row for spacing
+    writer.writerow(['END OF EXPORT'])
     
     return response
 

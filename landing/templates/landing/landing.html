@@ -123,6 +123,15 @@
         .mobile-nav-link {
             position: relative;
             transition: all 0.3s ease;
+            color: #1f2937;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            display: block;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(0, 0, 0, 0.1);
         }
         
         .mobile-nav-link::after {
@@ -132,12 +141,99 @@
             left: 0;
             width: 0;
             height: 2px;
-            background: #3b82f6;
+            background: #00ffff;
             transition: width 0.3s ease;
+        }
+        
+        .mobile-nav-link:hover {
+            color: #00ffff;
+            background: rgba(0, 255, 255, 0.1);
+            transform: translateX(5px);
+            border-color: #00ffff;
         }
         
         .mobile-nav-link:hover::after {
             width: 100%;
+        }
+        
+        /* Mobile menu header styling */
+        .mobile-menu-header {
+            background: linear-gradient(45deg, #1e40af, #3b82f6);
+            color: white;
+            padding: 20px;
+            border-radius: 0 0 15px 15px;
+        }
+        
+        .mobile-menu-header h3 {
+            color: white;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .mobile-menu-close-btn {
+            color: white;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            padding: 8px 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .mobile-menu-close-btn:hover {
+            color: #00ffff;
+            background: rgba(0, 255, 255, 0.2);
+            border-color: #00ffff;
+            transform: scale(1.05);
+        }
+        
+        /* Mobile menu container styling */
+        .mobile-menu-container {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 0 0 20px 20px;
+        }
+        
+        /* Mobile menu navigation area */
+        .mobile-menu-nav {
+            background: white;
+            margin: 15px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        /* Mobile menu section dividers */
+        .mobile-menu-section {
+            border-top: 2px solid rgba(0, 0, 0, 0.1);
+            padding-top: 15px;
+            margin-top: 15px;
+        }
+        
+        .mobile-menu-section-title {
+            color: #374151;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+            padding: 0 20px;
+        }
+        
+        /* Mobile menu button styling */
+        .mobile-menu-btn {
+            color: white;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 8px;
+            padding: 8px 12px;
+        }
+        
+        .mobile-menu-btn:hover {
+            color: #00ffff;
+            background: rgba(0, 255, 255, 0.2);
+            border-color: #00ffff;
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
         }
         
         /* Smooth navbar transitions */
@@ -807,7 +903,7 @@
                 </div>
             {% else %}
                 <h1 class="hero-title">Stop  vehicle Insurance Fraud 🛡️</h1>
-                <p class="hero-subtitle">Our Moodel -powered system catches fraudulent insurance claims before they cost you money.</p>
+                <p class="hero-subtitle">Our Model   catches fraudulent insurance claims before they cost you money.</p>
                 <div class="cta-buttons">
                     <a href="{% url 'login' %}" class="btn-primary">
                         <i class="fas fa-shield-alt mr-2"></i>

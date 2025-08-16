@@ -52,10 +52,15 @@
 
                     {% if messages %}
                         {% for message in messages %}
-                            <div class="bg-red-50 border-l-4 border-red-400 p-4 rounded-lg">
-                                <div class="flex">
-                                    <i class="fas fa-exclamation-triangle text-red-400 mr-3 mt-1"></i>
-                                    <p class="text-red-700">{{ message }}</p>
+                            <div class="message-auto-hide p-4 rounded-lg border-l-4 {% if message.tags == 'success' %}bg-green-50 border-green-400{% elif message.tags == 'error' %}bg-red-50 border-red-400{% else %}bg-blue-50 border-blue-400{% endif %} mb-4">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <i class="fas {% if message.tags == 'success' %}fa-check-circle text-green-500{% elif message.tags == 'error' %}fa-exclamation-triangle text-red-400{% else %}fa-info-circle text-blue-400{% endif %} mr-3 mt-1"></i>
+                                        <p class="{% if message.tags == 'success' %}text-green-700{% elif message.tags == 'error' %}text-red-700{% else %}text-blue-700{% endif %} font-medium">{{ message }}</p>
+                                    </div>
+                                    <button class="message-close-btn ml-3 text-gray-400 hover:text-gray-600 transition-colors" onclick="hideMessage(this.parentElement)">
+                                        <i class="fas fa-times"></i>
+                                    </button>
                                 </div>
                             </div>
                         {% endfor %}
@@ -169,6 +174,54 @@
                 input.parentElement.style.transform = 'translateY(0)';
             });
         });
+
+        // Smart message auto-hide system
+        function autoHideMessages() {
+            const messages = document.querySelectorAll('.message-auto-hide');
+            messages.forEach((message, index) => {
+                // Check if it's a success message (like logout)
+                const isSuccess = message.classList.contains('bg-green-50') || 
+                                 message.textContent.toLowerCase().includes('logged out') ||
+                                 message.textContent.toLowerCase().includes('success');
+                
+                let hideDelay;
+                if (isSuccess) {
+                    // Success messages (like logout): auto-hide after 2 seconds
+                    hideDelay = 2000;
+                } else {
+                    // Other messages: auto-hide after 3 seconds
+                    hideDelay = 3000;
+                }
+                
+                setTimeout(() => {
+                    if (message && message.parentElement) {
+                        message.style.opacity = '0';
+                        message.style.transform = 'translateY(-20px)';
+                        setTimeout(() => {
+                            if (message && message.parentElement) {
+                                message.remove();
+                            }
+                        }, 500);
+                    }
+                }, hideDelay + (index * 100)); // Stagger messages by 100ms
+            });
+        }
+
+        // Manual hide message function
+        window.hideMessage = function(messageElement) {
+            if (messageElement) {
+                messageElement.style.opacity = '0';
+                messageElement.style.transform = 'translateY(-20px)';
+                setTimeout(() => {
+                    if (messageElement && messageElement.parentElement) {
+                        messageElement.remove();
+                    }
+                }, 500);
+            }
+        };
+
+        // Start smart auto-hide when page loads
+        setTimeout(autoHideMessages, 100);
     </script>
 </body>
 </html> 

@@ -506,7 +506,7 @@
                 }, index * 100);
             });
 
-            // Dynamic header update function
+            // Enhanced dynamic header update function
             function updateHeaderFromSidebar() {
                 const activeItem = document.querySelector('.nav-item-active');
                 if (activeItem) {
@@ -520,11 +520,11 @@
                         const currentSection = document.getElementById('current-section');
                         
                         if (headerTitle && headerDescription && currentSection) {
-                            // Define header content for each section
+                            // Enhanced header content mapping for admin sections
                             const headerContent = {
-                                'Dashboard': {
-                                    title: 'Admin Dashboard',
-                                    description: 'Monitor and manage your fraud detection system'
+                                'Analytics Dashboard': {
+                                    title: 'Analytics Dashboard',
+                                    description: 'Monitor and manage your fraud detection system performance'
                                 },
                                 'User Management': {
                                     title: 'User Management',
@@ -562,46 +562,58 @@
                                     title: 'Fraud Analytics',
                                     description: 'View fraud detection analytics and system performance metrics'
                                 },
-                                'Analytics Dashboard': {
-                                    title: 'Analytics Dashboard',
-                                    description: 'System overview and metrics'
+                                'Dashboard': {
+                                    title: 'Admin Dashboard',
+                                    description: 'Monitor and manage your fraud detection system'
                                 }
                             };
                             
-                            // Update header content
+                            // Update header content with smooth animation
                             const content = headerContent[sectionName] || {
                                 title: sectionName,
                                 description: `Manage ${sectionName.toLowerCase()} functionality`
                             };
                             
-                            headerTitle.textContent = content.title;
-                            headerDescription.textContent = content.description;
-                            currentSection.textContent = sectionName;
+                            // Add animation class
+                            headerTitle.classList.add('animate-pulse');
+                            headerDescription.classList.add('animate-pulse');
+                            
+                            // Update content with a slight delay for smooth transition
+                            setTimeout(() => {
+                                headerTitle.textContent = content.title;
+                                headerDescription.textContent = content.description;
+                                currentSection.textContent = sectionName;
+                                
+                                // Remove animation class
+                                headerTitle.classList.remove('animate-pulse');
+                                headerDescription.classList.remove('animate-pulse');
+                            }, 150);
                         }
                     }
                 }
             }
 
-            // Update header when sidebar items are clicked
+            // Enhanced sidebar item click handling
             navItems.forEach(item => {
                 item.addEventListener('click', function() {
                     // Remove active class from all items
                     navItems.forEach(nav => nav.classList.remove('nav-item-active'));
                     // Add active class to clicked item
                     this.classList.add('nav-item-active');
-                    // Update header
+                    
+                    // Update header immediately
                     updateHeaderFromSidebar();
                     
                     // Store active state in sessionStorage for persistence
                     const activeText = this.querySelector('span.font-medium');
                     if (activeText) {
-                        sessionStorage.setItem('activeSidebarItem', activeText.textContent);
+                        sessionStorage.setItem('activeAdminSidebarItem', activeText.textContent);
                     }
                 });
             });
             
             // Restore active state from sessionStorage on page load
-            const lastActiveItem = sessionStorage.getItem('activeSidebarItem');
+            const lastActiveItem = sessionStorage.getItem('activeAdminSidebarItem');
             if (lastActiveItem) {
                 const itemToActivate = Array.from(navItems).find(item => {
                     const text = item.querySelector('span.font-medium');
@@ -614,19 +626,20 @@
                 }
             }
 
-            // Update header based on current page URL
+            // Enhanced URL-based header update
             function updateHeaderFromURL() {
                 const currentPath = window.location.pathname;
+                let sectionName = 'Dashboard'; // Default
                 
                 // Map URL paths to section names
                 if (currentPath.includes('/manage/dashboard/')) {
-                    sectionName = 'Dashboard';
+                    sectionName = 'Analytics Dashboard';
                 } else if (currentPath.includes('/manage/users/')) {
                     sectionName = 'User Management';
                 } else if (currentPath.includes('/manage/verification/')) {
                     sectionName = 'User Verification';
                 } else if (currentPath.includes('/manage/analytics/')) {
-                    sectionName = 'Analytics';
+                    sectionName = 'Fraud Analytics';
                 } else if (currentPath.includes('/manage/reports/')) {
                     sectionName = 'Reports';
                 } else if (currentPath.includes('/manage/activity/')) {
@@ -634,7 +647,7 @@
                 } else if (currentPath.includes('/manage/settings/')) {
                     sectionName = 'System Settings';
                 } else if (currentPath.includes('/manage/predict/')) {
-                    sectionName = 'Predictions';
+                    sectionName = 'New Prediction';
                 }
                 
                 // Find and activate the corresponding sidebar item
@@ -652,6 +665,21 @@
 
             // Update header when page loads
             updateHeaderFromURL();
+
+            // Add hover effects for better user experience
+            navItems.forEach(item => {
+                item.addEventListener('mouseenter', function() {
+                    if (!this.classList.contains('nav-item-active')) {
+                        this.style.transform = 'translateX(4px) scale(1.02)';
+                    }
+                });
+                
+                item.addEventListener('mouseleave', function() {
+                    if (!this.classList.contains('nav-item-active')) {
+                        this.style.transform = 'translateX(0) scale(1)';
+                    }
+                });
+            });
 
             // Smart message auto-hide system
             function autoHideMessages() {

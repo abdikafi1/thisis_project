@@ -451,83 +451,14 @@
 
             </ul>
 
-            <!-- Analytics Overview Section -->
-            <!-- <div class="sidebar-section">
-                <h3 class="nav-section-title px-4 py-2">Analytics Overview</h3>
-            </div>
-             -->
-            <!-- <div class="px-4 py-3 space-y-3"> -->
-                <!-- Total Predictions -->
-                <!-- <div class="bg-white/10 rounded-lg p-3 backdrop-blur-sm">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center space-x-2">
-                            <i class="fas fa-search text-blue-300 text-sm"></i>
-                            <span class="text-white/80 text-xs">Total Predictions</span>
-                        </div>
-                        <span class="text-white font-semibold text-sm">
-                            {% if user.profile.is_admin %}
-                                {{ sidebar_analytics.total_all_predictions|default:"0" }}
-                            {% else %}
-                                {{ sidebar_analytics.user_predictions|default:"0" }}
-                            {% endif %}
-                        </span>
-                    </div>
-                </div> -->
-                
-                <!-- Fraud Detected -->
-                <!-- <div class="bg-white/10 rounded-lg p-3 backdrop-blur-sm">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center space-x-2">
-                            <i class="fas fa-exclamation-triangle text-red-300 text-sm"></i>
-                            <span class="text-white/80 text-xs">Fraud Detected</span>
-                        </div>
-                        <span class="text-white font-semibold text-sm">
-                            {% if user.profile.is_admin %}
-                                {{ sidebar_analytics.total_fraud_detected|default:"0" }}
-                            {% else %}
-                                {{ sidebar_analytics.fraud_predictions|default:"0" }}
-                            {% endif %}
-                        </span>
-                    </div>
-                </div> -->
-                
-                <!-- Accuracy Rate -->
-                <!-- <div class="bg-white/10 rounded-lg p-3 backdrop-blur-sm">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center space-x-2">
-                            <i class="fas fa-bullseye text-green-300 text-sm"></i>
-                            <span class="text-white/80 text-xs">Accuracy Rate</span>
-                        </div>
-                        <span class="text-white font-semibold text-sm">
-                            {% if user.profile.is_admin %}
-                                {{ sidebar_analytics.detection_accuracy|default:"0" }}%
-                            {% else %}
-                                {{ sidebar_analytics.accuracy_rate|default:"0" }}%
-                            {% endif %}
-                        </span>
-                    </div>
-                </div> -->
-                
-                <!-- This Month -->
-                <!-- <div class="bg-white/10 rounded-lg p-3 backdrop-blur-sm">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center space-x-2">
-                            <i class="fas fa-calendar-alt text-purple-300 text-sm"></i>
-                            <span class="text-white/80 text-xs">This Month</span>
-                        </div>
-                        <span class="text-white font-semibold text-sm">
-                            {{ sidebar_analytics.this_month_predictions|default:"0" }}
-                        </span>
-                    </div>
-                </div> -->
-            <!-- </div> -->
+         
             
             <!-- Reports Section -->
             <div class="sidebar-section">
                 <h3 class="nav-section-title px-4 py-2">Reports</h3>
             </div>
             
-            <ul class="space-y-1.5 mt-7 mb-9">
+            <ul class="space-y-1.5 mt-7 mb-5">
                 <li>
                     <a href="{% url 'user_reports' %}" {% if request.resolver_match.url_name == 'user_reports' %}aria-current="page"{% endif %} class="sidebar-item flex items-center px-4 py-3 text-white hover:text-white {% if request.resolver_match.url_name == 'user_reports' %}active{% endif %}">
                         <i class="fas fa-chart-bar nav-icon"></i>
@@ -674,16 +605,16 @@
 
 
 
-        // Function to update page description based on page title
+        // Enhanced function to update page description based on page title
         function updatePageDescription(pageTitle) {
             const pageDescriptionElement = document.getElementById('dynamic-page-description');
             if (!pageDescriptionElement) return;
             
-            // Define descriptions for each page
+            // Enhanced descriptions for each page
             const descriptions = {
                 'Home': 'Welcome to your fraud detection system',
-                'Dashboard': 'Your fraud detection dashboard',
-                'Analyze New claim': 'Analyze new insurance claims for fraud',
+                'Dashboard': 'Your fraud detection dashboard and overview',
+                'Analyze New claim': 'Analyze new insurance claims for fraud detection',
                 'Reports': 'View and export fraud detection reports',
                 'Profile': 'Manage your user profile and settings'
             };
@@ -710,7 +641,7 @@
                 }
             }
             
-            // Also check current URL to set correct title
+            // Enhanced URL-based header update
             const currentPath = window.location.pathname;
             if (currentPath.includes('dashboard')) {
                 updateHeaderTitle('Dashboard');
@@ -722,6 +653,12 @@
                 updateHeaderTitle('Reports');
             } else if (currentPath.includes('home') || currentPath === '/') {
                 updateHeaderTitle('Home');
+            }
+            
+            // Update header based on current active sidebar item
+            const currentActiveItem = document.querySelector('.sidebar-item.active');
+            if (currentActiveItem) {
+                updateUserHeaderFromSidebar();
             }
         });
 
@@ -908,7 +845,68 @@
                 });
             }
             
-            // Sidebar active state management
+            // Enhanced dynamic header update function for user sidebar
+            function updateUserHeaderFromSidebar() {
+                const activeItem = document.querySelector('.sidebar-item.active');
+                if (activeItem) {
+                    const itemText = activeItem.querySelector('.nav-text');
+                    if (itemText) {
+                        const sectionName = itemText.textContent.trim();
+                        
+                        // Update header title and description based on selected section
+                        const pageTitle = document.getElementById('dynamic-page-title');
+                        const pageDescription = document.getElementById('dynamic-page-description');
+                        
+                        if (pageTitle && pageDescription) {
+                            // Enhanced header content mapping for user sections
+                            const headerContent = {
+                                'Home': {
+                                    title: 'Home',
+                                    description: 'Welcome to your fraud detection system'
+                                },
+                                'Dashboard': {
+                                    title: 'Dashboard',
+                                    description: 'Your fraud detection dashboard and overview'
+                                },
+                                'Analyze New claim': {
+                                    title: 'Analyze New Claim',
+                                    description: 'Analyze new insurance claims for fraud detection'
+                                },
+                                'Reports': {
+                                    title: 'Reports',
+                                    description: 'View and export fraud detection reports'
+                                },
+                                'Profile': {
+                                    title: 'User Profile',
+                                    description: 'Manage your user profile and settings'
+                                }
+                            };
+                            
+                            // Update header content with smooth animation
+                            const content = headerContent[sectionName] || {
+                                title: sectionName,
+                                description: `Your ${sectionName.toLowerCase()} section`
+                            };
+                            
+                            // Add animation class
+                            pageTitle.classList.add('animate');
+                            
+                            // Update content with a slight delay for smooth transition
+                            setTimeout(() => {
+                                pageTitle.textContent = content.title;
+                                pageDescription.textContent = content.description;
+                                
+                                // Remove animation class after animation completes
+                                setTimeout(() => {
+                                    pageTitle.classList.remove('animate');
+                                }, 400);
+                            }, 200);
+                        }
+                    }
+                }
+            }
+
+            // Sidebar active state management with dynamic header updates
             const sidebarItems = document.querySelectorAll('.sidebar-item');
             
             // Add click event to all sidebar items
@@ -918,6 +916,9 @@
                     sidebarItems.forEach(nav => nav.classList.remove('active'));
                     // Add active class to clicked item
                     this.classList.add('active');
+                    
+                    // Update header immediately
+                    updateUserHeaderFromSidebar();
                     
                     // Store active state in sessionStorage for persistence
                     const activeText = this.querySelector('.nav-text');
@@ -937,6 +938,8 @@
                 if (itemToActivate) {
                     sidebarItems.forEach(nav => nav.classList.remove('active'));
                     itemToActivate.classList.add('active');
+                    // Update header when restoring active state
+                    updateUserHeaderFromSidebar();
                 }
             }
         });
