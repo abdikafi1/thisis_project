@@ -2740,10 +2740,10 @@ def export_csv_report(request):
     # Write analytics insights
     writer.writerow(['ANALYTICS INSIGHTS & RECOMMENDATIONS'])
     writer.writerow(['Insight Category', 'Finding', 'Recommendation'])
-    writer.writerow(['Fraud Detection Performance', f'{fraud_rate:.1f}% detection rate', 'Monitor for improvement opportunities' if fraud_rate < 85 else 'Excellent performance maintained'],
-    writer.writerow(['System Efficiency', f'{avg_processing_time:.3f}s average response', 'Optimize processing if > 1.000s' if avg_processing_time > 1.0 else 'Optimal performance'],
-    writer.writerow(['Data Quality', '100% complete records', 'Continue maintaining high standards'],
-    writer.writerow(['Risk Assessment', f'{fraud_count} high-risk cases', 'Focus on high-confidence fraud cases'],
+    writer.writerow(['Fraud Detection Performance', f'{fraud_rate:.1f}% detection rate', 'Monitor for improvement opportunities' if fraud_rate < 85 else 'Excellent performance maintained'])
+    writer.writerow(['System Efficiency', f'{avg_processing_time:.3f}s average response', 'Optimize processing if > 1.000s' if avg_processing_time > 1.0 else 'Optimal performance'])
+    writer.writerow(['Data Quality', '100% complete records', 'Continue maintaining high standards'])
+    writer.writerow(['Risk Assessment', f'{fraud_count} high-risk cases', 'Focus on high-confidence fraud cases'])
     writer.writerow([''])  # Empty row for spacing
     
     # Write detailed data headers
