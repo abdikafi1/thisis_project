@@ -2573,8 +2573,149 @@ def export_pdf_report(request):
         print(f"❌ PDF generation error: {str(e)}")
         messages.error(request, f'Error generating PDF report: {str(e)}')
         return redirect('predict')
- 
-    # Check if user is admin
+
+
+@login_required
+def export_csv_report(request):
+    """Export user predictions as comprehensive CSV report with advanced analytics"""
+    from django.http import HttpResponse
+    import csv
+    import json
+    from django.utils import timezone
+    import pytz
+    from django.db.models import Avg, Max, Min, Count, Q
+    from datetime import datetime, timedelta
+    
+    # Set timezone to Africa/Nairobi
+    nairobi_tz = pytz.timezone('Africa/Nairobi')
+    now = timezone.now().astimezone(nairobi_tz)
+    
+    # Get comprehensive user data from PostgreSQL database with advanced analytics
+    user_predictions = Prediction.objects.filter(user=request.user).order_by('-created_at')
+    total_user_predictions = user_predictions.count()
+    user_fraud_count = user_predictions.filter(result='Fraud').count()
+    user_not_fraud_count = user_predictions.filter(result='Not Fraud').count()
+    
+    # Advanced PostgreSQL aggregations for better performance
+    processing_stats = user_predictions.aggregate(
+        avg_processing_time=Avg('processing_time'),
+        max_processing_time=Max('processing_time'),
+        min_processing_time=Min('processing_time'),
+        total_processing_time=Avg('processing_time')
+    )
+    
+    confidence_stats = user_predictions.aggregate(
+        avg_confidence=Avg('confidence_score'),
+        max_confidence=Max('confidence_score'),
+        min_confidence=Min('confidence_score')
+    )
+    
+    # Calculate advanced metrics
+    success_rate = (user_not_fraud_count / total_user_predictions * 100) if total_user_predictions > 0 else 0
+    fraud_detection_rate = (user_fraud_count / total_user_predictions * 100) if total_user_predictions > 0 else 0
+    
+    # Enhanced processing time statistics
+    avg_processing_time = round(processing_stats['avg_processing_time'] or 0, 3)
+    max_processing_time = round(processing_stats['max_processing_time'] or 0, 3)
+    min_processing_time = round(processing_stats['min_processing_time'] or 0, 3)
+    
+    # Weekly trends analysis using PostgreSQL aggregation
+    four_weeks_ago = now - timedelta(weeks=4)
+    weekly_data = []
+    for i in range(4):
+        week_start = four_weeks_ago + timedelta(weeks=i)
+        week_end = week_start + timedelta(days=6)
+        week_predictions = user_predictions.filter(
+            created_at__gte=week_start,
+            created_at__lte=week_end
+        )
+        week_fraud = week_predictions.filter(result='Fraud').count()
+        week_clean = week_predictions.filter(result='Not Fraud').count()
+        weekly_data.append({
+            'week': f"Week {i+1}",
+            'fraud': week_fraud,
+            'clean': week_clean,
+            'total': week_fraud + week_clean
+        })
+    
+    # Create enhanced HTTP response for CSV
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = f'attachment; filename="fraud_detection_report_{request.user.username}_{now.strftime("%Y%m%d_%H%M%S")}_EAT.csv"'
+    
+    # Create CSV writer
+    writer = csv.writer(response)
+    
+    # Write header information
+    writer.writerow(['Fraud Detection Report - CSV Export'])
+    writer.writerow([f'Generated for: {request.user.get_full_name() or request.user.username}'])
+    writer.writerow([f'Generated on: {now.strftime("%Y-%m-%d %H:%M:%S")} EAT'])
+    writer.writerow([f'Total Predictions: {total_user_predictions}'])
+    writer.writerow([f'Fraud Detected: {user_fraud_count}'])
+    writer.writerow([f'Clean Transactions: {user_not_fraud_count}'])
+    writer.writerow([f'Success Rate: {success_rate:.2f}%'])
+    writer.writerow([f'Fraud Detection Rate: {fraud_detection_rate:.2f}%'])
+    writer.writerow([])
+    
+    # Write processing statistics
+    writer.writerow(['Processing Time Statistics'])
+    writer.writerow(['Metric', 'Value (seconds)'])
+    writer.writerow(['Average Processing Time', avg_processing_time])
+    writer.writerow(['Maximum Processing Time', max_processing_time])
+    writer.writerow(['Minimum Processing Time', min_processing_time])
+    writer.writerow([])
+    
+    # Write confidence statistics
+    writer.writerow(['Confidence Score Statistics'])
+    writer.writerow(['Metric', 'Value (%)'])
+    writer.writerow(['Average Confidence', round(confidence_stats['avg_confidence'] or 0, 2)])
+    writer.writerow(['Maximum Confidence', round(confidence_stats['max_confidence'] or 0, 2)])
+    writer.writerow(['Minimum Confidence', round(confidence_stats['min_confidence'] or 0, 2)])
+    writer.writerow([])
+    
+    # Write weekly trends
+    writer.writerow(['Weekly Trends Analysis'])
+    writer.writerow(['Week', 'Fraud Count', 'Clean Count', 'Total'])
+    for week_data in weekly_data:
+        writer.writerow([week_data['week'], week_data['fraud'], week_data['clean'], week_data['total']])
+    writer.writerow([])
+    
+    # Write detailed prediction data
+    writer.writerow(['Detailed Prediction Data'])
+    writer.writerow(['ID', 'Input Data', 'Result', 'Confidence Score', 'Processing Time (s)', 'Created At (EAT)'])
+    
+    for prediction in user_predictions:
+        # Parse input data if it's JSON
+        try:
+            input_data = json.loads(prediction.input_data) if prediction.input_data else {}
+            # Extract key features for CSV
+            input_summary = ', '.join([f"{k}: {v}" for k, v in input_data.items() if v is not None][:5])
+        except (json.JSONDecodeError, TypeError):
+            input_summary = str(prediction.input_data)[:100] if prediction.input_data else 'N/A'
+        
+        # Format datetime to Africa/Nairobi timezone
+        created_at_nairobi = prediction.created_at.astimezone(nairobi_tz)
+        
+        writer.writerow([
+            prediction.id,
+            input_summary,
+            prediction.result,
+            f"{prediction.confidence_score:.2f}" if prediction.confidence_score else 'N/A',
+            f"{prediction.processing_time:.3f}" if prediction.processing_time else 'N/A',
+            created_at_nairobi.strftime("%Y-%m-%d %H:%M:%S")
+        ])
+    
+    # Track CSV export activity
+    UserActivity.objects.create(
+        user=request.user,
+        activity_type='report_export',
+        description=f'Exported comprehensive CSV report with {total_user_predictions} predictions (Fraud: {user_fraud_count}, Clean: {user_not_fraud_count})',
+        ip_address=request.META.get('REMOTE_ADDR', 'Unknown')
+    )
+    
+    return response
+
+
+# Check if user is admin
     is_admin = user.is_superuser or profile.user_level == 'admin'
     
     context = {

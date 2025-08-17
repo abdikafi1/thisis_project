@@ -7,7 +7,7 @@ from .views import (
     user_settings_view, dashboard_settings_view, notification_settings_view,
     export_pdf_report, export_csv_report,
     user_profile_view, user_dashboard_view, forgot_password_view, reset_password_view,
-    admin_profile_view, unified_profile_view, reports_history_view
+    admin_profile_view, reports_history_view
 )
 from .admin_views import (
     admin_dashboard, admin_user_management, admin_edit_user, admin_delete_user,
@@ -28,7 +28,7 @@ urlpatterns = [
     path('dashboard/', dashboard_view, name='dashboard'),
     path('user-dashboard/', user_dashboard_view, name='user_dashboard'),
     path('profile/', user_profile_view, name='user_profile'),
-    path('unified-profile/', unified_profile_view, name='unified_profile'),
+    path('unified-profile/', user_profile_view, name='unified_profile'),
     path('manage/profile/', admin_profile_view, name='admin_profile'),
     # Temporary redirect for old admin profile URL
     path('admin/profile/', lambda request: redirect('admin_profile'), name='admin_profile_redirect'),
