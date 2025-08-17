@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Session - Fraud Detection System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-gray-100 p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold text-gray-900 mb-8">Debug Session Data</h1>
+        
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Session Information</h2>
+            
+            <div class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Session ID:</label>
+                        <p class="text-sm text-gray-900 bg-gray-50 p-2 rounded">{{ session_data.session_id|default:"None" }}</p>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Reset User ID:</label>
+                        <p class="text-sm text-gray-900 bg-gray-50 p-2 rounded">{{ session_data.reset_user_id|default:"None" }}</p>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Reset Username:</label>
+                        <p class="text-sm text-gray-900 bg-gray-50 p-2 rounded">{{ session_data.reset_username|default:"None" }}</p>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Reset Time:</label>
+                        <p class="text-sm text-gray-900 bg-gray-50 p-2 rounded">{{ session_data.reset_time|default:"None" }}</p>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">All Session Keys:</label>
+                    <p class="text-sm text-gray-900 bg-gray-50 p-2 rounded">{{ session_data.all_session_keys|join:", " }}</p>
+                </div>
+            </div>
+            
+            <div class="mt-6 pt-6 border-t border-gray-200">
+                <a href="{% url 'forgot_password' %}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                    Test Forgot Password
+                </a>
+                
+                <a href="{% url 'login' %}" class="ml-3 inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                    Back to Login
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

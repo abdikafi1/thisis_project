@@ -973,8 +973,30 @@ def forgot_password_view(request):
             # Set session expiry to 1 hour
             request.session.set_expiry(3600)  # 1 hour in seconds
             
+            # Debug: Print session data
+            print(f"DEBUG: Forgot password - Stored session data:")
+            print(f"   reset_user_id: {request.session.get('reset_user_id')}")
+            print(f"   reset_username: {request.session.get('reset_username')}")
+            print(f"   reset_time: {request.session.get('reset_time')}")
+            print(f"   Session keys: {list(request.session.keys())}")
+            
+            # Force session save
+            request.session.save()
+            
+            # Debug: Test session immediately after setting
+            print(f"DEBUG: After session.save() - Testing session data:")
+            print(f"   reset_user_id: {request.session.get('reset_user_id')}")
+            print(f"   reset_username: {request.session.get('reset_username')}")
+            print(f"   reset_time: {request.session.get('reset_time')}")
+            
             messages.success(request, f'Password reset initiated for user: {user.username}. You can now reset your password.')
-            return redirect('reset_password', username=user.username)
+            
+            # TEMPORARY: Render reset password page directly to test session
+            # return redirect('reset_password', username=user.username)
+            return render(request, 'landing/reset_password.html', {
+                'username': user.username,
+                'test_mode': True
+            })
             
         except User.DoesNotExist:
             messages.error(request, 'User not found. Please check your username or email.')
@@ -995,7 +1017,13 @@ def reset_password_view(request, username):
         reset_username = request.session.get('reset_username')
         reset_time = request.session.get('reset_time')
         
-        if not reset_user_id or reset_username != username:
+        # Debug: Print session data
+        print(f"DEBUG: POST request for {username}")
+        print(f"DEBUG: Session reset_user_id: {reset_user_id}")
+        print(f"DEBUG: Session reset_username: {reset_username}")
+        print(f"DEBUG: Session reset_time: {reset_time}")
+        
+        if not reset_user_id or not reset_username:
             messages.error(request, 'Invalid reset session. Please request a new password reset.')
             return redirect('forgot_password')
         
@@ -1009,8 +1037,8 @@ def reset_password_view(request, username):
             return redirect('forgot_password')
         
         try:
-            # Get user
-            user = User.objects.get(id=reset_user_id, username=username)
+            # Get user by ID from session (more secure)
+            user = User.objects.get(id=reset_user_id)
             
             # Validate new password
             if new_password != confirm_password:
@@ -1025,7 +1053,7 @@ def reset_password_view(request, username):
             user.set_password(new_password)
             user.save()
             
-            # Clear session data
+            # Clear session data only after successful password update
             del request.session['reset_user_id']
             del request.session['reset_username']
             del request.session['reset_time']
@@ -1051,7 +1079,13 @@ def reset_password_view(request, username):
     reset_username = request.session.get('reset_username')
     reset_time = request.session.get('reset_time')
     
-    if not reset_user_id or reset_username != username:
+    # Debug: Print session data
+    print(f"DEBUG: GET request for {username}")
+    print(f"DEBUG: Session reset_user_id: {reset_user_id}")
+    print(f"DEBUG: Session reset_username: {reset_username}")
+    print(f"DEBUG: Session reset_time: {reset_time}")
+    
+    if not reset_user_id or not reset_username:
         messages.error(request, 'Invalid reset session. Please request a new password reset.')
         return redirect('forgot_password')
     
@@ -2486,3 +2520,17 @@ def reports_history_view(request):
     }
     
     return render(request, 'landing/history.html', context)
+
+def debug_session_view(request):
+    """Debug view to check session data"""
+    session_data = {
+        'reset_user_id': request.session.get('reset_user_id'),
+        'reset_username': request.session.get('reset_username'),
+        'reset_time': request.session.get('reset_time'),
+        'all_session_keys': list(request.session.keys()),
+        'session_id': request.session.session_key,
+    }
+    
+    print(f"DEBUG SESSION VIEW: {session_data}")
+    
+    return render(request, 'landing/debug_session.html', {'session_data': session_data})
