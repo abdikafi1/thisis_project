@@ -81,9 +81,18 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-# Use PostgreSQL with Neon database
+# Database Configuration
+# For local development, use local PostgreSQL
+# For production, set DATABASE_URL environment variable
+
+# Database Configuration
+# For production mode (even locally), set DATABASE_URL environment variable
+# For local development, use local PostgreSQL
+
 database_url = os.getenv("DATABASE_URL")
+
 if database_url:
+    # Production mode: Use Neon database (works both locally and in production)
     tmpPostgres = urlparse(database_url)
     
     DATABASES = {
@@ -98,17 +107,28 @@ if database_url:
         }
     }
 else:
-    # Fallback to default database configuration
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'neondb',
-            'USER': '',
-            'PASSWORD': '',
-            'HOST': '',
-            'PORT': 5432,
+    # Local development: Use local PostgreSQL or fallback to SQLite
+    try:
+        import psycopg2
+        # Try to connect to PostgreSQL
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.postgresql',
+                'NAME': os.getenv('POSTGRES_DB', 'fraud_detection_local'),
+                'USER': os.getenv('POSTGRES_USER', 'postgres'),
+                'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'your_password'),
+                'HOST': os.getenv('POSTGRES_HOST', 'localhost'),
+                'PORT': os.getenv('POSTGRES_PORT', '5432'),
+            }
         }
-    }
+    except ImportError:
+        # Fallback to SQLite if psycopg2 is not available
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.sqlite3',
+                'NAME': BASE_DIR / 'db.sqlite3',
+            }
+        }
 
 
 # Password validation

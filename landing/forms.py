@@ -461,7 +461,7 @@ class AdminDashboardForm(forms.Form):
     ) 
 
 class UserAccountForm(forms.ModelForm):
-    """Form for editing user account information"""
+    """Form for editing user account information - handles both User and UserProfile fields"""
     first_name = forms.CharField(
         max_length=30, 
         required=True,

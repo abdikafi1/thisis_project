@@ -60,11 +60,17 @@
             overflow-x: hidden;
         }
         
-        /* Mobile Sidebar Styles */
+        /* Enhanced Responsive Sidebar */
+        @media (max-width: 1279px) {
+            .sidebar-gradient {
+                width: 260px; /* Smaller sidebar for medium screens */
+            }
+        }
+        
         @media (max-width: 1023px) {
             .sidebar-gradient {
                 width: 100vw;
-                max-width: 320px;
+                max-width: 280px; /* Reduced max-width for mobile */
             }
             
             #sidebar-overlay {
@@ -94,6 +100,20 @@
                 top: 1rem;
                 left: 1rem;
                 z-index: 50;
+            }
+        }
+        
+        /* Large Desktop (1440px+) */
+        @media (min-width: 1440px) {
+            .sidebar-gradient {
+                width: 300px; /* Slightly wider for very large screens */
+            }
+        }
+        
+        /* Extra Large Desktop (1920px+) */
+        @media (min-width: 1920px) {
+            .sidebar-gradient {
+                width: 320px; /* Wider for extra large screens */
             }
         }
         
@@ -341,6 +361,109 @@
         .main-content {
             background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
             min-height: 100vh;
+            width: calc(100% - 256px); /* Adjust for sidebar width */
+            margin-left: 256px; /* Offset for sidebar */
+            transition: width 0.3s ease, margin-left 0.3s ease;
+            box-sizing: border-box;
+        }
+        
+        /* Responsive main content adjustments */
+        @media (max-width: 1279px) {
+            .main-content {
+                width: calc(100% - 260px);
+                margin-left: 260px;
+            }
+        }
+        
+        @media (max-width: 1023px) {
+            .main-content {
+                width: 100%;
+                margin-left: 0;
+            }
+        }
+        
+        @media (min-width: 1440px) {
+            .main-content {
+                width: calc(100% - 280px);
+                margin-left: 280px;
+            }
+        }
+        
+        @media (min-width: 1920px) {
+            .main-content {
+                width: calc(100% - 320px);
+                margin-left: 320px;
+            }
+        }
+        
+        /* Sidebar collapsed state - main content takes full width */
+        .sidebar-collapsed .main-content {
+            width: 100% !important;
+            margin-left: 0 !important;
+        }
+        
+        /* Collapsed sidebar styles */
+        .sidebar-collapsed .sidebar-gradient {
+            width: 0 !important;
+            overflow: hidden;
+        }
+        
+        .sidebar-collapsed .sidebar-gradient .nav-item-hover span,
+        .sidebar-collapsed .sidebar-gradient .section-title,
+        .sidebar-collapsed .sidebar-gradient p {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        /* Ensure main content fits properly in available space */
+        .main-content > * {
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+        
+        /* Better content fitting for large screens */
+        .content-wrapper {
+            width: 100%;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 0;
+            overflow-x: hidden;
+            box-sizing: border-box;
+        }
+        
+        /* Responsive adjustments for content wrapper */
+        @media (min-width: 1280px) {
+            .content-wrapper {
+                max-width: 1200px;
+                padding: 0 1rem;
+            }
+        }
+        
+        @media (min-width: 1440px) {
+            .content-wrapper {
+                max-width: 1400px;
+                padding: 0 2rem;
+            }
+        }
+        
+        @media (min-width: 1920px) {
+            .content-wrapper {
+                max-width: 1600px;
+                padding: 0 3rem;
+            }
+        }
+        
+        /* Ensure content fits properly on all screen sizes */
+        @media (max-width: 1279px) {
+            .content-wrapper {
+                padding: 0 0.5rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .content-wrapper {
+                padding: 0 0.25rem;
+            }
         }
         
         /* Header Improvements */
@@ -420,6 +543,46 @@
             }
         }
         
+        /* Additional responsive improvements for better PC fit */
+        @media (min-width: 1280px) and (max-width: 1439px) {
+            .sidebar-gradient {
+                width: 260px;
+            }
+            
+            .main-content {
+                width: calc(100% - 260px);
+                margin-left: 260px;
+            }
+        }
+        
+        @media (min-width: 1440px) and (max-width: 1919px) {
+            .sidebar-gradient {
+                width: 280px;
+            }
+            
+            .main-content {
+                width: calc(100% - 280px);
+                margin-left: 280px;
+            }
+        }
+        
+        @media (min-width: 1920px) {
+            .sidebar-gradient {
+                width: 320px;
+            }
+            
+            .main-content {
+                width: calc(100% - 320px);
+                margin-left: 320px;
+            }
+        }
+        
+        /* Ensure smooth transitions for all responsive changes */
+        .sidebar-gradient,
+        .main-content {
+            transition: width 0.3s ease, margin-left 0.3s ease;
+        }
+        
         /* Dynamic Header Transitions */
         #dynamic-header-title,
         #dynamic-header-description,
@@ -469,7 +632,7 @@
             transform: scale(1.1) rotate(5deg);
         }
         
-        /* Mobile Header Styling for Admin */
+        /* Enhanced Mobile Header Styling for Admin */
         .mobile-header {
             padding: 1rem !important;
         }
@@ -502,7 +665,7 @@
             display: block !important;
         }
         
-        /* Desktop Header Styling for Admin */
+        /* Enhanced Desktop Header Styling for Admin */
         .admin-header:not(.mobile-header) {
             padding: 1.5rem 2rem !important;
         }
@@ -522,28 +685,30 @@
             font-size: 1rem !important;
         }
         
-        /* PC Containment Styles for Admin */
-        .pc-container {
-            max-width: 1366px;
-            margin: 0 auto;
-            min-height: 768px;
-            overflow: hidden;
-        }
-        
-        /* Responsive adjustments for PC container */
-        @media (max-width: 1366px) {
-            .pc-container {
-                max-width: 100%;
-                margin: 0 1rem;
+        /* Better responsive header adjustments */
+        @media (max-width: 1279px) {
+            .admin-header:not(.mobile-header) {
+                padding: 1.25rem 1.5rem !important;
+            }
+            
+            .admin-header:not(.mobile-header) h1 {
+                font-size: 1.75rem !important;
+                line-height: 2.125rem !important;
             }
         }
         
-        @media (max-width: 768px) {
-            .pc-container {
-                margin: 0 0.5rem;
-                min-height: auto;
+        @media (max-width: 1023px) {
+            .admin-header:not(.mobile-header) {
+                padding: 1rem 1.25rem !important;
+            }
+            
+            .admin-header:not(.mobile-header) h1 {
+                font-size: 1.625rem !important;
+                line-height: 2rem !important;
             }
         }
+        
+
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
@@ -570,6 +735,11 @@
                             </div>
                         </div>
                     </div>
+                    
+                    <!-- Sidebar Toggle Button for Desktop -->
+                    <button id="sidebar-toggle" class="hidden lg:flex w-8 h-8 bg-white/20 hover:bg-white/30 text-white rounded-lg flex items-center justify-center transition-colors" onclick="toggleSidebarDesktop()" title="Toggle Sidebar">
+                        <i class="fas fa-chevron-left text-sm" id="sidebar-toggle-icon"></i>
+                    </button>
 
                 </div>
             </div>
@@ -754,16 +924,8 @@
                      </div>
                 </div>
             </header>
-            <main class="flex-1 overflow-x-hidden overflow-y-auto p-4 lg:p-8">
-                <div class="max-w-7xl mx-auto space-y-4 lg:space-y-6">
-                    <!-- Breadcrumb Navigation -->
-                    <!-- <div class="flex items-center space-x-2 text-sm text-gray-600 bg-white/70 backdrop-blur-sm rounded-xl px-4 py-3 border border-gray-200/60 shadow-sm">
-                        <i class="fas fa-shield-alt text-blue-500"></i>
-                        <span class="font-medium">Admin Panel</span>
-                        <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
-                        <span class="text-gray-900 font-semibold">Dashboard</span>
-                    </div> -->
-
+            <main class="flex-1 overflow-x-hidden overflow-y-auto p-4 lg:p-6 xl:p-8">
+                <div class="max-w-full mx-auto space-y-4 lg:space-y-6">
                     <!-- Messages -->
                     {% if messages %}
                         {% for message in messages %}
@@ -783,8 +945,8 @@
                     
                     <!-- Page Content -->
                     <div class="space-y-6">
-                        <!-- PC Containment Wrapper -->
-                        <div class="pc-container">
+                        <!-- Responsive Content Wrapper -->
+                        <div class="content-wrapper">
                             {% block content %}{% endblock %}
                         </div>
                     </div>
@@ -875,6 +1037,30 @@
                 sidebar.classList.add('sidebar-open');
                 overlay.classList.add('active');
                 body.classList.add('sidebar-open');
+            }
+        }
+        
+        // Desktop sidebar toggle functionality
+        function toggleSidebarDesktop() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.querySelector('.main-content');
+            const toggleIcon = document.getElementById('sidebar-toggle-icon');
+            const body = document.body;
+            
+            if (body.classList.contains('sidebar-collapsed')) {
+                // Expand sidebar
+                body.classList.remove('sidebar-collapsed');
+                sidebar.classList.remove('sidebar-collapsed');
+                if (toggleIcon) {
+                    toggleIcon.className = 'fas fa-chevron-left text-sm';
+                }
+            } else {
+                // Collapse sidebar
+                body.classList.add('sidebar-collapsed');
+                sidebar.classList.add('sidebar-collapsed');
+                if (toggleIcon) {
+                    toggleIcon.className = 'fas fa-chevron-right text-sm';
+                }
             }
         }
         
