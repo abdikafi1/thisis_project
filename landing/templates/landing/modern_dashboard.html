@@ -24,6 +24,123 @@
             }
         }
     </script>
+    <style>
+        /* Fix spacing between sidebar and main content - NO GAP */
+        @media (min-width: 768px) {
+            #main-content {
+                margin-left: 0 !important;
+                width: 100% !important;
+            }
+            
+            /* Position the main content container */
+            #app-sidebar + div {
+                margin-left: 256px !important;
+                width: calc(100vw - 256px) !important;
+            }
+        }
+        
+        @media (max-width: 767px) {
+            #main-content {
+                margin-left: 0 !important;
+                width: 100% !important;
+            }
+            
+            #app-sidebar + div {
+                margin-left: 0 !important;
+                width: 100vw !important;
+            }
+        }
+        
+        /* Ensure main content takes full available width */
+        .flex-1 {
+            flex: 1 1 0%;
+            min-width: 0;
+        }
+        
+        /* Remove any extra padding or margins */
+        .main-content {
+            padding-left: 0 !important;
+            margin-left: 0 !important;
+        }
+        
+        /* Force main content to start exactly after sidebar */
+        body > div > div:last-child {
+            margin-left: 256px !important;
+            width: calc(100% - 256px) !important;
+        }
+        
+        /* Ensure no extra spacing in the main container */
+        .flex.h-screen {
+            overflow-x: hidden;
+        }
+        
+        /* Force exact positioning - NO GAP */
+        #app-sidebar + div {
+            margin-left: 256px !important;
+            width: calc(100vw - 256px) !important;
+            max-width: calc(100vw - 256px) !important;
+            position: relative;
+            left: 0;
+        }
+        
+        /* Ensure main content fills entire remaining space */
+        #main-content {
+            width: 100% !important;
+            max-width: none !important;
+            padding-left: 0 !important;
+            margin-left: 0 !important;
+        }
+        
+        /* Remove any extra spacing */
+        .w-full {
+            width: 100% !important;
+        }
+        
+        /* Ensure perfect layout */
+        .flex.h-screen {
+            width: 100vw !important;
+            overflow-x: hidden !important;
+        }
+        
+        /* Force sidebar to exact width */
+        #app-sidebar {
+            width: 256px !important;
+            flex-shrink: 0 !important;
+        }
+        
+        /* Ensure main content container is positioned correctly */
+        #app-sidebar ~ div {
+            margin-left: 256px !important;
+            width: calc(100vw - 256px) !important;
+            min-width: calc(100vw - 256px) !important;
+        }
+        
+        /* Debug: Add border to see layout (remove in production) */
+        #app-sidebar {
+            border-right: 2px solid #3b82f6;
+        }
+        
+        #main-content {
+            border-left: 2px solid #ef4444;
+        }
+        
+        /* FINAL: Ensure no gap whatsoever */
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            overflow-x: hidden;
+        }
+        
+        /* Force exact positioning with no gaps */
+        #app-sidebar + div {
+            position: absolute !important;
+            left: 256px !important;
+            right: 0 !important;
+            width: auto !important;
+        }
+    </style>
 </head>
 <body class="bg-gray-50">
     <div class="flex h-screen bg-gray-50">
@@ -138,10 +255,10 @@
         <div id="sidebar-overlay" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-30 hidden md:hidden"></div>
 
         <!-- Main content -->
-        <div class="flex flex-col flex-1 overflow-hidden">
+        <div id="main-content" class="flex flex-col flex-1 overflow-hidden" style="margin-left: 0; width: 100%;">
             <!-- Top bar -->
             <header class="sticky top-0 bg-white/80 backdrop-blur border-b border-gray-200 shadow-sm z-20">
-                <div class="w-full px-4 sm:px-6 lg:px-8">
+                <div class="w-full px-4 sm:px-6 lg:px-8" style="padding-left: 0.5rem;">
                     <div class="flex justify-between items-center py-4">
                         <div class="flex items-center space-x-3">
                             <div class="flex items-center space-x-3">
@@ -174,7 +291,7 @@
 
             <!-- Page content -->
             <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50">
-                <div class="w-full px-4 sm:px-6 lg:px-8 py-8">
+                <div class="w-full px-4 sm:px-6 lg:px-8 py-8" style="padding-left: 0.5rem;">
                     <!-- Messages -->
                     {% if messages %}
                         {% for message in messages %}

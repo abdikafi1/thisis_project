@@ -1005,9 +1005,7 @@ def forgot_password_view(request):
             # Set session expiry to 24 hours
             request.session.set_expiry(86400)  # 24 hours in seconds
             
-            # Debug: Print session data (remove in production)
-            print(f"DEBUG: Stored token for {user.username}: {reset_token}")
-            print(f"DEBUG: Session keys: {list(request.session.keys())}")
+            # Store token in session with expiration (24 hours)
             
             messages.success(request, f'Password reset initiated for user: {user.username}. Please check your email for the reset link.')
             return redirect('reset_password', username=user.username)
@@ -1033,15 +1031,6 @@ def reset_password_view(request, username):
         stored_token = request.session.get(f'reset_token_{username}')
         stored_user = request.session.get(f'reset_user_{username}')
         stored_time = request.session.get(f'reset_time_{username}')
-        
-        # Debug: Print token information (remove in production)
-        print(f"DEBUG: Reset attempt for {username}")
-        print(f"DEBUG: Stored token: {stored_token}")
-        print(f"DEBUG: Stored user: {stored_user}")
-        print(f"DEBUG: Stored time: {stored_time}")
-        print(f"DEBUG: Provided token: {reset_token}")
-        print(f"DEBUG: Current time: {time.time()}")
-        print(f"DEBUG: Session keys: {list(request.session.keys())}")
         
         # Check if token exists and is valid
         if not stored_token:
@@ -1106,13 +1095,6 @@ def reset_password_view(request, username):
     stored_user = request.session.get(f'reset_user_{username}')
     stored_time = request.session.get(f'reset_time_{username}')
     
-    # Debug: Print GET request information (remove in production)
-    print(f"DEBUG: GET request for {username}")
-    print(f"DEBUG: Stored token: {stored_token}")
-    print(f"DEBUG: Stored user: {stored_user}")
-    print(f"DEBUG: Stored time: {stored_time}")
-    print(f"DEBUG: Session keys: {list(request.session.keys())}")
-    
     # Validate session data
     if not stored_token:
         messages.error(request, 'Reset token not found. Please request a new password reset.')
@@ -1122,14 +1104,14 @@ def reset_password_view(request, username):
         messages.error(request, 'Invalid user information. Please request a new password reset.')
         return redirect('forgot_password')
     
-    # Check if token has expired
-    if stored_time and (time.time() - stored_time) > 86400:
-        # Clear expired session data
-        del request.session[f'reset_token_{username}']
-        del request.session[f'reset_user_{username}']
-        del request.session[f'reset_time_{username}']
-        messages.error(request, 'Reset token has expired. Please request a new password reset.')
-        return redirect('forgot_password')
+            # Check if token has expired
+        if stored_time and (time.time() - stored_time) > 86400:
+            # Clear expired session data
+            del request.session[f'reset_token_{username}']
+            del request.session[f'reset_user_{username}']
+            del request.session[f'reset_time_{username}']
+            messages.error(request, 'Reset token has expired. Please request a new password reset.')
+            return redirect('forgot_password')
     
     return render(request, 'landing/reset_password.html', {'username': username, 'reset_token': stored_token})
 

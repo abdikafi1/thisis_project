@@ -1,0 +1,35 @@
+# 🚀 POSTGRESQL-ONLY DATABASE SETUP GUIDE
+# ========================================
+
+# Step 1: Create .env file
+# Copy this content to a new file called .env in your project root:
+
+DATABASE_URL=postgresql://neondb_owner:npg_LXrJzj85qwcC@ep-soft-truth-a14lkz4p-pooler.ap-southeast-1.aws.neon.tech:5432/neondb?sslmode=require
+SECRET_KEY=django-insecure-w^=fb$xyf-ku5@n^*ek4qwcC@ep-soft-truth-a14lkz4p-pooler.ap-southeast-1.aws.neon.tech:5432/neondb?sslmode=require
+DEBUG=True
+ALLOWED_HOSTS=localhost,127.0.0.1
+
+# Step 2: Install PostgreSQL driver
+pip install psycopg2-binary
+
+# Step 3: Test PostgreSQL connection ONLY (no SQLite fallback)
+python test_postgres_only.py
+
+# Step 4: Run Django checks
+python manage.py check
+
+# Step 5: Run migrations
+python manage.py migrate
+
+# Step 6: Start server
+python manage.py runserver 8000
+
+# 🎯 What this will do:
+# ✅ Force PostgreSQL usage ONLY - no SQLite fallback
+# ✅ Connect to your Neon PostgreSQL database
+# ✅ Fix the forgot password functionality
+# ✅ Make your server work with PostgreSQL backend only
+# ✅ Use production database locally
+
+# ⚠️  IMPORTANT: If PostgreSQL connection fails, the app will NOT start
+# 💡 This ensures you're always using PostgreSQL for forgot password and all functionality

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>{% block title %}Fraud Detector Dashboard{% endblock %}</title>
     <!-- TailwindCSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -30,10 +30,33 @@
             body {
                 font-size: 16px;
             }
+            
+            .sidebar {
+                width: 260px;
+            }
+            
+            .main-content {
+                margin-left: 260px;
+            }
         }
         
-        /* Desktop (1024px+) */
+        /* Medium Desktop (1024px+) */
         @media (min-width: 1024px) {
+            body {
+                font-size: 17px;
+            }
+            
+            .sidebar {
+                width: 256px;
+            }
+            
+            .main-content {
+                margin-left: 256px;
+            }
+        }
+        
+        /* Large Desktop (1280px+) */
+        @media (min-width: 1280px) {
             body {
                 font-size: 18px;
             }
@@ -46,10 +69,12 @@
             display: block;
         }
         
-        /* Prevent horizontal scrolling */
+        /* Prevent horizontal scrolling and ensure proper spacing */
         .main-content {
             max-width: 100vw;
             overflow-x: hidden;
+            padding-left: 0; /* Remove any default padding */
+            margin-left: 0; /* Reset margin for mobile */
         }
         
         .sidebar {
@@ -73,54 +98,67 @@
             margin-left: 0;
         }
         
-        /* Mobile-first sidebar behavior */
+        /* Enhanced Mobile-first sidebar behavior */
         @media (max-width: 768px) {
             .sidebar {
                 position: fixed;
                 transform: translateX(-100%);
                 width: 280px;
                 max-width: 90vw;
+                transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                z-index: 1000;
             }
             
             .sidebar.mobile-open {
                 transform: translateX(0);
+                box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
             }
             
             .main-content {
                 margin-left: 0;
                 width: 100%;
+                transition: margin-left 0.3s ease;
             }
             
-            /* Mobile overlay */
+            /* Enhanced Mobile overlay */
             .sidebar-overlay {
                 position: fixed;
                 top: 0;
                 left: 0;
                 right: 0;
                 bottom: 0;
-                background: rgba(0, 0, 0, 0.5);
-                z-index: 40;
+                background: rgba(0, 0, 0, 0.6);
+                z-index: 999;
                 opacity: 0;
                 visibility: hidden;
-                transition: all 0.3s ease;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                backdrop-filter: blur(2px);
             }
             
             .sidebar-overlay.active {
                 opacity: 1;
                 visibility: visible;
             }
+            
+            /* Ensure content doesn't scroll when sidebar is open */
+            body.sidebar-open {
+                overflow: hidden;
+            }
         }
         
-        /* Desktop sidebar behavior */
+        /* Enhanced Desktop sidebar behavior */
         @media (min-width: 769px) {
             .sidebar {
                 position: fixed;
                 transform: translateX(0);
                 width: 256px;
+                transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             }
             
             .main-content {
-                margin-left: 256px;
+                margin-left: 256px !important; /* Force override Tailwind classes */
+                transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                width: calc(100% - 256px); /* Ensure proper width calculation */
             }
             
             .sidebar.collapsed {
@@ -128,7 +166,13 @@
             }
             
             .main-content.expanded {
-                margin-left: 0;
+                margin-left: 0 !important;
+                width: 100%;
+            }
+            
+            /* Smooth transitions for sidebar items */
+            .sidebar-item {
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             }
         }
         
@@ -138,6 +182,26 @@
             margin: 4px 8px;
             position: relative;
             overflow: hidden;
+            cursor: pointer;
+        }
+        
+        /* Enhanced mobile sidebar items */
+        @media (max-width: 768px) {
+            .sidebar-item {
+                margin: 6px 12px;
+                padding: 0.875rem 1rem;
+                border-radius: 16px;
+            }
+            
+            .sidebar-item .nav-text {
+                font-size: 1rem;
+                font-weight: 500;
+            }
+            
+            .sidebar-item .nav-icon {
+                font-size: 1.25rem;
+                margin-right: 16px;
+            }
         }
         
         .sidebar-item::before {
@@ -491,65 +555,132 @@
             }
         }
         
-        /* Mobile responsive adjustments */
+        /* Enhanced Mobile responsive adjustments */
         @media (max-width: 768px) {
             .top-header {
                 padding: 1rem;
+                position: relative;
             }
             
             .top-header .flex {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 1rem;
+                width: 100%;
             }
             
             .top-header .flex > div:last-child {
                 align-self: stretch;
                 justify-content: space-between;
+                width: 100%;
             }
             
             .page-title {
                 font-size: 1.5rem;
                 line-height: 2rem;
+                word-wrap: break-word;
+                max-width: 100%;
             }
             
             .text-gray-500 {
                 font-size: 0.875rem;
+                word-wrap: break-word;
+                max-width: 100%;
             }
             
-            /* Add top margin to main content when mobile header is fixed */
-            .main-content {
-                margin-top: 120px !important;
-            }
-            
-            /* Ensure mobile header takes full width */
+            /* Enhanced mobile header spacing */
             .top-header.mobile-header {
                 width: 100vw !important;
                 max-width: 100vw !important;
                 left: 0 !important;
                 right: 0 !important;
+                padding: 1rem !important;
+            }
+            
+            /* Ensure proper spacing for mobile content */
+            .main-content {
+                padding-top: 0.5rem !important;
             }
         }
         
-        /* Ensure content doesn't overflow on mobile */
+        /* Small mobile devices */
+        @media (max-width: 480px) {
+            .top-header {
+                padding: 0.75rem;
+            }
+            
+            .page-title {
+                font-size: 1.25rem;
+                line-height: 1.75rem;
+            }
+            
+            .text-gray-500 {
+                font-size: 0.75rem;
+            }
+        }
+        
+        /* Enhanced content overflow handling */
         .glass-effect {
             max-width: 100%;
             overflow-x: hidden;
+            word-wrap: break-word;
         }
         
-        /* Mobile responsive sidebar toggle */
+        /* Enhanced mobile content handling */
+        @media (max-width: 768px) {
+            .glass-effect {
+                margin: 0.5rem;
+                padding: 1rem;
+                border-radius: 1rem;
+            }
+            
+            /* Ensure tables are responsive */
+            table {
+                font-size: 0.875rem;
+                width: 100%;
+                overflow-x: auto;
+                display: block;
+            }
+            
+            /* Ensure forms are mobile-friendly */
+            input, select, textarea {
+                font-size: 16px; /* Prevents zoom on iOS */
+                max-width: 100%;
+            }
+            
+            /* Ensure buttons are touch-friendly */
+            button, .btn {
+                min-height: 44px;
+                min-width: 44px;
+                padding: 0.75rem 1rem;
+            }
+        }
+        
+        /* Enhanced Mobile responsive sidebar toggle */
         @media (max-width: 768px) {
             #sidebar-toggle {
                 position: fixed;
                 top: 1rem;
                 left: 1rem;
-                z-index: 60;
+                z-index: 1001;
                 background: white;
                 border: 1px solid #e5e7eb;
                 box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                transition: all 0.2s ease;
             }
             
-            /* Ensure mobile header has proper spacing and positioning */
+            #sidebar-toggle:hover {
+                background: #f9fafb;
+                border-color: #d1d5db;
+                box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+                transform: translateY(-1px);
+            }
+            
+            #sidebar-toggle:active {
+                transform: translateY(0);
+            }
+            
+            /* Enhanced mobile header positioning */
             .top-header.mobile-header {
                 position: fixed !important;
                 top: 0 !important;
@@ -558,23 +689,26 @@
                 width: 100vw !important;
                 max-width: 100vw !important;
                 z-index: 1000 !important;
-                padding: 0.75rem 1rem !important;
+                padding: 1rem !important;
                 margin: 0 !important;
                 border-radius: 0 !important;
+                box-shadow: 0 2px 20px rgba(0, 0, 0, 0.15) !important;
             }
             
-            /* Adjust main content spacing for fixed mobile header */
+            /* Improved main content spacing for mobile */
             .main-content {
-                padding-top: 0 !important;
+                padding-top: 0.5rem !important;
+                margin-top: 0 !important;
             }
             
-            /* Ensure page content doesn't overlap with fixed header */
+            /* Enhanced page content spacing */
             .glass-effect {
-                margin-top: 0 !important;
+                margin-top: 0.5rem !important;
+                border-radius: 1rem !important;
             }
         }
         
-        /* Mobile Header Styling */
+        /* Enhanced Mobile Header Styling */
         .mobile-header {
             position: fixed !important;
             top: 0 !important;
@@ -582,46 +716,62 @@
             right: 0 !important;
             width: 100% !important;
             z-index: 1000 !important;
-            padding: 0.75rem 1rem !important;
+            padding: 1rem !important;
             background: rgba(255, 255, 255, 0.98) !important;
             backdrop-filter: blur(20px) !important;
             border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
             box-shadow: 0 2px 20px rgba(0, 0, 0, 0.15) !important;
+            transition: all 0.3s ease !important;
         }
         
         .mobile-header .flex {
             flex-direction: column;
             align-items: flex-start;
-            gap: 0.75rem;
+            gap: 1rem;
         }
         
         .mobile-header .flex > div:last-child {
             align-self: stretch;
             justify-content: space-between;
+            width: 100%;
         }
         
         .mobile-header .page-title {
-            font-size: 1.25rem !important;
-            line-height: 1.5rem !important;
+            font-size: 1.5rem !important;
+            line-height: 2rem !important;
             font-weight: 700 !important;
+            color: #1f2937 !important;
         }
         
         .mobile-header .text-gray-500 {
-            font-size: 0.75rem !important;
-            line-height: 1rem !important;
+            font-size: 0.875rem !important;
+            line-height: 1.25rem !important;
+            color: #6b7280 !important;
         }
         
         .mobile-menu-btn {
             position: fixed !important;
-            top: 0.75rem !important;
+            top: 1rem !important;
             left: 1rem !important;
             z-index: 1001 !important;
             background: white !important;
             border: 1px solid #e5e7eb !important;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
             display: block !important;
-            padding: 0.5rem !important;
-            border-radius: 0.5rem !important;
+            padding: 0.75rem !important;
+            border-radius: 0.75rem !important;
+            transition: all 0.2s ease !important;
+        }
+        
+        .mobile-menu-btn:hover {
+            background: #f9fafb !important;
+            border-color: #d1d5db !important;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15) !important;
+            transform: translateY(-1px) !important;
+        }
+        
+        .mobile-menu-btn:active {
+            transform: translateY(0) !important;
         }
         
         /* Desktop Header Styling */
@@ -644,12 +794,13 @@
             font-size: 1rem !important;
         }
         
-        /* PC Containment Styles */
+        /* Enhanced PC Containment Styles */
         .pc-container {
             max-width: 1366px;
             margin: 0 auto;
             min-height: 768px;
             overflow: hidden;
+            width: 100%;
         }
         
         /* Responsive adjustments for PC container */
@@ -660,10 +811,26 @@
             }
         }
         
+        @media (max-width: 1024px) {
+            .pc-container {
+                max-width: 100%;
+                margin: 0 0.75rem;
+                min-height: 600px;
+            }
+        }
+        
         @media (max-width: 768px) {
             .pc-container {
                 margin: 0 0.5rem;
                 min-height: auto;
+                padding: 0.5rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .pc-container {
+                margin: 0 0.25rem;
+                padding: 0.25rem;
             }
         }
     </style>
@@ -773,9 +940,9 @@
     </div>
 
     <!-- Main Content -->
-    <div id="main-content" class="main-content ml-64">
+            <div id="main-content" class="main-content flex-1 min-h-screen flex flex-col">
         <!-- Top Header -->
-        <header class="top-header px-6 py-4">
+        <header class="top-header px-6 py-4 flex-shrink-0">
             <div class="flex items-center justify-between">
                 <div class="flex items-center">
                                 <div class="flex items-center space-x-3">
@@ -822,7 +989,7 @@
         </header>
 
         <!-- Page Content -->
-        <main class="p-6 glass-effect rounded-2xl shadow-lg mt-6 mx-4">
+        <main class="p-4 md:p-6 glass-effect rounded-2xl shadow-lg mt-6 mx-2 md:mx-4 flex-1">
             <!-- PC Containment Wrapper -->
             <div class="pc-container">
                 {% if messages %}
@@ -916,17 +1083,34 @@
             }
         }
         
-        // Mobile sidebar toggle functionality
+        // Enhanced Mobile sidebar toggle functionality
         function toggleMobileSidebar() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebar-overlay');
+            const body = document.body;
             
             if (sidebar.classList.contains('mobile-open')) {
+                // Close sidebar
                 sidebar.classList.remove('mobile-open');
                 overlay.classList.remove('active');
+                body.classList.remove('sidebar-open');
+                
+                // Enable scrolling
+                body.style.overflow = '';
+                
+                // Add close animation
+                sidebar.style.transform = 'translateX(-100%)';
             } else {
+                // Open sidebar
                 sidebar.classList.add('mobile-open');
                 overlay.classList.add('active');
+                body.classList.add('sidebar-open');
+                
+                // Disable scrolling when sidebar is open
+                body.style.overflow = 'hidden';
+                
+                // Add open animation
+                sidebar.style.transform = 'translateX(0)';
             }
         }
         
@@ -969,12 +1153,28 @@
             }
         });
 
-        // Handle window resize
+        // Enhanced window resize handler
         window.addEventListener('resize', function() {
             updateHeaderForScreenSize(); // Call the new function
+            
             if (window.innerWidth > 768) {
+                // Desktop behavior
                 sidebar.classList.remove('mobile-open');
                 document.getElementById('sidebar-overlay').classList.remove('active');
+                document.body.classList.remove('sidebar-open');
+                document.body.style.overflow = '';
+                
+                // Ensure sidebar is visible on desktop
+                sidebar.style.transform = 'translateX(0)';
+            } else {
+                // Mobile behavior - ensure sidebar is hidden by default
+                sidebar.classList.remove('mobile-open');
+                document.getElementById('sidebar-overlay').classList.remove('active');
+                document.body.classList.remove('sidebar-open');
+                document.body.style.overflow = '';
+                
+                // Ensure sidebar is hidden on mobile
+                sidebar.style.transform = 'translateX(-100%)';
             }
         });
         
@@ -1369,6 +1569,43 @@
 
         // Start smart auto-hide when page loads
         setTimeout(autoHideMessages, 100);
+        
+        // Enhanced mobile touch handling
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add touch-friendly interactions for mobile
+            if ('ontouchstart' in window) {
+                // Add touch feedback for sidebar items
+                const sidebarItems = document.querySelectorAll('.sidebar-item');
+                sidebarItems.forEach(item => {
+                    item.addEventListener('touchstart', function() {
+                        this.style.transform = 'scale(0.98)';
+                    });
+                    
+                    item.addEventListener('touchend', function() {
+                        this.style.transform = 'scale(1)';
+                    });
+                });
+                
+                // Add touch feedback for buttons
+                const buttons = document.querySelectorAll('button, .btn, a[role="button"]');
+                buttons.forEach(button => {
+                    button.addEventListener('touchstart', function() {
+                        this.style.transform = 'scale(0.95)';
+                    });
+                    
+                    button.addEventListener('touchend', function() {
+                        this.style.transform = 'scale(1)';
+                    });
+                });
+            }
+            
+            // Ensure proper mobile viewport handling
+            const viewport = document.querySelector('meta[name="viewport"]');
+            if (viewport) {
+                // Prevent zoom on input focus for iOS
+                viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+            }
+        });
     </script>
     
     {% block extra_js %}{% endblock %}
