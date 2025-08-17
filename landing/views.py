@@ -1664,17 +1664,12 @@ def export_pdf_report(request):
     
     try:
         # Try to import reportlab libraries
-        from reportlab.lib.pagesizes import letter, A4
-        from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, PageBreak, Image
+        from reportlab.lib.pagesizes import A4
+        from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
         from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
         from reportlab.lib.units import inch
         from reportlab.lib import colors
-        from reportlab.graphics.shapes import Drawing
-        from reportlab.graphics.charts.piecharts import Pie
-        from reportlab.graphics.charts.barcharts import VerticalBarChart
-        from reportlab.graphics.charts.linecharts import LineChart
-        from reportlab.graphics.charts.legends import Legend
-        from reportlab.graphics import renderPDF
+
     except ImportError as e:
         # If reportlab is not available, try to create a simple PDF
         try:
