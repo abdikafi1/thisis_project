@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from .models import UserProfile, Prediction, UserActivity, SystemSettings
+from .models import UserProfile, Prediction, UserActivity, SystemSettings, PasswordResetToken
 
 # Inline admin for UserProfile
 class UserProfileInline(admin.StackedInline):
@@ -101,6 +101,34 @@ class SystemSettingsAdmin(admin.ModelAdmin):
             'fields': ('updated_at',)
         }),
     )
+
+@admin.register(PasswordResetToken)
+class PasswordResetTokenAdmin(admin.ModelAdmin):
+    list_display = ('user', 'token', 'created_at', 'expires_at', 'is_used', 'is_expired')
+    list_filter = ('is_used', 'created_at', 'expires_at')
+    search_fields = ('user__username', 'user__email', 'token')
+    readonly_fields = ('created_at', 'is_expired', 'is_valid')
+    date_hierarchy = 'created_at'
+    
+    fieldsets = (
+        ('Token Information', {
+            'fields': ('user', 'token')
+        }),
+        ('Status', {
+            'fields': ('is_used', 'is_expired', 'is_valid')
+        }),
+        ('Timestamps', {
+            'fields': ('created_at', 'expires_at')
+        }),
+    )
+    
+    def has_add_permission(self, request):
+        # Prevent manual creation of tokens
+        return False
+    
+    def has_change_permission(self, request, obj=None):
+        # Allow viewing but not editing
+        return False
 
 # Customize admin site headers
 admin.site.site_header = 'Fraud Detection System Admin'

@@ -97,6 +97,30 @@ class Prediction(models.Model):
     def input_dict(self):
         return json.loads(self.input_data)
 
+class PasswordResetToken(models.Model):
+    """🔐 Secure password reset tokens with expiration"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='password_reset_tokens')
+    token = models.CharField(max_length=64, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField()
+    is_used = models.BooleanField(default=False)
+    
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name_plural = 'Password Reset Tokens'
+    
+    def __str__(self):
+        return f"Token for {self.user.username} - Expires: {self.expires_at}"
+    
+    @property
+    def is_expired(self):
+        from django.utils import timezone
+        return timezone.now() > self.expires_at
+    
+    @property
+    def is_valid(self):
+        return not self.is_expired and not self.is_used
+
 class UserActivity(models.Model):
     """📊 User activity tracking - monitors user actions for analytics and security"""
     ACTIVITY_TYPES = [

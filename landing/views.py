@@ -10,7 +10,7 @@ from .decorators import admin_required, admin_or_basic_required, verified_user_r
 import pandas as pd
 import joblib
 import os
-from .models import Prediction, UserProfile, UserActivity
+from .models import Prediction, UserProfile, UserActivity, PasswordResetToken
 import json
 from django.db.models import Q
 from datetime import timedelta
@@ -32,30 +32,7 @@ categorical_cols = None
 feature_columns = None
 numeric_cols = None
 
-def cleanup_expired_tokens(request):
-    """Clean up expired password reset tokens from session"""
-    try:
-        current_time = time.time()
-        expired_tokens = []
-        
-        # Find all reset token keys in session
-        for key in list(request.session.keys()):
-            if key.startswith('reset_time_'):
-                username = key.replace('reset_time_', '')
-                token_time = request.session.get(key)
-                
-                if token_time and (current_time - token_time) > 86400:  # 24 hours
-                    expired_tokens.append(username)
-        
-        # Remove expired tokens
-        for username in expired_tokens:
-            del request.session[f'reset_token_{username}']
-            del request.session[f'reset_user_{username}']
-            del request.session[f'reset_time_{username}']
-            
-    except Exception as e:
-        # Log error but don't break the flow
-        print(f"Error cleaning up expired tokens: {e}")
+
 
 # Model will be loaded on first use with retry mechanism
 
@@ -972,9 +949,7 @@ def logout_view(request):
     return redirect('login')
 
 def forgot_password_view(request):
-    """Handle forgot password request"""
-    # Clean up expired tokens first
-    cleanup_expired_tokens(request)
+    """Handle forgot password request - Simple POST backend without tokens"""
     
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -990,24 +965,15 @@ def forgot_password_view(request):
                 messages.error(request, 'Please provide either username or email.')
                 return render(request, 'landing/forgot_password.html')
             
-            # Generate a more robust reset token
-            import hashlib
+            # Store user info in session for password reset
+            request.session['reset_user_id'] = user.id
+            request.session['reset_username'] = user.username
+            request.session['reset_time'] = time.time()
             
-            # Create a more secure token with user-specific data
-            token_data = f"{user.username}{user.email}{user.date_joined}{secrets.token_hex(4)}"
-            reset_token = hashlib.sha256(token_data.encode()).hexdigest()[:12]
+            # Set session expiry to 1 hour
+            request.session.set_expiry(3600)  # 1 hour in seconds
             
-            # Store token in session with expiration (24 hours)
-            request.session[f'reset_token_{user.username}'] = reset_token
-            request.session[f'reset_user_{user.username}'] = user.username
-            request.session[f'reset_time_{user.username}'] = time.time()
-            
-            # Set session expiry to 24 hours
-            request.session.set_expiry(86400)  # 24 hours in seconds
-            
-            # Store token in session with expiration (24 hours)
-            
-            messages.success(request, f'Password reset initiated for user: {user.username}. Please check your email for the reset link.')
+            messages.success(request, f'Password reset initiated for user: {user.username}. You can now reset your password.')
             return redirect('reset_password', username=user.username)
             
         except User.DoesNotExist:
@@ -1018,61 +984,51 @@ def forgot_password_view(request):
     return render(request, 'landing/forgot_password.html')
 
 def reset_password_view(request, username):
-    """Handle password reset"""
-    # Clean up expired tokens first
-    cleanup_expired_tokens(request)
+    """Handle password reset - Simple session-based without tokens"""
     
     if request.method == 'POST':
         new_password = request.POST.get('new_password')
         confirm_password = request.POST.get('confirm_password')
-        reset_token = request.POST.get('reset_token')
         
-        # Verify token from session with better error handling
-        stored_token = request.session.get(f'reset_token_{username}')
-        stored_user = request.session.get(f'reset_user_{username}')
-        stored_time = request.session.get(f'reset_time_{username}')
+        # Validate session data
+        reset_user_id = request.session.get('reset_user_id')
+        reset_username = request.session.get('reset_username')
+        reset_time = request.session.get('reset_time')
         
-        # Check if token exists and is valid
-        if not stored_token:
-            messages.error(request, 'Reset token not found. Please request a new password reset.')
+        if not reset_user_id or reset_username != username:
+            messages.error(request, 'Invalid reset session. Please request a new password reset.')
             return redirect('forgot_password')
         
-        if not stored_user or stored_user != username:
-            messages.error(request, 'Invalid user information. Please request a new password reset.')
-            return redirect('forgot_password')
-        
-        # Check if token has expired (24 hours)
-        if stored_time and (time.time() - stored_time) > 86400:
+        # Check if session has expired (1 hour)
+        if reset_time and (time.time() - reset_time) > 3600:
             # Clear expired session data
-            del request.session[f'reset_token_{username}']
-            del request.session[f'reset_user_{username}']
-            del request.session[f'reset_time_{username}']
-            messages.error(request, 'Reset token has expired. Please request a new password reset.')
+            del request.session['reset_user_id']
+            del request.session['reset_username']
+            del request.session['reset_time']
+            messages.error(request, 'Reset session has expired. Please request a new password reset.')
             return redirect('forgot_password')
-        
-        # Verify the provided token matches the stored token
-        if reset_token != stored_token:
-            messages.error(request, 'Invalid reset token. Please check your reset link and try again.')
-            return render(request, 'landing/reset_password.html', {'username': username, 'reset_token': stored_token})
-        
-        # Validate new password
-        if new_password != confirm_password:
-            messages.error(request, 'Passwords do not match.')
-            return render(request, 'landing/reset_password.html', {'username': username, 'reset_token': stored_token})
-        
-        if len(new_password) < 8:
-            messages.error(request, 'Password must be at least 8 characters long.')
-            return render(request, 'landing/reset_password.html', {'username': username, 'reset_token': stored_token})
         
         try:
-            user = User.objects.get(username=username)
+            # Get user
+            user = User.objects.get(id=reset_user_id, username=username)
+            
+            # Validate new password
+            if new_password != confirm_password:
+                messages.error(request, 'Passwords do not match.')
+                return render(request, 'landing/reset_password.html', {'username': username})
+            
+            if len(new_password) < 8:
+                messages.error(request, 'Password must be at least 8 characters long.')
+                return render(request, 'landing/reset_password.html', {'username': username})
+            
+            # Update password
             user.set_password(new_password)
             user.save()
             
             # Clear session data
-            del request.session[f'reset_token_{username}']
-            del request.session[f'reset_user_{username}']
-            del request.session[f'reset_time_{username}']
+            del request.session['reset_user_id']
+            del request.session['reset_username']
+            del request.session['reset_time']
             
             # Set success message and render success page
             context = {
@@ -1087,32 +1043,28 @@ def reset_password_view(request, username):
             return redirect('forgot_password')
         except Exception as e:
             messages.error(request, f'An error occurred while updating password: {str(e)}. Please try again.')
-            return render(request, 'landing/reset_password.html', {'username': username, 'reset_token': stored_token})
+            return render(request, 'landing/reset_password.html', {'username': username})
     
     # GET request - show reset form
-    # Get token from session with better error handling
-    stored_token = request.session.get(f'reset_token_{username}')
-    stored_user = request.session.get(f'reset_user_{username}')
-    stored_time = request.session.get(f'reset_time_{username}')
     # Validate session data
-    if not stored_token:
-        messages.error(request, 'Reset token not found. Please request a new password reset.')
+    reset_user_id = request.session.get('reset_user_id')
+    reset_username = request.session.get('reset_username')
+    reset_time = request.session.get('reset_time')
+    
+    if not reset_user_id or reset_username != username:
+        messages.error(request, 'Invalid reset session. Please request a new password reset.')
         return redirect('forgot_password')
     
-    if not stored_user or stored_user != username:
-        messages.error(request, 'Invalid user information. Please request a new password reset.')
+    # Check if session has expired
+    if reset_time and (time.time() - reset_time) > 3600:
+        # Clear expired session data
+        del request.session['reset_user_id']
+        del request.session['reset_username']
+        del request.session['reset_time']
+        messages.error(request, 'Reset session has expired. Please request a new password reset.')
         return redirect('forgot_password')
     
-            # Check if token has expired
-        if stored_time and (time.time() - stored_time) > 86400:
-            # Clear expired session data
-            del request.session[f'reset_token_{username}']
-            del request.session[f'reset_user_{username}']
-            del request.session[f'reset_time_{username}']
-            messages.error(request, 'Reset token has expired. Please request a new password reset.')
-            return redirect('forgot_password')
-    
-    return render(request, 'landing/reset_password.html', {'username': username, 'reset_token': stored_token})
+    return render(request, 'landing/reset_password.html', {'username': username})
 
 @login_required
 @track_activity('settings_change', lambda req, *args, **kwargs: "Updated user profile")
