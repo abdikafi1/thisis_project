@@ -1,0 +1,23 @@
+# Copy this file to .env in your project root directory
+
+# ========================================
+# PRODUCTION MODE (even when running locally)
+# ========================================
+# Uncomment the line below to use the remote Neon database
+# This will make your local app work exactly like production
+DATABASE_URL=postgresql://neondb_owner:npg_LXrJzj85qwcC@ep-soft-truth-a14lkz4p-pooler.ap-southeast-1.aws.neon.tech:5432/neondb?sslmode=require
+
+# Django Settings
+SECRET_KEY=django-insecure-w^=fb$xyf-ku5@n^*ek4#x(-iijee+kj$ixqxmw3wr0zjz@y(*
+DEBUG=True
+ALLOWED_HOSTS=localhost,127.0.0.1
+
+# ========================================
+# LOCAL DEVELOPMENT MODE (only if DATABASE_URL is commented out above)
+# ========================================
+# Local PostgreSQL Database Settings
+POSTGRES_DB=fraud_detection_local
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=your_password_here
+POSTGRES_HOST=localhost
+POSTGRES_PORT=5432

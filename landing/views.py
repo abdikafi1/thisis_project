@@ -1102,19 +1102,19 @@ def reset_password_view(request, username):
     
     # GET request - show reset form
     # Get token from session with better error handling
-    reset_token = request.session.get(f'reset_token_{username}')
+    stored_token = request.session.get(f'reset_token_{username}')
     stored_user = request.session.get(f'reset_user_{username}')
     stored_time = request.session.get(f'reset_time_{username}')
     
     # Debug: Print GET request information (remove in production)
     print(f"DEBUG: GET request for {username}")
-    print(f"DEBUG: Stored token: {reset_token}")
+    print(f"DEBUG: Stored token: {stored_token}")
     print(f"DEBUG: Stored user: {stored_user}")
     print(f"DEBUG: Stored time: {stored_time}")
     print(f"DEBUG: Session keys: {list(request.session.keys())}")
     
     # Validate session data
-    if not reset_token:
+    if not stored_token:
         messages.error(request, 'Reset token not found. Please request a new password reset.')
         return redirect('forgot_password')
     
@@ -1181,7 +1181,7 @@ def user_profile_view(request):
         'last_login_days': last_login_days,
     }
     
-    return render(request, 'landing/user_profile.html', context)
+    return render(request, 'landing/unified_profile.html', context)
 
 @login_required
 def admin_profile_view(request):
