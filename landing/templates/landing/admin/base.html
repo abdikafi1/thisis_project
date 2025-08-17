@@ -618,9 +618,17 @@
 
             // Function to update header immediately when sidebar item is clicked
             function updateHeaderOnSidebarClick(sectionName) {
+                console.log('🚀 updateHeaderOnSidebarClick called with section:', sectionName);
+                
                 const headerTitle = document.getElementById('dynamic-header-title');
                 const headerDescription = document.getElementById('dynamic-header-description');
                 const currentSection = document.getElementById('current-section');
+                
+                console.log('🔍 Header elements found:', {
+                    title: headerTitle ? 'Yes' : 'No',
+                    description: headerDescription ? 'Yes' : 'No',
+                    section: currentSection ? 'Yes' : 'No'
+                });
                 
                 if (headerTitle && headerDescription && currentSection) {
                     // Enhanced header content mapping for admin sections
@@ -671,60 +679,49 @@
                         }
                     };
                     
-                    // Update header content with smooth animation
                     const content = headerContent[sectionName] || {
                         title: sectionName,
                         description: `Manage ${sectionName.toLowerCase()} functionality`
                     };
                     
-                    // Add visual feedback for header update
-                    headerTitle.style.borderLeft = '4px solid #3b82f6';
-                    headerDescription.style.borderLeft = '4px solid #3b82f6';
-                    currentSection.style.borderLeft = '4px solid #3b82f6';
+                    console.log('📝 Header content to update:', content);
                     
-                    // Add custom animation class
-                    headerTitle.classList.add('header-update');
-                    headerDescription.classList.add('header-update');
-                    currentSection.classList.add('header-update');
+                    // Update header content with smooth animation
+                    headerTitle.classList.add('animate-pulse');
+                    headerDescription.classList.add('animate-pulse');
                     
-                    // Update content immediately for instant feedback
-                    headerTitle.textContent = content.title;
-                    headerDescription.textContent = content.description;
-                    currentSection.textContent = sectionName;
-                    
-                    // Remove animation class and border after animation completes
+                    // Update content with a slight delay for smooth transition
                     setTimeout(() => {
-                        headerTitle.classList.remove('header-update');
-                        headerDescription.classList.remove('header-update');
-                        currentSection.classList.remove('header-update');
-                        headerTitle.style.borderLeft = '';
-                        headerDescription.style.borderLeft = '';
-                        currentSection.style.borderLeft = '';
-                    }, 300);
-                    
-                    // Add a subtle highlight effect to the current section badge
-                    currentSection.style.background = 'linear-gradient(135deg, #3b82f6, #1d4ed8)';
-                    currentSection.style.color = 'white';
-                    currentSection.style.transform = 'scale(1.05)';
-                    
-                    setTimeout(() => {
-                        currentSection.style.background = '';
-                        currentSection.style.color = '';
-                        currentSection.style.transform = '';
-                    }, 500);
+                        headerTitle.textContent = content.title;
+                        headerDescription.textContent = content.description;
+                        currentSection.textContent = sectionName;
+                        
+                        console.log('✅ Header updated successfully');
+                        
+                        // Remove animation class
+                        headerTitle.classList.remove('animate-pulse');
+                        headerDescription.classList.remove('animate-pulse');
+                    }, 150);
+                } else {
+                    console.log('❌ Header elements not found');
                 }
             }
 
             // Enhanced sidebar item click handling with dynamic selection
             navItems.forEach(item => {
                 item.addEventListener('click', function(e) {
+                    console.log('🖱️ Sidebar item clicked:', this);
+                    
                     // Prevent default only if it's a navigation item (not logout)
                     if (this.getAttribute('href') && !this.getAttribute('href').includes('logout')) {
                         e.preventDefault();
                         
                         // Get the section name before making changes
-                        const activeText = this.querySelector('span.font-medium');
+                        const activeText = this.querySelector('span.font-medium') || this.querySelector('span.font-semibold.text-lg');
                         const sectionName = activeText ? activeText.textContent.trim() : 'Dashboard';
+                        
+                        console.log('📝 Section name from click:', sectionName);
+                        console.log('🔍 Active text element:', activeText);
                         
                         // Remove active class from all items and reset styles
                         navItems.forEach(nav => {
@@ -744,10 +741,12 @@
                         // Store active state in sessionStorage for persistence
                         if (activeText) {
                             sessionStorage.setItem('activeAdminSidebarItem', activeText.textContent);
+                            console.log('💾 Stored in sessionStorage from click:', activeText.textContent);
                         }
                         
                         // Navigate to the URL after a brief delay for smooth transition
                         setTimeout(() => {
+                            console.log('🚀 Navigating to:', this.getAttribute('href'));
                             window.location.href = this.getAttribute('href');
                         }, 300);
                     }
@@ -758,7 +757,7 @@
             const lastActiveItem = sessionStorage.getItem('activeAdminSidebarItem');
             if (lastActiveItem) {
                 const itemToActivate = Array.from(navItems).find(item => {
-                    const text = item.querySelector('span.font-medium');
+                    const text = item.querySelector('span.font-medium') || item.querySelector('span.font-semibold.text-lg');
                     return text && text.textContent === lastActiveItem;
                 });
                 if (itemToActivate) {
@@ -774,9 +773,12 @@
                 const currentPath = window.location.pathname;
                 let sectionName = 'Analytics Dashboard'; // Default to Analytics Dashboard
                 
+                console.log('🔍 updateHeaderFromURL called with path:', currentPath);
+                
                 // Map URL paths to section names with exact matching
                 if (currentPath.includes('/manage/dashboard/')) {
                     sectionName = 'Analytics Dashboard';
+                    console.log('✅ Matched Analytics Dashboard path');
                 } else if (currentPath.includes('/manage/users/') && !currentPath.includes('/edit/') && !currentPath.includes('/delete/')) {
                     sectionName = 'User Management';
                 } else if (currentPath.includes('/manage/verification/')) {
@@ -793,11 +795,18 @@
                     sectionName = 'New Prediction';
                 }
                 
+                console.log('🎯 Section name determined:', sectionName);
+                
                 // Find and activate the corresponding sidebar item
                 const itemToActivate = Array.from(navItems).find(item => {
-                    const text = item.querySelector('span.font-medium');
-                    return text && text.textContent.trim() === sectionName;
+                    // Check for both font-medium and font-semibold text-lg classes
+                    const text = item.querySelector('span.font-medium') || item.querySelector('span.font-semibold.text-lg');
+                    const found = text && text.textContent.trim() === sectionName;
+                    console.log('🔍 Checking item:', text ? text.textContent.trim() : 'No text found', 'Match:', found);
+                    return found;
                 });
+                
+                console.log('🎯 Item to activate found:', itemToActivate ? 'Yes' : 'No');
                 
                 if (itemToActivate) {
                     // Remove active class from all items first
@@ -815,13 +824,16 @@
                     updateHeaderOnSidebarClick(sectionName);
                     
                     // Update sessionStorage with current selection
-                    const activeText = itemToActivate.querySelector('span.font-medium');
+                    const activeText = itemToActivate.querySelector('span.font-medium') || itemToActivate.querySelector('span.font-semibold.text-lg');
                     if (activeText) {
                         sessionStorage.setItem('activeAdminSidebarItem', activeText.textContent);
+                        console.log('💾 Stored in sessionStorage:', activeText.textContent);
                     }
                     
                     // Add visual feedback for the active item
                     itemToActivate.style.boxShadow = '0 8px 25px rgba(59, 130, 246, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)';
+                } else {
+                    console.log('❌ No item found to activate for section:', sectionName);
                 }
             }
 
@@ -850,7 +862,7 @@
                         this.style.transform = 'translateX(4px) scale(1.02)';
                         
                         // Show header preview on hover (subtle effect)
-                        const itemText = this.querySelector('span.font-medium');
+                        const itemText = this.querySelector('span.font-medium') || this.querySelector('span.font-semibold.text-lg');
                         if (itemText) {
                             const sectionName = itemText.textContent.trim();
                             const headerTitle = document.getElementById('dynamic-header-title');
