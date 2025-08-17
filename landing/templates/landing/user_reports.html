@@ -110,201 +110,136 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 {% block content %}
-<div class="min-h-screen bg-gradient-to-br from-slate-100 via-blue-50 to-indigo-100 py-8">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="min-h-screen bg-gradient-to-br from-slate-100 via-blue-50 to-indigo-100 py-4 sm:py-6 lg:py-8">
+    <div class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
         <!-- Reports Header -->
-        <div class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 backdrop-blur-xl rounded-3xl shadow-2xl p-8 md:p-12 mb-10 text-center relative overflow-hidden border border-indigo-500/30">
+        <div class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-2xl p-4 sm:p-6 md:p-8 lg:p-12 mb-6 sm:mb-8 lg:mb-10 text-center relative overflow-hidden border border-indigo-500/30">
             <div class="absolute inset-0 bg-gradient-to-r from-indigo-600/20 via-purple-600/20 to-pink-600/20"></div>
             <div class="relative z-10">
-                <h1 class="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-4 tracking-tight">
+                <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black text-white mb-3 sm:mb-4 tracking-tight leading-tight">
                     Fraud Analysis Dashboard
                 </h1>
-                <p class="text-xl text-indigo-100 font-medium max-w-3xl mx-auto leading-relaxed">
+                <p class="text-sm sm:text-base md:text-lg lg:text-xl text-indigo-100 font-medium max-w-3xl mx-auto leading-relaxed px-2">
                     Comprehensive analytics and insights from your prediction data with advanced export capabilities
                 </p>
-                <!-- <div class="mt-6 flex flex-wrap justify-center gap-4">
-                    <div class="bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 text-white text-sm font-medium">
-                        <i class="fas fa-clock mr-2"></i>Real-time Data
-                    </div>
-                    <div class="bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 text-white text-sm font-medium">
-                        <i class="fas fa-chart-line mr-2"></i>Advanced Analytics
-                    </div>
-                    <div class="bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 text-white text-sm font-medium">
-                        <i class="fas fa-download mr-2"></i>Export Ready
-                    </div>
-                </div> -->
             </div>
         </div>
 
         <!-- Key Statistics Dashboard -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8 lg:mb-10">
             <!-- Total Predictions - Soft blue theme for general info -->
-            <div class="group bg-gradient-to-br from-blue-500 to-blue-600 rounded-3xl shadow-xl p-8 text-center text-white hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 cursor-pointer border border-blue-400/30">
-                <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300">
-                    <i class="fas fa-chart-bar text-2xl text-white"></i>
+            <div class="group bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl sm:rounded-3xl shadow-xl p-4 sm:p-6 lg:p-8 text-center text-white hover:shadow-2xl hover:-translate-y-1 sm:hover:-translate-y-2 transition-all duration-500 cursor-pointer border border-blue-400/30">
+                <div class="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 lg:mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <i class="fas fa-chart-bar text-lg sm:text-xl lg:text-2xl text-white"></i>
                 </div>
-                <div class="text-4xl font-black mb-2">{{ total_user_predictions }}</div>
-                <div class="text-lg font-bold uppercase tracking-wider opacity-90">Total Predictions</div>
-                <div class="text-sm opacity-75 mt-2">All time records</div>
+                <div class="text-2xl sm:text-3xl lg:text-4xl font-black mb-1 sm:mb-2">{{ total_user_predictions }}</div>
+                <div class="text-sm sm:text-base lg:text-lg font-bold uppercase tracking-wider opacity-90">Total Predictions</div>
+                <div class="text-xs sm:text-sm opacity-75 mt-1 sm:mt-2">All time records</div>
             </div>
 
             <!-- Fraud Detected - Soft red theme for danger/warning -->
-            <div class="group bg-gradient-to-br from-rose-500 to-pink-600 rounded-3xl shadow-xl p-8 text-center text-white hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 cursor-pointer border border-rose-400/30">
-                <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300">
-                    <i class="fas fa-exclamation-triangle text-2xl text-white"></i>
+            <div class="group bg-gradient-to-br from-rose-500 to-pink-600 rounded-2xl sm:rounded-3xl shadow-xl p-4 sm:p-6 lg:p-8 text-center text-white hover:shadow-2xl hover:-translate-y-1 sm:hover:-translate-y-2 transition-all duration-500 cursor-pointer border border-rose-400/30">
+                <div class="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 lg:mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <i class="fas fa-exclamation-triangle text-lg sm:text-xl lg:text-2xl text-white"></i>
                 </div>
-                <div class="text-4xl font-black mb-2">{{ user_fraud_count }}</div>
-                <div class="text-lg font-bold uppercase tracking-wider opacity-90">Fraud Detected</div>
-                <div class="text-sm opacity-75 mt-2">{{ fraud_detection_rate }}% of total</div>
+                <div class="text-2xl sm:text-3xl lg:text-4xl font-black mb-1 sm:mb-2">{{ user_fraud_count }}</div>
+                <div class="text-sm sm:text-base lg:text-lg font-bold uppercase tracking-wider opacity-90">Fraud Detected</div>
+                <div class="text-xs sm:text-sm opacity-75 mt-1 sm:mt-2">{{ fraud_detection_rate }}% of total</div>
             </div>
 
             <!-- Fraud Detection Rate - Soft green theme for success/positive -->
-            <div class="group bg-gradient-to-br from-emerald-500 to-teal-600 rounded-3xl shadow-xl p-8 text-center text-white hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 cursor-pointer border border-emerald-400/30">
-                <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300">
-                    <i class="fas fa-percentage text-2xl text-white"></i>
+            <div class="group bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl sm:rounded-3xl shadow-xl p-4 sm:p-6 lg:p-8 text-center text-white hover:shadow-2xl hover:-translate-y-1 sm:hover:-translate-y-2 transition-all duration-500 cursor-pointer border border-emerald-400/30">
+                <div class="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 lg:mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <i class="fas fa-percentage text-lg sm:text-xl lg:text-2xl text-white"></i>
                 </div>
-                <div class="text-4xl font-black mb-2">{{ fraud_detection_rate }}%</div>
-                <div class="text-lg font-bold uppercase tracking-wider opacity-90">Detection Rate</div>
-                <div class="text-sm opacity-75 mt-2">AI model accuracy</div>
+                <div class="text-2xl sm:text-3xl lg:text-4xl font-black mb-1 sm:mb-2">{{ fraud_detection_rate }}%</div>
+                <div class="text-sm sm:text-base lg:text-lg font-bold uppercase tracking-wider opacity-90">Detection Rate</div>
+                <div class="text-xs sm:text-sm opacity-75 mt-1 sm:mt-2">AI model accuracy</div>
             </div>
 
             <!-- Processing Time - Soft orange theme for performance metrics -->
-            <div class="group bg-gradient-to-br from-amber-500 to-orange-600 rounded-3xl shadow-xl p-8 text-center text-white hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 cursor-pointer border border-amber-400/30">
-                <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300">
-                    <i class="fas fa-clock text-2xl text-white"></i>
+            <div class="group bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl sm:rounded-3xl shadow-xl p-4 sm:p-6 lg:p-8 text-center text-white hover:shadow-2xl hover:-translate-y-1 sm:hover:-translate-y-2 transition-all duration-500 cursor-pointer border border-amber-400/30">
+                <div class="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 lg:mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <i class="fas fa-clock text-lg sm:text-xl lg:text-2xl text-white"></i>
                 </div>
-                <div class="text-4xl font-black mb-2">{{ avg_processing_time }}s</div>
-                <div class="text-lg font-bold uppercase tracking-wider opacity-90">Avg Processing</div>
-                <div class="text-sm opacity-75 mt-2">Response time</div>
+                <div class="text-2xl sm:text-3xl lg:text-4xl font-black mb-1 sm:mb-2">{{ avg_processing_time }}s</div>
+                <div class="text-sm sm:text-base lg:text-lg font-bold uppercase tracking-wider opacity-90">Avg Processing</div>
+                <div class="text-xs sm:text-sm opacity-75 mt-1 sm:mt-2">Response time</div>
             </div>
         </div>
 
         <!-- Export Section - Enhanced with comprehensive information -->
-        <div class="bg-gradient-to-r from-slate-700 via-gray-700 to-slate-800 backdrop-blur-xl rounded-3xl shadow-2xl p-8 mb-10 border border-slate-600/30">
-            <div class="flex items-center mb-6">
-                <div class="w-12 h-12 bg-gradient-to-br from-slate-500 to-slate-600 rounded-xl flex items-center justify-center mr-4 shadow-lg">
-                    <i class="fas fa-download text-xl text-white"></i>
+        <div class="bg-gradient-to-r from-slate-700 via-gray-700 to-slate-800 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-2xl p-4 sm:p-6 lg:p-8 mb-6 sm:mb-8 lg:mb-10 border border-slate-600/30">
+            <div class="flex items-center mb-4 sm:mb-6">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-slate-500 to-slate-600 rounded-xl flex items-center justify-center mr-3 sm:mr-4 shadow-lg">
+                    <i class="fas fa-download text-lg sm:text-xl text-white"></i>
                 </div>
-                <h3 class="text-2xl font-black text-white">Export report</h3>
+                <h3 class="text-xl sm:text-2xl font-black text-white">Export report</h3>
             </div>
-            
-            <!-- Export Information -->
-            <!-- <div class="mb-6 p-4 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-white">
-                    <div class="text-center">
-                        <div class="text-2xl font-bold text-blue-300">{{ total_user_predictions }}</div>
-                        <div class="text-sm text-slate-300">Records Available</div>
-                    </div>
-                    <div class="text-center">
-                        <div class="text-2xl font-bold text-green-300">{{ fraud_detection_rate }}%</div>
-                        <div class="text-sm text-slate-300">Fraud Detection Rate</div>
-                    </div>
-                    <div class="text-center">
-                        <div class="text-2xl font-bold text-purple-300">{{ avg_processing_time }}s</div>
-                        <div class="text-sm text-slate-300">Avg Processing Time</div>
-                    </div>
-                </div>
-            </div> -->
            
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 w-full">
                 <!-- PDF Export - Enhanced with detailed information -->
-                <div class="bg-gradient-to-r from-rose-500/10 to-pink-600/10 rounded-xl p-6 border border-rose-400/30">
-                    <!-- <div class="text-center mb-4">
-                        <i class="fas fa-file-pdf text-4xl text-rose-500 mb-3"></i>
-                        <h4 class="text-lg font-bold text-white mb-2">PDF Report</h4>
-                      
-                    </div> -->
-                    
-                    <!-- <div class="space-y-2 mb-4 text-sm text-slate-300">
-                        <div class="flex items-center">
-                            <i class="fas fa-check text-green-400 mr-2"></i>
-                            <span>Executive summary with key metrics</span>
-                        </div>
-                        <div class="flex items-center">
-                            <i class="fas fa-check text-green-400 mr-2"></i>
-                            <span>Visual charts and graphs</span>
-                        </div>
-                        <div class="flex items-center">
-                            <i class="fas fa-check text-green-400 mr-2"></i>
-                            <span>Detailed prediction analysis</span>
-                        </div>
-                        <div class="flex items-center">
-                            <i class="fas fa-check text-green-400 mr-2"></i>
-                            <span>Professional formatting</span>
-                        </div>
-                    </div> -->
-                    
-                    <!-- PDF Export Status Indicator
-                    <div class="mb-4 p-3 bg-blue-500/10 border border-blue-400/30 rounded-lg">
-                        <div class="flex items-center text-blue-300 text-sm">
-                            <i class="fas fa-info-circle mr-2"></i>
-                            <span>PDF export requires reportlab library. If unavailable, use CSV export instead.</span>
-                        </div>
-                    </div> -->
-                    
-                    <a href="{% url 'export_pdf' %}" class="group relative inline-flex items-center justify-center px-6 py-3 text-lg font-semibold text-white bg-gradient-to-r from-rose-500 to-pink-600 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-rose-400 border border-rose-400/30 w-full">
+                <div class="bg-gradient-to-r from-rose-500/10 to-pink-600/10 rounded-xl p-4 sm:p-6 border border-rose-400/30">
+                    <a href="{% url 'export_pdf' %}" class="group relative inline-flex items-center justify-center px-4 sm:px-6 py-3 text-base sm:text-lg font-semibold text-white bg-gradient-to-r from-rose-500 to-pink-600 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-rose-400 border border-rose-400/30 w-full">
                         <span class="absolute inset-0 bg-gradient-to-r from-rose-600 to-pink-700 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200"></span>
-                        <span class="relative flex items-center">
-                            <i class="fas fa-file-pdf mr-3"></i>
+                        <span class="relative flex items-center justify-center">
+                            <i class="fas fa-file-pdf mr-2 sm:mr-3"></i>
                             Export to PDF
                         </span>
                     </a>
                 </div>
                 
                 <!-- CSV Export - Enhanced with detailed information -->
-                <div class="bg-gradient-to-r from-blue-500/10 to-indigo-600/10 rounded-xl p-6 border border-blue-400/30">
-                                        
-                    <a href="{% url 'export_csv' %}" class="group relative inline-flex items-center justify-center px-6 py-3 text-lg font-semibold text-white bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-blue-400 border border-blue-400/30 w-full">
+                <div class="bg-gradient-to-r from-blue-500/10 to-indigo-600/10 rounded-xl p-4 sm:p-6 border border-blue-400/30">
+                    <a href="{% url 'export_csv' %}" class="group relative inline-flex items-center justify-center px-4 sm:px-6 py-3 text-base sm:text-lg font-semibold text-white bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-blue-400 border border-blue-400/30 w-full">
                         <span class="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-700 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200"></span>
-                        <span class="relative flex items-center">
-                            <i class="fas fa-file-csv mr-3"></i>
+                        <span class="relative flex items-center justify-center">
+                            <i class="fas fa-file-csv mr-2 sm:mr-3"></i>
                             Export to CSV
                         </span>
                     </a>
                 </div>
             </div>
-            
-        
         </div>
 
         <!-- Search and Filter Section -->
-        <div class="bg-gradient-to-r from-slate-700 via-gray-700 to-slate-800 backdrop-blur-xl rounded-3xl shadow-2xl p-8 mb-10 border border-slate-600/30">
-            <div class="flex items-center mb-6">
-                <div class="w-12 h-12 bg-gradient-to-br from-slate-500 to-slate-600 rounded-xl flex items-center justify-center mr-4 shadow-lg">
-                    <i class="fas fa-search text-xl text-white"></i>
+        <div class="bg-gradient-to-r from-slate-700 via-gray-700 to-slate-800 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-2xl p-4 sm:p-6 lg:p-8 mb-6 sm:mb-8 lg:mb-10 border border-slate-600/30">
+            <div class="flex items-center mb-4 sm:mb-6">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-slate-500 to-slate-600 rounded-xl flex items-center justify-center mr-3 sm:mr-4 shadow-lg">
+                    <i class="fas fa-search text-lg sm:text-xl text-white"></i>
                 </div>
-                <h3 class="text-2xl font-black text-white">Search & Filter Predictions</h3>
+                <h3 class="text-xl sm:text-2xl font-black text-white">Search & Filter Predictions</h3>
             </div>
             
-            <form method="get" class="space-y-6 search-form">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 search-grid">
+            <form method="get" class="space-y-4 sm:space-y-6 search-form">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 search-grid">
                     <!-- Search Input -->
                     <div>
                         <label for="search" class="block text-sm font-medium text-slate-200 mb-2">Search Predictions</label>
                         <input type="text" name="search" id="search" value="{{ search_query }}" 
                                placeholder="Search in data..." 
-                               class="w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white placeholder-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent">
+                               class="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white placeholder-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent text-sm sm:text-base">
                     </div>
                     
                     <!-- Date From -->
                     <div>
                         <label for="date_from" class="block text-sm font-medium text-slate-200 mb-2">Date From</label>
                         <input type="date" name="date_from" id="date_from" value="{{ date_from }}" 
-                               class="w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent">
+                               class="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent text-sm sm:text-base">
                     </div>
                     
                     <!-- Date To -->
                     <div>
                         <label for="date_to" class="block text-sm font-medium text-slate-200 mb-2">Date To</label>
                         <input type="date" name="date_to" id="date_to" value="{{ date_to }}" 
-                               class="w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent">
+                               class="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent text-sm sm:text-base">
                     </div>
                     
                     <!-- Result Filter -->
                     <div>
                         <label for="result_filter" class="block text-sm font-medium text-slate-200 mb-2">Result Type</label>
                         <select name="result_filter" id="result_filter" 
-                                class="w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent">
+                                class="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent text-sm sm:text-base">
                             <option value="">All Results</option>
                             <option value="Fraud" {% if result_filter == 'Fraud' %}selected{% endif %}>Fraud</option>
                             <option value="Not Fraud" {% if result_filter == 'Not Fraud' %}selected{% endif %}>Not Fraud</option>
@@ -313,46 +248,46 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
                 
                 <!-- Search Actions -->
-                <div class="flex flex-wrap gap-4 items-center search-actions">
-                    <button type="submit" class="px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-xl hover:from-blue-600 hover:to-blue-700 transform hover:-translate-y-1 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center search-actions">
+                    <button type="submit" class="px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-xl hover:from-blue-600 hover:to-blue-700 transform hover:-translate-y-1 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm sm:text-base">
                         <i class="fas fa-search mr-2"></i>Search
                     </button>
                     
-                    <a href="{% url 'user_reports' %}" class="px-6 py-3 bg-gradient-to-r from-slate-500 to-slate-600 text-white font-semibold rounded-xl hover:from-slate-600 hover:to-slate-700 transform hover:-translate-y-1 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-slate-400">
+                    <a href="{% url 'user_reports' %}" class="px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-slate-500 to-slate-600 text-white font-semibold rounded-xl hover:from-slate-600 hover:to-slate-700 transform hover:-translate-y-1 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-slate-400 text-sm sm:text-base text-center">
                         <i class="fas fa-times mr-2"></i>Clear Filters
                     </a>
                 </div>
                 
                 <!-- Active Filters Display -->
                 {% if search_query or date_from or date_to or result_filter %}
-                <div class="mt-4 p-4 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
-                    <div class="flex flex-wrap gap-2 items-center justify-between">
+                <div class="mt-4 p-3 sm:p-4 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
+                    <div class="flex flex-col sm:flex-row gap-2 sm:gap-4 items-start sm:items-center justify-between">
                         <div class="flex flex-wrap gap-2 items-center">
-                            <span class="text-slate-200 font-medium">Active filters:</span>
+                            <span class="text-slate-200 font-medium text-sm sm:text-base">Active filters:</span>
                             {% if search_query %}
-                                                    <span class="px-3 py-1 bg-blue-500/20 text-blue-200 rounded-full text-sm border border-blue-400/30 filter-badge">
-                            Search: "{{ search_query }}"
-                        </span>
+                            <span class="px-2 sm:px-3 py-1 bg-blue-500/20 text-blue-200 rounded-full text-xs sm:text-sm border border-blue-400/30 filter-badge">
+                                Search: "{{ search_query }}"
+                            </span>
                             {% endif %}
                             {% if date_from %}
-                            <span class="px-3 py-1 bg-green-500/20 text-green-200 rounded-full text-sm border border-green-400/30 filter-badge">
+                            <span class="px-2 sm:px-3 py-1 bg-green-500/20 text-green-200 rounded-full text-xs sm:text-sm border border-green-400/30 filter-badge">
                                 From: {{ date_from }}
                             </span>
                             {% endif %}
                             {% if date_to %}
-                            <span class="px-3 py-1 bg-green-500/20 text-green-200 rounded-full text-sm border border-green-400/30 filter-badge">
+                            <span class="px-2 sm:px-3 py-1 bg-green-500/20 text-green-200 rounded-full text-xs sm:text-sm border border-green-400/30 filter-badge">
                                 To: {{ date_to }}
                             </span>
                             {% endif %}
                             {% if result_filter %}
-                            <span class="px-3 py-1 bg-purple-500/20 text-purple-200 rounded-full text-sm border border-purple-400/30 filter-badge">
+                            <span class="px-2 sm:px-3 py-1 bg-purple-500/20 text-purple-200 rounded-full text-xs sm:text-sm border border-purple-400/30 filter-badge">
                                 Result: {{ result_filter }}
                             </span>
                             {% endif %}
                         </div>
                         
                         <!-- Search Results Summary -->
-                        <div class="text-slate-200 text-sm">
+                        <div class="text-slate-200 text-xs sm:text-sm">
                             <span class="font-medium">Results:</span> 
                             <span class="text-blue-300">{{ total_user_predictions }}</span> predictions found
                             {% if search_query or date_from or date_to or result_filter %}
@@ -366,105 +301,68 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
 
         <!-- Performance Metrics - Enhanced with comprehensive analytics -->
-        <div class="bg-gradient-to-r from-teal-500 via-cyan-600 to-blue-600 backdrop-blur-xl rounded-3xl shadow-2xl p-8 mb-10 border border-teal-400/30">
-            <div class="flex items-center mb-6">
-                <div class="w-12 h-12 bg-gradient-to-br from-teal-400 to-teal-500 rounded-xl flex items-center justify-center mr-4 shadow-lg">
-                    <i class="fas fa-chart-line text-xl text-white"></i>
+        <div class="bg-gradient-to-r from-teal-500 via-cyan-600 to-blue-600 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-2xl p-4 sm:p-6 lg:p-8 mb-6 sm:mb-8 lg:mb-10 border border-teal-400/30">
+            <div class="flex items-center mb-4 sm:mb-6">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-teal-400 to-teal-500 rounded-xl flex items-center justify-center mr-3 sm:mr-4 shadow-lg">
+                    <i class="fas fa-chart-line text-lg sm:text-xl text-white"></i>
                 </div>
-                <h3 class="text-2xl font-black text-white">Performance Analytics</h3>
+                <h3 class="text-xl sm:text-2xl font-black text-white">Performance Analytics</h3>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
                 <!-- Model Accuracy -->
-                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20 text-center performance-metric">
-                    <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-brain text-2xl text-white"></i>
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-white/20 text-center performance-metric">
+                    <div class="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                        <i class="fas fa-brain text-lg sm:text-xl lg:text-2xl text-white"></i>
                     </div>
-                    <div class="text-3xl font-black text-white mb-2">72%</div>
-                    <div class="text-teal-100 font-semibold">Model Accuracy</div>
-                    <div class="text-teal-200 text-sm mt-1">AI Performance</div>
+                    <div class="text-2xl sm:text-3xl font-black text-white mb-1 sm:mb-2">72%</div>
+                    <div class="text-teal-100 font-semibold text-sm sm:text-base">Model Accuracy</div>
+                    <div class="text-teal-200 text-xs sm:text-sm mt-1">AI Performance</div>
                 </div>
                 
                 <!-- Response Time -->
-                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20 text-center performance-metric">
-                    <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-bolt text-2xl text-white"></i>
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-white/20 text-center performance-metric">
+                    <div class="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                        <i class="fas fa-bolt text-lg sm:text-xl lg:text-2xl text-white"></i>
                     </div>
-                    <div class="text-3xl font-black text-white mb-2">{{ avg_response_time }}s</div>
-                    <div class="text-teal-100 font-semibold">Avg Response</div>
-                    <div class="text-teal-200 text-sm mt-1">Range: {{ min_processing_time }}s - {{ max_processing_time }}s</div>
+                    <div class="text-2xl sm:text-3xl font-black text-white mb-1 sm:mb-2">{{ avg_response_time }}s</div>
+                    <div class="text-teal-100 font-semibold text-sm sm:text-base">Avg Response</div>
+                    <div class="text-teal-200 text-xs sm:text-sm mt-1">Range: {{ min_processing_time }}s - {{ max_processing_time }}s</div>
                 </div>
                 
                 <!-- Success Rate -->
-                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20 text-center">
-                    <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-check-circle text-2xl text-white"></i>
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-white/20 text-center">
+                    <div class="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                        <i class="fas fa-check-circle text-lg sm:text-xl lg:text-2xl text-white"></i>
                     </div>
-                    <div class="text-3xl font-black text-white mb-2">{{ success_rate }}%</div>
-                    <div class="text-teal-100 font-semibold">Success Rate</div>
-                    <div class="text-teal-200 text-sm mt-1">Confidence: {{ avg_confidence }}%</div>
+                    <div class="text-2xl sm:text-3xl font-black text-white mb-1 sm:mb-2">{{ success_rate }}%</div>
+                    <div class="text-teal-100 font-semibold text-sm sm:text-base">Success Rate</div>
+                    <div class="text-teal-200 text-xs sm:text-sm mt-1">Confidence: {{ avg_confidence }}%</div>
                 </div>
             </div>
             
-            <!-- Additional Performance Info -->
-            <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                    <h5 class="text-white font-semibold mb-2">Export Ready Data</h5>
-                    <div class="text-teal-200 text-sm">
-                        <div class="flex justify-between">
-                            <span>Total Records:</span>
-                            <span class="font-bold">{{ total_user_predictions }}</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span>Fraud Cases:</span>
-                            <span class="font-bold text-rose-300">{{ user_fraud_count }}</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span>Clean Cases:</span>
-                            <span class="font-bold text-green-300">{{ user_not_fraud_count }}</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                    <h5 class="text-white font-semibold mb-2">Data Quality</h5>
-                    <div class="text-teal-200 text-sm">
-                        <div class="flex justify-between">
-                            <span>Confidence Range:</span>
-                            <span class="font-bold">{{ min_confidence }}% - {{ max_confidence }}%</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span>Processing Range:</span>
-                            <span class="font-bold">{{ min_processing_time }}s - {{ max_processing_time }}s</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span>Data Completeness:</span>
-                            <span class="font-bold text-green-300">100%</span>
-                </div>
-                </div>
-                </div>
-            </div>
+       
         </div>
 
         <!-- Latest Predictions - Enhanced display -->
-        <div class="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
-            <div class="flex items-center justify-between mb-6">
-                <h3 class="text-2xl font-bold text-gray-800">Latest Predictions</h3>
-                <div class="text-sm text-gray-500">
+        <div class="bg-white rounded-2xl shadow-xl p-4 sm:p-6 lg:p-8 border border-gray-100">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6">
+                <h3 class="text-xl sm:text-2xl font-bold text-gray-800 mb-2 sm:mb-0">Latest Predictions</h3>
+                <div class="text-xs sm:text-sm text-gray-500">
                     Showing latest 3 of {{ total_user_predictions }} total predictions
                 </div>
             </div>
             
             {% if recent_predictions %}
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {% for prediction in recent_predictions|slice:":3" %}
-                <div class="bg-gradient-to-br {% if prediction.result == 'Fraud' %}from-red-50 to-red-100 border-red-200 hover:shadow-red-100{% else %}from-green-50 to-green-100 border-green-200 hover:shadow-green-100{% endif %} border-2 rounded-2xl p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer">
-                    <div class="flex items-center justify-between mb-4">
+                <div class="bg-gradient-to-br {% if prediction.result == 'Fraud' %}from-red-50 to-red-100 border-red-200 hover:shadow-red-100{% else %}from-green-50 to-green-100 border-green-200 hover:shadow-green-100{% endif %} border-2 rounded-2xl p-4 sm:p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer">
+                    <div class="flex items-center justify-between mb-3 sm:mb-4">
                         <div class="flex items-center space-x-2">
-                            <div class="w-8 h-8 {% if prediction.result == 'Fraud' %}bg-red-500{% else %}bg-green-500{% endif %} rounded-full flex items-center justify-center">
-                                <i class="fas {% if prediction.result == 'Fraud' %}fa-exclamation-triangle{% else %}fa-check{% endif %} text-white text-sm"></i>
+                            <div class="w-6 h-6 sm:w-8 sm:h-8 {% if prediction.result == 'Fraud' %}bg-red-500{% else %}bg-green-500{% endif %} rounded-full flex items-center justify-center">
+                                <i class="fas {% if prediction.result == 'Fraud' %}fa-exclamation-triangle{% else %}fa-check{% endif %} text-white text-xs sm:text-sm"></i>
                             </div>
-                            <span class="text-sm font-bold text-gray-700">#{{ prediction.id }}</span>
+                            <span class="text-xs sm:text-sm font-bold text-gray-700">#{{ prediction.id }}</span>
                         </div>
                         <div class="text-xs text-gray-500 font-medium">{{ prediction.created_at|date:"M d, H:i" }}</div>
                     </div>
@@ -472,27 +370,27 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="space-y-3">
                         <div class="text-center">
                         {% if prediction.result == 'Fraud' %}
-                                <span class="inline-block px-4 py-2 text-sm font-bold rounded-full bg-red-500 text-white shadow-lg">
+                                <span class="inline-block px-3 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm font-bold rounded-full bg-red-500 text-white shadow-lg">
                                     🚨 Fraud Detected
                             </span>
                         {% else %}
-                                <span class="inline-block px-4 py-2 text-sm font-bold rounded-full bg-green-500 text-white shadow-lg">
+                                <span class="inline-block px-3 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm font-bold rounded-full bg-green-500 text-white shadow-lg">
                                     ✅ Safe Transaction
                             </span>
                         {% endif %}
                     </div>
                     
-                        <div class="flex items-center justify-between bg-white/50 rounded-lg p-3">
+                        <div class="flex items-center justify-between bg-white/50 rounded-lg p-2 sm:p-3">
                         <div class="text-center">
                                 <div class="text-xs text-gray-500 font-medium">Confidence</div>
-                                <div class="text-lg font-black {% if prediction.result == 'Fraud' %}text-red-600{% else %}text-green-600{% endif %}">
+                                <div class="text-sm sm:text-lg font-black {% if prediction.result == 'Fraud' %}text-red-600{% else %}text-green-600{% endif %}">
                                     {% if prediction.confidence_score %}{{ prediction.confidence_score|floatformat:0 }}%{% else %}N/A{% endif %}
                             </div>
                         </div>
                         
                         <div class="text-center">
                                 <div class="text-xs text-gray-500 font-medium">Processing</div>
-                                <div class="text-lg font-black text-gray-700">
+                                <div class="text-sm sm:text-lg font-black text-gray-700">
                                     {% if prediction.processing_time %}{{ prediction.processing_time|floatformat:3 }}s{% else %}N/A{% endif %}
                         </div>
                     </div>
@@ -503,12 +401,12 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
             
             {% else %}
-            <div class="text-center py-12">
-                <div class="w-24 h-24 bg-gradient-to-br from-blue-100 to-blue-200 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <i class="fas fa-chart-line text-3xl text-blue-500"></i>
+            <div class="text-center py-8 sm:py-12">
+                <div class="w-16 h-16 sm:w-24 sm:h-24 bg-gradient-to-br from-blue-100 to-blue-200 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                    <i class="fas fa-chart-line text-2xl sm:text-3xl text-blue-500"></i>
                 </div>
-                <p class="text-gray-500 mb-6 text-lg">No predictions found</p>
-                <a href="{% url 'predict' %}" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white text-sm font-bold rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                <p class="text-gray-500 mb-4 sm:mb-6 text-base sm:text-lg">No predictions found</p>
+                <a href="{% url 'predict' %}" class="inline-flex items-center px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white text-sm font-bold rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
                     <i class="fas fa-plus mr-2"></i>Make Your First Prediction
                 </a>
             </div>
@@ -542,7 +440,7 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 
 /* Responsive search grid */
-@media (max-width: 768px) {
+@media (max-width: 640px) {
     .search-grid {
         grid-template-columns: 1fr;
     }
@@ -638,6 +536,107 @@ document.addEventListener('DOMContentLoaded', function() {
     transform: translateY(-2px);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
+
+/* Mobile-specific enhancements */
+@media (max-width: 640px) {
+    .min-h-screen {
+        min-height: 100vh;
+    }
+    
+    .text-2xl {
+        font-size: 1.5rem;
+    }
+    
+    .text-3xl {
+        font-size: 1.875rem;
+    }
+    
+    .text-4xl {
+        font-size: 2.25rem;
+    }
+    
+    .p-4 {
+        padding: 1rem;
+    }
+    
+    .p-6 {
+        padding: 1.5rem;
+    }
+    
+    .p-8 {
+        padding: 2rem;
+    }
+    
+    .mb-6 {
+        margin-bottom: 1.5rem;
+    }
+    
+    .mb-8 {
+        margin-bottom: 2rem;
+    }
+    
+    .mb-10 {
+        margin-bottom: 2.5rem;
+    }
+    
+    .gap-3 {
+        gap: 0.75rem;
+    }
+    
+    .gap-4 {
+        gap: 1rem;
+    }
+    
+    .gap-6 {
+        gap: 1.5rem;
+    }
+    
+    /* Mobile touch targets */
+    button, a {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    /* Mobile-friendly spacing */
+    .space-y-4 > * + * {
+        margin-top: 1rem;
+    }
+    
+    .space-y-6 > * + * {
+        margin-top: 1.5rem;
+    }
+}
+
+/* Tablet-specific enhancements */
+@media (min-width: 641px) and (max-width: 1024px) {
+    .text-2xl {
+        font-size: 1.75rem;
+    }
+    
+    .text-3xl {
+        font-size: 2rem;
+    }
+    
+    .text-4xl {
+        font-size: 2.5rem;
+    }
+    
+    .p-6 {
+        padding: 1.75rem;
+    }
+    
+    .p-8 {
+        padding: 2.25rem;
+    }
+    
+    .mb-8 {
+        margin-bottom: 2.25rem;
+    }
+    
+    .mb-10 {
+        margin-bottom: 3rem;
+    }
+}
 </style>
 
 <script>
@@ -698,6 +697,32 @@ document.addEventListener('DOMContentLoaded', function() {
                 submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Searching...';
                 submitBtn.disabled = true;
             }
+        });
+    }
+    
+    // Mobile-specific enhancements
+    if (window.innerWidth <= 640) {
+        // Add touch-friendly interactions
+        const touchElements = document.querySelectorAll('button, a, .cursor-pointer');
+        touchElements.forEach(element => {
+            element.addEventListener('touchstart', function() {
+                this.style.transform = 'scale(0.95)';
+            });
+            
+            element.addEventListener('touchend', function() {
+                this.style.transform = '';
+            });
+        });
+        
+        // Optimize form inputs for mobile
+        const inputs = document.querySelectorAll('input, select');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                // Scroll to input on mobile
+                setTimeout(() => {
+                    this.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 300);
+            });
         });
     }
 });

@@ -930,7 +930,7 @@
                     </button>
                     
                     <!-- Mobile Menu -->
-                    <div class="md:hidden fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 backdrop-blur-sm z-50 transform translate-x-full transition-transform duration-300" id="mobile-menu">
+                    <!-- <div class="md:hidden fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 backdrop-blur-sm z-50 transform translate-x-full transition-transform duration-300" id="mobile-menu">
                         <div class="bg-cyan-400 h-full w-80 max-w-[80vw] ml-auto shadow-2xl">
                             <div class="flex justify-between items-center p-6 border-b border-cyan-500 bg-cyan-400">
                                 <h3 class="text-xl font-bold text-black">Menu</h3>
@@ -957,8 +957,38 @@
                                 </div>
                             </nav>
                         </div>
+                    </div> -->
+                <!-- Mobile Menu - Modified with orange background and white text -->
+<div class="md:hidden fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 backdrop-blur-sm z-50 transform translate-x-full transition-transform duration-300" id="mobile-menu">
+    <div class="bg-orange-500 h-full w-80 max-w-[80vw] ml-auto shadow-2xl"> <!-- Changed to orange -->
+        <div class="flex justify-between items-center p-6 border-b border-orange-600"> <!-- Changed border -->
+            <h3 class="text-xl font-bold text-white">Menu</h3> <!-- Changed text to white -->
+            <button id="mobile-menu-close" class="text-white hover:text-orange-200"> <!-- Changed text to white -->
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+        <nav class="p-6">
+            <div class="space-y-4">
+                <a href="#home" class="block py-3 px-4 text-white hover:bg-cyan-400 hover:text-white rounded-lg transition-colors">Home</a>
+                <a href="#features" class="block py-3 px-4 text-white hover:bg-cyan-400 hover:text-white rounded-lg transition-colors">Features</a>
+                <a href="#team" class="block py-3 px-4 text-white hover:bg-cyan-400 hover:text-white rounded-lg transition-colors">About</a>
+                
+                {% if user.is_authenticated %}
+                    <div class="pt-4 border-t border-orange-600">
+                        <a href="{% url 'dashboard' %}" class="block py-3 px-4 text-white hover:bg-cyan-400 rounded-lg transition-colors font-semibold">Dashboard</a>
+                        <a href="{% url 'logout' %}" class="block py-3 px-4 text-white hover:bg-cyan-400 rounded-lg transition-colors font-semibold">Logout</a>
                     </div>
+                {% else %}
+                    <div class="pt-4 border-t border-orange-600">
+                        <a href="{% url 'login' %}" class="block py-3 px-4 bg-orange-600 text-white rounded-lg hover:bg-cyan-500 transition-colors font-semibold text-center">Login</a>
+                    </div>
+                {% endif %}
+            </div>
+        </nav>
+    </div>
+</div>
                 </div>
+
             </div>
         </nav>
         
