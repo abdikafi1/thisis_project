@@ -1095,6 +1095,16 @@ def reset_password_view(request, username):
     stored_user = request.session.get(f'reset_user_{username}')
     stored_time = request.session.get(f'reset_time_{username}')
     
+<<<<<<< HEAD
+=======
+    # Debug: Print GET request information (remove in production)
+    print(f"DEBUG: GET request for {username}")
+    print(f"DEBUG: Stored token: {stored_token}")
+    print(f"DEBUG: Stored user: {stored_user}")
+    print(f"DEBUG: Stored time: {stored_time}")
+    print(f"DEBUG: Session keys: {list(request.session.keys())}")
+    
+>>>>>>> 47ee12f1a4331109d9c1d0ae9f4df6842a3fe784
     # Validate session data
     if not stored_token:
         messages.error(request, 'Reset token not found. Please request a new password reset.')
