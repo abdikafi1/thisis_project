@@ -7,34 +7,34 @@
 <div class="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 py-4 sm:py-6 lg:py-8">
     <div class="max-w-6xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
         <!-- Header -->
-        <div class="text-center mb-8 sm:mb-12">
-            <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-3 sm:mb-4 page-title-dynamic">
+        <div class="text-center mb-16 lg:mb-20">
+            <h1 class="text-6xl lg:text-7xl xl:text-8xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-6 lg:mb-8 page-title-dynamic">
                 New Detection
             </h1>
-            <p class="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto px-4">
+            <p class="text-2xl lg:text-3xl xl:text-4xl text-gray-600 max-w-4xl mx-auto">
                 Enter claim details below to analyze potential fraud risk using our advanced AI model
             </p>
         </div>
 
         <!-- Progress Bar -->
-        <div class="mb-6 sm:mb-8">
-            <div class="bg-gray-200 rounded-full h-2 sm:h-3 overflow-hidden">
+        <div class="mb-12 lg:mb-16">
+            <div class="bg-gray-200 rounded-full h-4 lg:h-5 overflow-hidden">
                 <div id="progressBar" class="bg-gradient-to-r from-blue-500 to-purple-500 h-full transition-all duration-500 ease-out" style="width: 0%"></div>
             </div>
-            <p class="text-xs sm:text-sm text-gray-500 mt-2 text-center" id="progressText">0% Complete</p>
+            <p class="text-lg lg:text-xl text-gray-500 mt-4 lg:mt-5 text-center" id="progressText">0% Complete</p>
         </div>
 
         <!-- Error Messages -->
         {% if errors %}
-        <div class="bg-red-50 border-l-4 border-red-400 p-3 sm:p-4 mb-6 sm:mb-8 rounded-lg">
-            <div class="flex flex-col sm:flex-row">
-                <div class="flex-shrink-0 mb-2 sm:mb-0">
-                    <i class="fas fa-exclamation-triangle text-red-400"></i>
+        <div class="bg-red-50 border-l-4 border-red-400 p-6 lg:p-8 mb-12 lg:mb-16 rounded-xl">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-exclamation-triangle text-red-400 text-xl lg:text-2xl"></i>
                 </div>
-                <div class="sm:ml-3">
-                    <h3 class="text-sm font-medium text-red-800">Please correct the following errors:</h3>
-                    <div class="mt-2 text-sm text-red-700">
-                        <ul class="list-disc pl-4 sm:pl-5 space-y-1">
+                <div class="ml-4 lg:ml-6">
+                    <h3 class="text-lg lg:text-xl font-medium text-red-800">Please correct the following errors:</h3>
+                    <div class="mt-3 lg:mt-4 text-base lg:text-lg text-red-700">
+                        <ul class="list-disc pl-6 lg:pl-8 space-y-2 lg:space-y-3">
                             {% for error in errors %}
                             <li>{{ error }}</li>
                             {% endfor %}
@@ -46,105 +46,105 @@
         {% endif %}
 
         <!-- Prediction Form -->
-        <form method="post" id="predictionForm" class="bg-white rounded-xl sm:rounded-2xl shadow-lg sm:shadow-xl p-4 sm:p-6 lg:p-8">
+        <form method="post" id="predictionForm" class="bg-white rounded-3xl shadow-2xl p-8 lg:p-12 xl:p-16">
             {% csrf_token %}
             
-                    <!-- Personal Information Section -->
-        <div class="mb-8 sm:mb-12">
-            <div class="flex flex-col sm:flex-row items-start sm:items-center mb-4 sm:mb-6">
-                <div class="w-8 h-8 sm:w-10 sm:h-10 bg-blue-100 rounded-full flex items-center justify-center mb-2 sm:mb-0 sm:mr-4">
-                    <i class="fas fa-user text-blue-600 text-sm sm:text-base"></i>
+                                <!-- Personal Information Section -->
+            <div class="mb-16 lg:mb-20">
+                <div class="flex items-center mb-8 lg:mb-12">
+                    <div class="w-16 h-16 lg:w-20 lg:h-20 bg-blue-100 rounded-full flex items-center justify-center mr-6 lg:mr-8">
+                        <i class="fas fa-user text-blue-600 text-2xl lg:text-3xl"></i>
+                    </div>
+                    <h2 class="text-3xl lg:text-4xl xl:text-5xl font-bold text-gray-800">Personal Information</h2>
                 </div>
-                <h2 class="text-xl sm:text-2xl font-bold text-gray-800">Personal Information</h2>
-            </div>
-            
-            <div class="grid grid-cols-1 gap-4 sm:gap-6">
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
                     <!-- Age -->
                     <div class="form-group">
-                        <label for="{{ form.Age.id_for_label }}" class="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 sm:mb-2">
+                        <label for="{{ form.Age.id_for_label }}" class="block text-lg lg:text-xl font-semibold text-gray-700 mb-3 lg:mb-4">
                             {{ form.Age.label }}
                         </label>
                         {{ form.Age }}
                         {% if form.Age.help_text %}
-                        <p class="text-xs sm:text-sm text-gray-500 mt-1">{{ form.Age.help_text }}</p>
+                        <p class="text-base lg:text-lg text-gray-500 mt-2 lg:mt-3">{{ form.Age.help_text }}</p>
                         {% endif %}
                         {% for error in form.Age.errors %}
-                        <p class="text-xs sm:text-sm text-red-600 mt-1">{{ error }}</p>
+                        <p class="text-base lg:text-lg text-red-600 mt-2 lg:mt-3">{{ error }}</p>
                         {% endfor %}
                     </div>
                     
                     <!-- Driver Rating -->
                     <div class="form-group">
-                        <label for="{{ form.DriverRating.id_for_label }}" class="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 sm:mb-2">
+                        <label for="{{ form.DriverRating.id_for_label }}" class="block text-lg lg:text-xl font-semibold text-gray-700 mb-3 lg:mb-4">
                             {{ form.DriverRating.label }}
                         </label>
                         {{ form.DriverRating }}
-                         <p id="driverRatingInfo" class="text-xs text-gray-500 mt-1"></p>
+                         <p id="driverRatingInfo" class="text-base lg:text-lg text-gray-500 mt-2 lg:mt-3"></p>
                         {% if form.DriverRating.help_text %}
-                        <p class="text-xs sm:text-sm text-gray-500 mt-1">{{ form.DriverRating.help_text }}</p>
+                        <p class="text-base lg:text-lg text-gray-500 mt-2 lg:mt-3">{{ form.DriverRating.help_text }}</p>
                         {% endif %}
                         {% for error in form.DriverRating.errors %}
-                        <p class="text-xs sm:text-sm text-red-600 mt-1">{{ error }}</p>
+                        <p class="text-base lg:text-lg text-red-600 mt-2 lg:mt-3">{{ error }}</p>
                         {% endfor %}
                     </div>
                 </div>
             </div>
 
             <!-- Vehicle Information Section -->
-            <div class="mb-8 sm:mb-12">
-                <div class="flex flex-col sm:flex-row items-start sm:items-center mb-4 sm:mb-6">
-                    <div class="w-8 h-8 sm:w-10 sm:h-10 bg-green-100 rounded-full flex items-center justify-center mb-2 sm:mb-0 sm:mr-4">
-                        <i class="fas fa-car text-green-600 text-sm sm:text-base"></i>
+            <div class="mb-16 lg:mb-20">
+                <div class="flex items-center mb-8 lg:mb-12">
+                    <div class="w-16 h-16 lg:w-20 lg:h-20 bg-green-100 rounded-full flex items-center justify-center mr-6 lg:mr-8">
+                        <i class="fas fa-car text-green-600 text-2xl lg:text-3xl"></i>
                     </div>
-                    <h2 class="text-xl sm:text-2xl font-bold text-gray-800">Vehicle Information</h2>
+                    <h2 class="text-3xl lg:text-4xl xl:text-5xl font-bold text-gray-800">Vehicle Information</h2>
                 </div>
                 
-                <div class="grid grid-cols-1 gap-4 sm:gap-6">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
                     <!-- Vehicle Price -->
                     <div class="form-group">
-                        <label for="{{ form.VehiclePrice.id_for_label }}" class="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 sm:mb-2">
+                        <label for="{{ form.VehiclePrice.id_for_label }}" class="block text-lg lg:text-xl font-semibold text-gray-700 mb-3 lg:mb-4">
                             {{ form.VehiclePrice.label }}
                         </label>
                         {{ form.VehiclePrice }}
                         {% for error in form.VehiclePrice.errors %}
-                        <p class="text-xs sm:text-sm text-red-600 mt-1">{{ error }}</p>
+                        <p class="text-base lg:text-lg text-red-600 mt-2 lg:mt-3">{{ error }}</p>
                         {% endfor %}
                     </div>
                     
                     <!-- Age of Vehicle -->
                     <div class="form-group">
-                        <label for="{{ form.AgeOfVehicle.id_for_label }}" class="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 sm:mb-2">
+                        <label for="{{ form.AgeOfVehicle.id_for_label }}" class="block text-lg lg:text-xl font-semibold text-gray-700 mb-3 lg:mb-4">
                             {{ form.AgeOfVehicle.label }}
                         </label>
                         {{ form.AgeOfVehicle }}
                         {% for error in form.AgeOfVehicle.errors %}
-                        <p class="text-xs sm:text-sm text-red-600 mt-1">{{ error }}</p>
+                        <p class="text-base lg:text-lg text-red-600 mt-2 lg:mt-3">{{ error }}</p>
                         {% endfor %}
                     </div>
                     
                     <!-- Vehicle Category -->
                     <div class="form-group">
-                        <label for="{{ form.VehicleCategory.id_for_label }}" class="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 sm:mb-2">
+                        <label for="{{ form.VehicleCategory.id_for_label }}" class="block text-lg lg:text-xl font-semibold text-gray-700 mb-3 lg:mb-4">
                             {{ form.VehicleCategory.label }}
                         </label>
                         {{ form.VehicleCategory }}
                         {% for error in form.VehicleCategory.errors %}
-                        <p class="text-xs sm:text-sm text-red-600 mt-1">{{ error }}</p>
+                        <p class="text-base lg:text-lg text-red-600 mt-2 lg:mt-3">{{ error }}</p>
                         {% endfor %}
                     </div>
                 </div>
             </div>
 
             <!-- Accident Information Section -->
-            <div class="mb-8 sm:mb-12">
-                <div class="flex flex-col sm:flex-row items-start sm:items-center mb-4 sm:mb-6">
-                    <div class="w-8 h-8 sm:w-10 sm:h-10 bg-red-100 rounded-full flex items-center justify-center mb-2 sm:mb-0 sm:mr-4">
-                        <i class="fas fa-exclamation-triangle text-red-600 text-sm sm:text-base"></i>
+            <div class="mb-16 lg:mb-20">
+                <div class="flex items-center mb-8 lg:mb-12">
+                    <div class="w-16 h-16 lg:w-20 lg:h-20 bg-red-100 rounded-full flex items-center justify-center mr-6 lg:mr-8">
+                        <i class="fas fa-exclamation-triangle text-red-600 text-2xl lg:text-3xl"></i>
                     </div>
-                    <h2 class="text-xl sm:text-2xl font-bold text-gray-800">Accident Information</h2>
+                    <h2 class="text-3xl lg:text-4xl xl:text-5xl font-bold text-gray-800">Accident Information</h2>
                 </div>
                 
-                <div class="grid grid-cols-1 gap-4 sm:gap-6">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
                     <!-- Days Policy Accident -->
                     <div class="form-group">
                         <label for="{{ form.Days_Policy_Accident.id_for_label }}" class="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 sm:mb-2">

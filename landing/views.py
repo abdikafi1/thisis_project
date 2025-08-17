@@ -1655,22 +1655,34 @@ def notification_settings_view(request):
 def export_pdf_report(request):
     """Export user predictions as comprehensive PDF report with beautiful formatting and advanced analytics"""
     from django.http import HttpResponse
-    from reportlab.lib.pagesizes import letter, A4
-    from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, PageBreak, Image
-    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-    from reportlab.lib.units import inch
-    from reportlab.lib import colors
-    from reportlab.graphics.shapes import Drawing
-    from reportlab.graphics.charts.piecharts import Pie
-    from reportlab.graphics.charts.barcharts import VerticalBarChart
-    from reportlab.graphics.charts.linecharts import LineChart
-    from reportlab.graphics.charts.legends import Legend
-    from reportlab.graphics import renderPDF
+    from django.contrib import messages
     import json
     from django.utils import timezone
     import pytz
     from django.db.models import Avg, Max, Min, Count, Q
     from datetime import datetime, timedelta
+    
+    try:
+        # Try to import reportlab libraries
+        from reportlab.lib.pagesizes import letter, A4
+        from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, PageBreak, Image
+        from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+        from reportlab.lib.units import inch
+        from reportlab.lib import colors
+        from reportlab.graphics.shapes import Drawing
+        from reportlab.graphics.charts.piecharts import Pie
+        from reportlab.graphics.charts.barcharts import VerticalBarChart
+        from reportlab.graphics.charts.linecharts import LineChart
+        from reportlab.graphics.charts.legends import Legend
+        from reportlab.graphics import renderPDF
+    except ImportError as e:
+        # If reportlab is not available, try to create a simple PDF
+        try:
+            return create_simple_pdf_report(request)
+        except Exception as simple_error:
+            # If simple PDF also fails, redirect with error message
+            messages.error(request, f'PDF export is currently unavailable. Error: {str(e)}. Please use CSV export instead.')
+            return redirect('user_reports')
     
     # Set timezone to Africa/Nairobi
     nairobi_tz = pytz.timezone('Africa/Nairobi')
@@ -1724,840 +1736,318 @@ def export_pdf_report(request):
             'total': week_fraud + week_clean
         })
     
-    # Create enhanced HTTP response for PDF
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="fraud_detection_report_{request.user.username}_{now.strftime("%Y%m%d_%H%M%S")}_EAT.pdf"'
-    
-    # Create enhanced PDF document with better margins and styling
-    doc = SimpleDocTemplate(
-        response, 
-        pagesize=A4,
-        rightMargin=0.8*inch,
-        leftMargin=0.8*inch,
-        topMargin=1.2*inch,
-        bottomMargin=1.2*inch,
-        title=f"Fraud Detection Report - {request.user.get_full_name() or request.user.username}"
-    )
-    
-    # Enhanced styles with better typography and colors
-    base_styles = getSampleStyleSheet()
-    
-    # Create a new styles dictionary that we can modify
-    styles = {}
-    
-    # Custom title style with enhanced appearance
-    title_style = ParagraphStyle(
-        'CustomTitle',
-        parent=base_styles['Title'],
-        fontSize=24,
-        spaceAfter=35,
-        spaceBefore=20,
-        alignment=1,  # Center alignment
-        textColor=colors.HexColor('#1f2937'),
-        fontName='Helvetica-Bold'
-    )
-    
-    # Enhanced heading styles
-    heading2_style = ParagraphStyle(
-        'CustomHeading2',
-        parent=base_styles['Heading2'],
-        fontSize=16,
-        spaceAfter=20,
-        spaceBefore=25,
-        textColor=colors.HexColor('#374151'),
-        fontName='Helvetica-Bold',
-        borderWidth=0,
-        borderColor=colors.HexColor('#e5e7eb'),
-        borderPadding=8
-    )
-    
-    # Enhanced normal style
-    normal_style = ParagraphStyle(
-        'CustomNormal',
-        parent=base_styles['Normal'],
-        fontSize=11,
-        spaceAfter=12,
-        spaceBefore=6,
-        textColor=colors.HexColor('#4b5563'),
-        fontName='Helvetica',
-        alignment=0  # Left alignment
-    )
-    
-    # Add all styles to our dictionary
-    styles['Title'] = title_style
-    styles['Heading2'] = heading2_style
-    styles['Normal'] = normal_style
-    
-    # Copy only the styles that actually exist in base_styles
-    for style_name in ['Heading1', 'Heading3', 'Heading4', 'Heading5', 'Heading6']:
-        if style_name in base_styles:
-            styles[style_name] = base_styles[style_name]
-    
-    # Ensure we have the Normal style for parent references
-    if 'Normal' in base_styles:
-        styles['Normal'] = base_styles['Normal']
-    else:
-        # Create a fallback Normal style if it doesn't exist
-        styles['Normal'] = ParagraphStyle(
-            'FallbackNormal',
+    try:
+        # Create enhanced HTTP response for PDF
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename="fraud_detection_report_{request.user.username}_{now.strftime("%Y%m%d_%H%M%S")}_EAT.pdf"'
+        
+        # Create enhanced PDF document with better margins and styling
+        doc = SimpleDocTemplate(
+            response, 
+            pagesize=A4,
+            rightMargin=0.8*inch,
+            leftMargin=0.8*inch,
+            topMargin=1.2*inch,
+            bottomMargin=1.2*inch,
+            title=f"Fraud Detection Report - {request.user.get_full_name() or request.user.username}"
+        )
+        
+        # Enhanced styles with better typography and colors
+        base_styles = getSampleStyleSheet()
+        
+        # Create a new styles dictionary that we can modify
+        styles = {}
+        
+        # Custom title style with enhanced appearance
+        title_style = ParagraphStyle(
+            'CustomTitle',
+            parent=base_styles['Title'],
+            fontSize=24,
+            spaceAfter=35,
+            spaceBefore=20,
+            alignment=1,  # Center alignment
+            textColor=colors.HexColor('#1f2937'),
+            fontName='Helvetica-Bold'
+        )
+        
+        # Enhanced heading styles
+        heading2_style = ParagraphStyle(
+            'CustomHeading2',
+            parent=base_styles['Heading2'],
+            fontSize=16,
+            spaceAfter=20,
+            spaceBefore=25,
+            textColor=colors.HexColor('#374151'),
+            fontName='Helvetica-Bold',
+            borderWidth=0,
+            borderColor=colors.HexColor('#e5e7eb'),
+            borderPadding=8
+        )
+        
+        # Enhanced normal style
+        normal_style = ParagraphStyle(
+            'CustomNormal',
+            parent=base_styles['Normal'],
             fontSize=11,
             spaceAfter=12,
             spaceBefore=6,
             textColor=colors.HexColor('#4b5563'),
             fontName='Helvetica',
-            alignment=0
+            alignment=0  # Left alignment
         )
-    
-    # Ensure we have Heading3 style since it's used in the footer
-    if 'Heading3' not in styles:
-        styles['Heading3'] = ParagraphStyle(
-            'FallbackHeading3',
-            fontSize=14,
-            spaceAfter=15,
-            spaceBefore=20,
-            textColor=colors.HexColor('#4b5563'),
-            fontName='Helvetica-Bold',
-            alignment=0
-        )
-    
-    # Story elements for PDF content
-    story = []
-    
-    # Enhanced header with comprehensive information
-    story.append(Paragraph("🛡️ Comprehensive Fraud Detection Analytics Report", styles['Title']))
-    story.append(Spacer(1, 25))
-    
-    # Professional report metadata with enhanced formatting
-    metadata_table_data = [
-        ['📊 Report Information', ''],
-        ['Generated for:', f"{request.user.get_full_name() or request.user.username} ({request.user.email})"],
-        ['Generated on:', f"{now.strftime('%A, %B %d, %Y at %I:%M %p')} (EAT)"],
-        ['Report Period:', f"Last 30 days ({(now - timedelta(days=30)).strftime('%B %d, %Y')} to {now.strftime('%B %d, %Y')})"],
-        ['Total Predictions:', f"{total_user_predictions:,} predictions analyzed"],
-        ['Data Source:', 'PostgreSQL Database - Real-time Analysis'],
-    ]
-    
-    metadata_table = Table(metadata_table_data, colWidths=[2.8*inch, 4.2*inch])
-    metadata_table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#3b82f6')),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('FONTSIZE', (0, 0), (-1, 0), 12),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 15),
-        ('TOPPADDING', (0, 0), (-1, 0), 15),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#f8fafc')),
-        ('GRID', (0, 0), (-1, -1), 1.5, colors.HexColor('#cbd5e1')),
-        ('FONTSIZE', (0, 1), (-1, -1), 10),
-        ('BOTTOMPADDING', (0, 1), (-1, -1), 12),
-        ('TOPPADDING', (0, 1), (-1, -1), 12),
-        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-    ]))
-    
-    story.append(metadata_table)
-    story.append(Spacer(1, 35))
-    
-    if total_user_predictions > 0:
-        # Enhanced Executive Summary with comprehensive metrics
-        story.append(Paragraph("📈 Executive Summary & Key Insights", styles['Heading2']))
-        story.append(Spacer(1, 20))
         
-        executive_summary_data = [
-            ['🎯 Key Performance Indicators', ''],
-            ['Total Predictions Analyzed:', f"{total_user_predictions:,}"],
-            ['Fraud Cases Detected:', f"{user_fraud_count:,} ({fraud_detection_rate:.1f}%)"],
-            ['Clean Transactions:', f"{user_not_fraud_count:,} ({success_rate:.1f}%)"],
-            ['Average Processing Time:', f"{avg_processing_time:.3f} seconds"],
-            ['System Performance Rating:', f"{'⭐' * min(5, max(1, int(5 - avg_processing_time)))} ({5 - min(4, avg_processing_time):.1f}/5.0)"],
+        # Add all styles to our dictionary
+        styles['Title'] = title_style
+        styles['Heading2'] = heading2_style
+        styles['Normal'] = normal_style
+        
+        # Copy only the styles that actually exist in base_styles
+        for style_name in ['Heading1', 'Heading3', 'Heading4', 'Heading5', 'Heading6']:
+            if style_name in base_styles:
+                styles[style_name] = base_styles[style_name]
+        
+        # Ensure we have the Normal style for parent references
+        if 'Normal' in base_styles:
+            styles['Normal'] = base_styles['Normal']
+        else:
+            # Create a fallback Normal style if it doesn't exist
+            styles['Normal'] = ParagraphStyle(
+                'FallbackNormal',
+                fontSize=11,
+                spaceAfter=12,
+                spaceBefore=6,
+                textColor=colors.HexColor('#4b5563'),
+                fontName='Helvetica',
+                alignment=0
+            )
+        
+        # Ensure we have Heading3 style since it's used in the footer
+        if 'Heading3' not in styles:
+            styles['Heading3'] = ParagraphStyle(
+                'FallbackHeading3',
+                fontSize=14,
+                spaceAfter=15,
+                spaceBefore=20,
+                textColor=colors.HexColor('#4b5563'),
+                fontName='Helvetica-Bold',
+                alignment=0
+            )
+        
+        # Story elements for PDF content
+        story = []
+        
+        # Enhanced header with comprehensive information
+        story.append(Paragraph("🛡️ Comprehensive Fraud Detection Analytics Report", styles['Title']))
+        story.append(Spacer(1, 25))
+        
+        # Professional report metadata with enhanced formatting
+        metadata_table_data = [
+            ['📊 Report Information', ''],
+            ['Generated for:', f"{request.user.get_full_name() or request.user.username} ({request.user.email})"],
+            ['Generated on:', f"{now.strftime('%A, %B %d, %Y at %I:%M %p')} (EAT)"],
+            ['Report Period:', f"Last 30 days ({(now - timedelta(days=30)).strftime('%B %d, %Y')} to {now.strftime('%B %d, %Y')})"],
+            ['Total Predictions:', f"{total_user_predictions:,} predictions analyzed"],
+            ['Data Source:', 'PostgreSQL Database - Real-time Analysis'],
         ]
         
-        # Add confidence statistics if available
-        if confidence_stats['avg_confidence']:
-            executive_summary_data.extend([
-                ['Average Confidence Score:', f"{confidence_stats['avg_confidence']:.1f}%"],
-                ['Highest Confidence:', f"{confidence_stats['max_confidence']:.1f}%"],
-                ['Lowest Confidence:', f"{confidence_stats['min_confidence']:.1f}%"],
-            ])
-        
-        # Add additional comprehensive metrics
-        if confidence_stats['avg_confidence']:
-            # Calculate confidence-based metrics
-            high_confidence_predictions = user_predictions.filter(confidence_score__gte=80).count()
-            medium_confidence_predictions = user_predictions.filter(confidence_score__gte=60, confidence_score__lt=80).count()
-            low_confidence_predictions = user_predictions.filter(confidence_score__lt=60).count()
-            
-            executive_summary_data.extend([
-                ['High Confidence Cases (80%+)', f"{high_confidence_predictions:,} ({(high_confidence_predictions/total_user_predictions*100):.1f}%)"],
-                ['Medium Confidence Cases (60-79%)', f"{medium_confidence_predictions:,} ({(medium_confidence_predictions/total_user_predictions*100):.1f}%)"],
-                ['Low Confidence Cases (<60%)', f"{low_confidence_predictions:,} ({(low_confidence_predictions/total_user_predictions*100):.1f}%)"],
-            ])
-        
-        # Add processing time range
-        if processing_stats['max_processing_time'] and processing_stats['min_processing_time']:
-            executive_summary_data.extend([
-                ['Processing Time Range:', f"{processing_stats['min_processing_time']:.3f}s - {processing_stats['max_processing_time']:.3f}s"],
-                ['Total Processing Time:', f"{processing_stats['total_processing_time']:.3f}s"],
-            ])
-        
-        exec_summary_table = Table(executive_summary_data, colWidths=[3.5*inch, 3.5*inch])
-        exec_summary_table.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#059669')),
+        metadata_table = Table(metadata_table_data, colWidths=[2.8*inch, 4.2*inch])
+        metadata_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#3b82f6')),
             ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
             ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
             ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
             ('FONTSIZE', (0, 0), (-1, 0), 12),
             ('BOTTOMPADDING', (0, 0), (-1, 0), 15),
             ('TOPPADDING', (0, 0), (-1, 0), 15),
-            ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#f0fdf4')),
-            ('GRID', (0, 0), (-1, -1), 1.5, colors.HexColor('#bbf7d0')),
+            ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#f8fafc')),
+            ('GRID', (0, 0), (-1, -1), 1.5, colors.HexColor('#cbd5e1')),
             ('FONTSIZE', (0, 1), (-1, -1), 10),
             ('BOTTOMPADDING', (0, 1), (-1, -1), 12),
             ('TOPPADDING', (0, 1), (-1, -1), 12),
             ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
         ]))
         
-        story.append(exec_summary_table)
+        story.append(metadata_table)
         story.append(Spacer(1, 35))
         
-        # Enhanced Performance Analytics Table
-        story.append(Paragraph("⚡ Detailed Performance Analytics", styles['Heading2']))
-        story.append(Spacer(1, 20))
-        
-        performance_data = [
-            ['📊 Performance Metrics', 'Current Value', 'Industry Benchmark', 'Status'],
-            ['Processing Speed', f"{avg_processing_time:.3f}s", '< 1.000s', '✅ Excellent' if avg_processing_time < 1.0 else '⚠️ Good' if avg_processing_time < 2.0 else '❌ Needs Improvement'],
-            ['Detection Accuracy', f"{fraud_detection_rate:.1f}%", '> 85%', '✅ Excellent' if fraud_detection_rate > 85 else '⚠️ Good' if fraud_detection_rate > 70 else '❌ Needs Improvement'],
-            ['System Reliability', f"{success_rate:.1f}%", '> 90%', '✅ Excellent' if success_rate > 90 else '⚠️ Good' if success_rate > 80 else '❌ Needs Improvement'],
-        ]
-        
-        if confidence_stats['avg_confidence']:
-            performance_data.append(['Confidence Level', f"{confidence_stats['avg_confidence']:.1f}%", '> 80%', '✅ Excellent' if confidence_stats['avg_confidence'] > 80 else '⚠️ Good' if confidence_stats['avg_confidence'] > 60 else '❌ Needs Improvement'])
-        
-        # Add additional performance metrics
-        if processing_stats['max_processing_time'] and processing_stats['min_processing_time']:
-            performance_data.extend([
-                ['Response Time Range', f"{processing_stats['min_processing_time']:.3f}s - {processing_stats['max_processing_time']:.3f}s", '< 2.000s', '✅ Excellent' if processing_stats['max_processing_time'] < 2.0 else '⚠️ Good' if processing_stats['max_processing_time'] < 3.0 else '❌ Needs Improvement'],
-                ['Data Quality', '100%', '> 95%', '✅ Excellent'],
-                ['System Uptime', '99.9%', '> 99%', '✅ Excellent'],
-            ])
-        
-        # Add model accuracy metrics
-        if confidence_stats['avg_confidence']:
-            high_confidence_rate = (user_predictions.filter(confidence_score__gte=80).count() / total_user_predictions * 100) if total_user_predictions > 0 else 0
-            performance_data.append(['Model Confidence', f"{high_confidence_rate:.1f}%", '> 70%', '✅ Excellent' if high_confidence_rate > 70 else '⚠️ Good' if high_confidence_rate > 50 else '❌ Needs Improvement'])
-        
-        performance_table = Table(performance_data, colWidths=[2.2*inch, 1.6*inch, 1.6*inch, 1.6*inch])
-        performance_table.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#7c3aed')),
-            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-            ('FONTSIZE', (0, 0), (-1, 0), 11),
-            ('BOTTOMPADDING', (0, 0), (-1, 0), 15),
-            ('TOPPADDING', (0, 0), (-1, 0), 15),
-            ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#faf5ff')),
-            ('GRID', (0, 0), (-1, -1), 1.5, colors.HexColor('#d8b4fe')),
-            ('FONTSIZE', (0, 1), (-1, -1), 9),
-            ('BOTTOMPADDING', (0, 1), (-1, -1), 10),
-            ('TOPPADDING', (0, 1), (-1, -1), 10),
-            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-        ]))
-        
-        story.append(performance_table)
-        story.append(Spacer(1, 35))
-        
-        # Weekly Trends Summary Table (only if there's data)
-        if weekly_data and any(w['total'] > 0 for w in weekly_data):
-            story.append(Paragraph("📅 Weekly Trends Analysis", styles['Heading2']))
+        if total_user_predictions > 0:
+            # Enhanced Executive Summary with comprehensive metrics
+            story.append(Paragraph("📈 Executive Summary & Key Insights", styles['Heading2']))
             story.append(Spacer(1, 20))
             
-            trends_data = [['Week Period', 'Total Predictions', 'Fraud Detected', 'Clean Transactions', 'Fraud Rate']]
+            executive_summary_data = [
+                ['🎯 Key Performance Indicators', ''],
+                ['Total Predictions Analyzed:', f"{total_user_predictions:,}"],
+                ['Fraud Cases Detected:', f"{user_fraud_count:,} ({fraud_detection_rate:.1f}%)"],
+                ['Clean Transactions:', f"{user_not_fraud_count:,} ({success_rate:.1f}%)"],
+                ['Average Processing Time:', f"{avg_processing_time:.3f} seconds"],
+                ['System Performance Rating:', f"{'⭐' * min(5, max(1, int(5 - avg_processing_time)))} ({5 - min(4, avg_processing_time):.1f}/5.0)"],
+            ]
             
-            for week_data in weekly_data:
-                if week_data['total'] > 0:
-                    fraud_rate = (week_data['fraud'] / week_data['total']) * 100
-                    trends_data.append([
-                        week_data['week'],
-                        str(week_data['total']),
-                        f"{week_data['fraud']} ({(week_data['fraud']/week_data['total']*100):.1f}%)",
-                        f"{week_data['clean']} ({(week_data['clean']/week_data['total']*100):.1f}%)",
-                        f"{fraud_rate:.1f}%"
-                    ])
-            
-            trends_table = Table(trends_data, colWidths=[1.4*inch, 1.4*inch, 1.4*inch, 1.4*inch, 1.4*inch])
-            trends_table.setStyle(TableStyle([
-                ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#dc2626')),
-                ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-                ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-                ('FONTSIZE', (0, 0), (-1, 0), 10),
-                ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-                ('TOPPADDING', (0, 0), (-1, 0), 12),
-                ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#fef2f2')),
-                ('GRID', (0, 0), (-1, -1), 1.5, colors.HexColor('#fecaca')),
-                ('FONTSIZE', (0, 1), (-1, -1), 9),
-                ('BOTTOMPADDING', (0, 1), (-1, -1), 8),
-                ('TOPPADDING', (0, 1), (-1, -1), 8),
-                ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-            ]))
-            
-            story.append(trends_table)
-            story.append(Spacer(1, 35))
-        
-        # Enhanced Charts Section with Better Layout
-        if weekly_data and any(w['total'] > 0 for w in weekly_data):
-            story.append(Paragraph("📊 Visual Analytics & Charts", styles['Heading2']))
-            story.append(Spacer(1, 25))
-            
-            # Create a comprehensive chart section with better organization
-            weeks = [w['week'] for w in weekly_data if w['total'] > 0]
-            fraud_counts = [w['fraud'] for w in weekly_data if w['total'] > 0]
-            clean_counts = [w['clean'] for w in weekly_data if w['total'] > 0]
-            
-            if weeks:
-                # Create enhanced bar chart for weekly trends
-                chart = VerticalBarChart()
-                chart.x = 1.2*inch
-                chart.y = 1.2*inch
-                chart.width = 4.8*inch
-                chart.height = 3.2*inch
-                
-                chart.data = [fraud_counts, clean_counts]
-                chart.categoryAxis.categoryNames = weeks
-                chart.valueAxis.valueMin = 0
-                chart.valueAxis.valueMax = max(max(fraud_counts), max(clean_counts)) + 1 if fraud_counts and clean_counts else 1
-                chart.valueAxis.valueStep = 1
-                
-                # Enhanced chart styling
-                chart.bars[0].fillColor = colors.HexColor('#dc2626')  # Red for fraud
-                chart.bars[1].fillColor = colors.HexColor('#059669')  # Green for clean
-                chart.bars[0].strokeWidth = 2.0
-                chart.bars[1].strokeWidth = 2.0
-                chart.bars[0].strokeColor = colors.white
-                chart.bars[1].strokeColor = colors.white
-                
-                # Add chart title and labels
-                chart.title = 'Weekly Activity Trends'
-                chart.title.fontSize = 14
-                chart.title.fontName = 'Helvetica-Bold'
-                chart.title.textColor = colors.HexColor('#1f2937')
-                
-                # Enhanced chart container
-                drawing = Drawing(6.2*inch, 4.2*inch)
-                drawing.add(chart)
-                
-                # Add chart description
-                chart_description = f"""
-                <b>📈 Chart Analysis:</b><br/>
-                • <b>Red Bars:</b> Fraud cases detected per week<br/>
-                • <b>Green Bars:</b> Clean transactions per week<br/>
-                • <b>Trend:</b> Shows weekly activity patterns<br/>
-                • <b>Total Period:</b> Last 4 weeks of data<br/>
-                • <b>Peak Week:</b> Week with highest activity
-                """
-                
-                story.append(drawing)
-                story.append(Spacer(1, 20))
-                
-                # Add chart explanation table
-                chart_info_data = [
-                    ['📊 Chart Information', 'Details'],
-                    ['Chart Type', 'Vertical Bar Chart - Weekly Trends'],
-                    ['Data Period', f"Last {len(weeks)} weeks"],
-                    ['Fraud Cases Total', f"{sum(fraud_counts)} cases"],
-                    ['Clean Cases Total', f"{sum(clean_counts)} cases"],
-                    ['Peak Activity Week', weeks[fraud_counts.index(max(fraud_counts))] if fraud_counts else 'N/A'],
-                    ['Lowest Activity Week', weeks[fraud_counts.index(min(fraud_counts))] if fraud_counts else 'N/A'],
-                ]
-                
-                chart_info_table = Table(chart_info_data, colWidths=[3.5*inch, 3.5*inch])
-                chart_info_table.setStyle(TableStyle([
-                    ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#6366f1')),
-                    ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
-                    ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-                    ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-                    ('FONTSIZE', (0, 0), (-1, 0), 11),
-                    ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-                    ('TOPPADDING', (0, 0), (-1, 0), 12),
-                    ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#f8fafc')),
-                    ('GRID', (0, 0), (-1, -1), 1.5, colors.HexColor('#cbd5e1')),
-                    ('FONTSIZE', (0, 1), (-1, -1), 10),
-                    ('BOTTOMPADDING', (0, 1), (-1, -1), 10),
-                    ('TOPPADDING', (0, 1), (-1, -1), 10),
-                    ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-                ]))
-                
-                story.append(chart_info_table)
-                story.append(Spacer(1, 35))
-        
-        # Recent Predictions Section - Simplified table without input summary
-        story.append(Paragraph("🔍 Recent Predictions Analysis", styles['Heading2']))
-        story.append(Spacer(1, 25))
-        
-        if user_predictions.exists():
-            # Simplified table headers - removed input summary column
-            table_data = [['Date & Time (EAT)', 'Result', 'Confidence', 'Processing Time', 'Risk Level']]
-            
-            # Add recent predictions (limit to 25 for better space utilization)
-            for prediction in user_predictions[:25]:
-                # Enhanced confidence display
-                if prediction.confidence_score:
-                    if prediction.confidence_score >= 80:
-                        confidence = f"🔒 {prediction.confidence_score:.1f}%"
-                    elif prediction.confidence_score >= 60:
-                        confidence = f"⚠️ {prediction.confidence_score:.1f}%"
-                    else:
-                        confidence = f"❓ {prediction.confidence_score:.1f}%"
-                else:
-                    confidence = "N/A"
-                
-                # Enhanced processing time display
-                if prediction.processing_time:
-                    if prediction.processing_time <= 0.5:
-                        proc_time = f"⚡ {prediction.processing_time:.3f}s"
-                    elif prediction.processing_time <= 1.0:
-                        proc_time = f"🔄 {prediction.processing_time:.3f}s"
-                    else:
-                        proc_time = f"🐌 {prediction.processing_time:.3f}s"
-                else:
-                    proc_time = "N/A"
-                
-                # Risk level assessment
-                if prediction.result == 'Fraud':
-                    if prediction.confidence_score and prediction.confidence_score >= 80:
-                        risk_level = "🔴 HIGH"
-                    elif prediction.confidence_score and prediction.confidence_score >= 60:
-                        risk_level = "🟡 MEDIUM"
-                    else:
-                        risk_level = "🟠 LOW"
-                else:
-                    risk_level = "🟢 SAFE"
-                
-                # Enhanced result display
-                result_display = f"🚨 {prediction.result}" if prediction.result == 'Fraud' else f"✅ {prediction.result}"
-                
-                # Format timestamp in Nairobi timezone
-                prediction_time = prediction.created_at.astimezone(nairobi_tz)
-                formatted_time = prediction_time.strftime('%m/%d/%Y %H:%M:%S')
-                
-                table_data.append([
-                    formatted_time,
-                    result_display,
-                    confidence,
-                    proc_time,
-                    risk_level
+            # Add confidence statistics if available
+            if confidence_stats['avg_confidence']:
+                executive_summary_data.extend([
+                    ['Average Confidence Score:', f"{confidence_stats['avg_confidence']:.1f}%"],
+                    ['Highest Confidence:', f"{confidence_stats['max_confidence']:.1f}%"],
+                    ['Lowest Confidence:', f"{confidence_stats['min_confidence']:.1f}%"],
                 ])
             
-            # Create table with better column widths for improved layout
-            predictions_table = Table(table_data, colWidths=[1.6*inch, 1.4*inch, 1.4*inch, 1.4*inch, 1.2*inch])
-            predictions_table.setStyle(TableStyle([
-                ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1f2937')),
+            exec_summary_table = Table(executive_summary_data, colWidths=[3.5*inch, 3.5*inch])
+            exec_summary_table.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#059669')),
                 ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-                ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
                 ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-                ('FONTSIZE', (0, 0), (-1, 0), 10),
-                ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-                ('TOPPADDING', (0, 0), (-1, 0), 12),
-                ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#f9fafb')),
-                ('GRID', (0, 0), (-1, -1), 1, colors.HexColor('#d1d5db')),
-                ('FONTSIZE', (0, 1), (-1, -1), 8),
-                ('BOTTOMPADDING', (0, 1), (-1, -1), 8),
-                ('TOPPADDING', (0, 1), (-1, -1), 8),
+                ('FONTSIZE', (0, 0), (-1, 0), 12),
+                ('BOTTOMPADDING', (0, 0), (-1, 0), 15),
+                ('TOPPADDING', (0, 0), (-1, 0), 15),
+                ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#f0fdf4')),
+                ('GRID', (0, 0), (-1, -1), 1.5, colors.HexColor('#bbf7d0')),
+                ('FONTSIZE', (0, 1), (-1, -1), 10),
+                ('BOTTOMPADDING', (0, 1), (-1, -1), 12),
+                ('TOPPADDING', (0, 1), (-1, -1), 12),
                 ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-                ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#f8fafc')]),
             ]))
             
-            story.append(predictions_table)
-    story.append(Spacer(1, 30))
-    
-    if total_user_predictions == 0:
-        # Enhanced no data message
-        story.append(Paragraph("📊 No Prediction Data Available", styles['Heading2']))
-        story.append(Spacer(1, 20))
-        story.append(Paragraph(
-            "🔍 <b>No predictions found for your account.</b><br/><br/>"
-            "This could mean:<br/>"
-            "• You haven't made any predictions yet<br/>"
-            "• All predictions were made outside the reporting period<br/>"
-            "• There may be a temporary data access issue<br/><br/>"
-            "💡 <b>Getting Started:</b><br/>"
-            "Visit the prediction page to start analyzing insurance claims and build your fraud detection history.",
-            normal_style
-        ))
-        story.append(Spacer(1, 30))
-    
-            # Enhanced Summary Section with Comprehensive Analytics
-    story.append(Paragraph("📊 Comprehensive Analytics Summary", styles['Heading2']))
-    story.append(Spacer(1, 20))
-    
-    # Create comprehensive summary table
-    summary_analytics_data = [
-        ['📈 Analytics Category', 'Current Value', 'Benchmark', 'Status'],
-        ['System Performance', f"{avg_processing_time:.3f}s", '< 1.000s', '✅ Excellent' if avg_processing_time < 1.0 else '⚠️ Good' if avg_processing_time < 2.0 else '❌ Needs Improvement'],
-        ['Fraud Detection Rate', f"{fraud_detection_rate:.1f}%", '> 85%', '✅ Excellent' if fraud_detection_rate > 85 else '⚠️ Good' if fraud_detection_rate > 70 else '❌ Needs Improvement'],
-        ['Success Rate', f"{success_rate:.1f}%", '> 90%', '✅ Excellent' if success_rate > 90 else '⚠️ Good' if success_rate > 80 else '❌ Needs Improvement'],
-        ['Data Quality', '100%', '> 95%', '✅ Excellent'],
-        ['Report Completeness', 'Complete', '100%', '✅ Excellent'],
-    ]
-    
-    if confidence_stats['avg_confidence']:
-        summary_analytics_data.append(['Confidence Level', f"{confidence_stats['avg_confidence']:.1f}%", '> 80%', '✅ Excellent' if confidence_stats['avg_confidence'] > 80 else '⚠️ Good' if confidence_stats['avg_confidence'] > 60 else '❌ Needs Improvement'])
-    
-    # Add additional comprehensive metrics
-    if confidence_stats['avg_confidence']:
-        high_confidence_predictions = user_predictions.filter(confidence_score__gte=80).count()
-        medium_confidence_predictions = user_predictions.filter(confidence_score__gte=60, confidence_score__lt=80).count()
-        low_confidence_predictions = user_predictions.filter(confidence_score__lt=60).count()
+            story.append(exec_summary_table)
+            story.append(Spacer(1, 35))
+            
+            # Recent Predictions Section - Simplified table
+            story.append(Paragraph("🔍 Recent Predictions Analysis", styles['Heading2']))
+            story.append(Spacer(1, 25))
+            
+            if user_predictions.exists():
+                # Simplified table headers
+                table_data = [['Date & Time (EAT)', 'Result', 'Confidence', 'Processing Time', 'Risk Level']]
+                
+                # Add recent predictions (limit to 25 for better space utilization)
+                for prediction in user_predictions[:25]:
+                    # Enhanced confidence display
+                    if prediction.confidence_score:
+                        if prediction.confidence_score >= 80:
+                            confidence = f"🔒 {prediction.confidence_score:.1f}%"
+                        elif prediction.confidence_score >= 60:
+                            confidence = f"⚠️ {prediction.confidence_score:.1f}%"
+                        else:
+                            confidence = f"❓ {prediction.confidence_score:.1f}%"
+                    else:
+                        confidence = "N/A"
+                    
+                    # Enhanced processing time display
+                    if prediction.processing_time:
+                        if prediction.processing_time <= 0.5:
+                            proc_time = f"⚡ {prediction.processing_time:.3f}s"
+                        elif prediction.processing_time <= 1.0:
+                            proc_time = f"🔄 {prediction.processing_time:.3f}s"
+                        else:
+                            proc_time = f"🐌 {prediction.processing_time:.3f}s"
+                    else:
+                        proc_time = "N/A"
+                    
+                    # Risk level assessment
+                    if prediction.result == 'Fraud':
+                        if prediction.confidence_score and prediction.confidence_score >= 80:
+                            risk_level = "🔴 HIGH"
+                        elif prediction.confidence_score and prediction.confidence_score >= 60:
+                            risk_level = "🟡 MEDIUM"
+                        else:
+                            risk_level = "🟠 LOW"
+                    else:
+                        risk_level = "🟢 SAFE"
+                    
+                    # Enhanced result display
+                    result_display = f"🚨 {prediction.result}" if prediction.result == 'Fraud' else f"✅ {prediction.result}"
+                    
+                    # Format timestamp in Nairobi timezone
+                    prediction_time = prediction.created_at.astimezone(nairobi_tz)
+                    formatted_time = prediction_time.strftime('%m/%d/%Y %H:%M:%S')
+                    
+                    table_data.append([
+                        formatted_time,
+                        result_display,
+                        confidence,
+                        proc_time,
+                        risk_level
+                    ])
+                
+                # Create table with better column widths for improved layout
+                predictions_table = Table(table_data, colWidths=[1.6*inch, 1.4*inch, 1.4*inch, 1.4*inch, 1.2*inch])
+                predictions_table.setStyle(TableStyle([
+                    ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1f2937')),
+                    ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+                    ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                    ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                    ('FONTSIZE', (0, 0), (-1, 0), 10),
+                    ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+                    ('TOPPADDING', (0, 0), (-1, 0), 12),
+                    ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#f9fafb')),
+                    ('GRID', (0, 0), (-1, -1), 1, colors.HexColor('#d1d5db')),
+                    ('FONTSIZE', (0, 1), (-1, -1), 8),
+                    ('BOTTOMPADDING', (0, 1), (-1, -1), 8),
+                    ('TOPPADDING', (0, 1), (-1, -1), 8),
+                    ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                    ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#f8fafc')]),
+                ]))
+                
+                story.append(predictions_table)
         
-        summary_analytics_data.extend([
-            ['High Confidence Cases', f"{high_confidence_predictions:,} ({(high_confidence_predictions/total_user_predictions*100):.1f}%)", '> 70%', '✅ Excellent' if (high_confidence_predictions/total_user_predictions*100) > 70 else '⚠️ Good' if (high_confidence_predictions/total_user_predictions*100) > 50 else '❌ Needs Improvement'],
-            ['Medium Confidence Cases', f"{medium_confidence_predictions:,} ({(medium_confidence_predictions/total_user_predictions*100):.1f}%)", '> 20%', '✅ Excellent' if (medium_confidence_predictions/total_user_predictions*100) > 20 else '⚠️ Good' if (medium_confidence_predictions/total_user_predictions*100) > 10 else '❌ Needs Improvement'],
-            ['Low Confidence Cases', f"{low_confidence_predictions:,} ({(low_confidence_predictions/total_user_predictions*100):.1f}%)", '< 10%', '✅ Excellent' if (low_confidence_predictions/total_user_predictions*100) < 10 else '⚠️ Good' if (low_confidence_predictions/total_user_predictions*100) < 20 else '❌ Needs Improvement'],
-        ])
-    
-    if processing_stats['max_processing_time'] and processing_stats['min_processing_time']:
-        summary_analytics_data.extend([
-            ['Processing Time Range', f"{processing_stats['min_processing_time']:.3f}s - {processing_stats['max_processing_time']:.3f}s", '< 2.000s', '✅ Excellent' if processing_stats['max_processing_time'] < 2.0 else '⚠️ Good' if processing_stats['max_processing_time'] < 3.0 else '❌ Needs Improvement'],
-            ['Data Completeness', '100%', '> 95%', '✅ Excellent'],
-            ['Export Readiness', 'Ready', '100%', '✅ Excellent'],
-        ])
-    
-    summary_analytics_table = Table(summary_analytics_data, colWidths=[2.2*inch, 1.4*inch, 1.4*inch, 1.4*inch])
-    summary_analytics_table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1e40af')),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('FONTSIZE', (0, 0), (-1, 0), 11),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 15),
-        ('TOPPADDING', (0, 0), (-1, 0), 15),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#f8fafc')),
-        ('GRID', (0, 0), (-1, -1), 1.5, colors.HexColor('#cbd5e1')),
-        ('FONTSIZE', (0, 1), (-1, -1), 10),
-        ('BOTTOMPADDING', (0, 1), (-1, -1), 12),
-        ('TOPPADDING', (0, 1), (-1, -1), 12),
-        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#f1f5f9')]),
-    ]))
-    
-    story.append(summary_analytics_table)
-    story.append(Spacer(1, 35))
-    
-    # Export Information Section - Enhanced with comprehensive details
-    story.append(Paragraph("📤 Export Information & Data Readiness", styles['Heading2']))
-    story.append(Spacer(1, 20))
-    
-    # Create export information table
-    export_info_data = [
-        ['📊 Export Category', 'Current Status', 'Details', 'Ready For'],
-        ['PDF Reports', '✅ Ready', 'Professional formatted report with charts and analytics', 'Presentations, Audits, Stakeholders'],
-        ['CSV Data Export', '✅ Ready', 'Raw data for analysis in Excel, Google Sheets, or databases', 'Data Analysis, Custom Reporting, Systems Integration'],
-        ['Data Completeness', '100% Complete', f"{total_user_predictions:,} records available", 'Full Analysis'],
-        ['Fraud Detection Rate', f"{fraud_detection_rate:.1f}%", f"{user_fraud_count:,} cases detected", 'Risk Assessment'],
-        ['Processing Time', f"{avg_processing_time:.3f}s", f"Range: {processing_stats.get('min_processing_time', 0):.3f}s - {processing_stats.get('max_processing_time', 0):.3f}s", 'Performance Analysis'],
-    ]
-    
-    if confidence_stats['avg_confidence']:
-        export_info_data.extend([
-            ['Confidence Analysis', f"{confidence_stats['avg_confidence']:.1f}%", f"Range: {confidence_stats['min_confidence']:.1f}% - {confidence_stats['max_confidence']:.1f}%", 'Model Reliability Assessment'],
-            ['High Confidence Cases', f"{user_predictions.filter(confidence_score__gte=80).count():,}", 'Reliable predictions for decision making', 'High-Stakes Decisions'],
-        ])
-    
-    export_info_table = Table(export_info_data, colWidths=[2.0*inch, 1.4*inch, 2.0*inch, 1.6*inch])
-    export_info_table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#059669')),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
-        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('FONTSIZE', (0, 0), (-1, 0), 10),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('TOPPADDING', (0, 0), (-1, 0), 12),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#f0fdf4')),
-        ('GRID', (0, 0), (-1, -1), 1.5, colors.HexColor('#bbf7d0')),
-        ('FONTSIZE', (0, 1), (-1, -1), 9),
-        ('BOTTOMPADDING', (0, 1), (-1, -1), 10),
-        ('TOPPADDING', (0, 1), (-1, -1), 10),
-        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#f0fdf4')]),
-    ]))
-    
-    story.append(export_info_table)
-    story.append(Spacer(1, 25))
-    
-    # Export Tips Section
-    story.append(Paragraph("💡 Export Tips & Best Practices", styles['Heading2']))
-    story.append(Spacer(1, 15))
-    
-    export_tips_content = f"""
-    <b>📋 PDF Reports:</b><br/>
-    • Perfect for presentations, audits, and sharing with stakeholders<br/>
-    • Includes visual charts and professional formatting<br/>
-    • Contains executive summary with key metrics<br/>
-    • Ready for board meetings and compliance reviews<br/><br/>
-    
-    <b>📊 CSV Data:</b><br/>
-    • Ideal for data analysis, custom reporting, and importing into other systems<br/>
-    • Contains all raw prediction data with complete fields<br/>
-    • Excel-compatible format for easy analysis<br/>
-    • Ready for statistical analysis and machine learning workflows<br/><br/>
-    
-    <b>🎯 Data Quality:</b><br/>
-    • 100% complete records with no missing data<br/>
-    • Real-time data from PostgreSQL database<br/>
-    • All timestamps in Africa/Nairobi timezone (EAT)<br/>
-    • Machine learning model confidence scores included<br/><br/>
-    
-    <b>📈 Analytics Ready:</b><br/>
-    • {total_user_predictions:,} predictions available for analysis<br/>
-    • {fraud_detection_rate:.1f}% fraud detection rate for risk assessment<br/>
-    • {avg_processing_time:.3f}s average processing time for performance analysis<br/>
-    • Complete confidence score distribution for model evaluation
-    """
-    
-    story.append(Paragraph(export_tips_content, normal_style))
-    story.append(Spacer(1, 35))
-    
-    # Data Quality and Export Readiness Section
-    story.append(Paragraph("🔍 Data Quality & Export Readiness Assessment", styles['Heading2']))
-    story.append(Spacer(1, 20))
-    
-    # Create data quality assessment table
-    data_quality_data = [
-        ['📊 Quality Metric', 'Current Status', 'Value', 'Assessment'],
-        ['Data Completeness', '✅ 100% Complete', f"{total_user_predictions:,} records", 'Excellent - No missing data'],
-        ['Data Freshness', '✅ Real-time', 'Live from PostgreSQL', 'Excellent - Current data'],
-        ['Timezone Accuracy', '✅ Africa/Nairobi', 'EAT (UTC+3)', 'Excellent - Local timezone'],
-        ['Field Completeness', '✅ 100% Complete', 'All fields populated', 'Excellent - Complete records'],
-        ['Data Integrity', '✅ Validated', 'JSON validation passed', 'Excellent - Clean data'],
-    ]
-    
-    if confidence_stats['avg_confidence']:
-        data_quality_data.extend([
-            ['Confidence Distribution', '✅ Balanced', f"{confidence_stats['min_confidence']:.1f}% - {confidence_stats['max_confidence']:.1f}%", 'Good - Varied confidence levels'],
-            ['High Confidence Rate', '✅ Reliable', f"{(user_predictions.filter(confidence_score__gte=80).count()/total_user_predictions*100):.1f}%" if total_user_predictions > 0 else "0%", 'Good - High reliability'],
-        ])
-    
-    if processing_stats['avg_processing_time']:
-        data_quality_data.extend([
-            ['Processing Performance', '✅ Optimal', f"{avg_processing_time:.3f}s average", 'Excellent - Fast processing'],
-            ['Response Consistency', '✅ Stable', f"{processing_stats['min_processing_time']:.3f}s - {processing_stats['max_processing_time']:.3f}s", 'Good - Consistent performance'],
-        ])
-    
-    data_quality_table = Table(data_quality_data, colWidths=[2.2*inch, 1.4*inch, 1.4*inch, 1.4*inch])
-    data_quality_table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#7c3aed')),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
-        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('FONTSIZE', (0, 0), (-1, 0), 10),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('TOPPADDING', (0, 0), (-1, 0), 12),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#faf5ff')),
-        ('GRID', (0, 0), (-1, -1), 1.5, colors.HexColor('#d8b4fe')),
-        ('FONTSIZE', (0, 1), (-1, -1), 9),
-        ('BOTTOMPADDING', (0, 1), (-1, -1), 10),
-        ('TOPPADDING', (0, 1), (-1, -1), 10),
-        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#faf5ff')]),
-    ]))
-    
-    story.append(data_quality_table)
-    story.append(Spacer(1, 25))
-    
-    # Export Capabilities Summary
-    story.append(Paragraph("🚀 Export Capabilities & System Features", styles['Heading2']))
-    story.append(Spacer(1, 15))
-    
-    export_capabilities_content = f"""
-    <b>📋 PDF Export Features:</b><br/>
-    • Professional formatting with corporate branding<br/>
-    • Interactive charts and visual analytics<br/>
-    • Executive summary with key performance indicators<br/>
-    • Detailed prediction analysis and risk assessment<br/>
-    • Performance metrics and industry benchmarks<br/>
-    • Weekly and monthly trend analysis<br/>
-    • Complete data tables with enhanced styling<br/><br/>
-    
-    <b>📊 CSV Export Features:</b><br/>
-    • Complete raw data export with all fields<br/>
-    • UTF-8 encoding with BOM for Excel compatibility<br/>
-    • Comprehensive headers and metadata<br/>
-    • Ready for data analysis tools (Python, R, Excel)<br/>
-    • All timestamps in Africa/Nairobi timezone<br/>
-    • Confidence scores and processing times included<br/><br/>
-    
-    <b>🎯 System Capabilities:</b><br/>
-    • Real-time data from PostgreSQL database<br/>
-    • Machine learning model with confidence scoring<br/>
-    • Advanced analytics and trend detection<br/>
-    • Risk assessment and recommendations<br/>
-    • Performance monitoring and benchmarking<br/>
-    • Export-ready data with 100% completeness<br/><br/>
-    
-    <b>📈 Data Analytics:</b><br/>
-    • {total_user_predictions:,} predictions analyzed<br/>
-    • {fraud_detection_rate:.1f}% fraud detection accuracy<br/>
-    • {avg_processing_time:.3f}s average response time<br/>
-    • Complete confidence score distribution<br/>
-    • Weekly and monthly trend analysis<br/>
-    • Risk level assessment and categorization
-    """
-    
-    story.append(Paragraph(export_capabilities_content, normal_style))
-    story.append(Spacer(1, 35))
-    
-    # Final Comprehensive Summary - Dashboard Overview
-    story.append(Paragraph("🎯 Complete Report Summary & Dashboard Overview", styles['Heading2']))
-    story.append(Spacer(1, 20))
-    
-    # Create comprehensive dashboard summary table
-    dashboard_summary_data = [
-        ['📊 Dashboard Metric', 'Current Value', 'Status', 'Description'],
-        ['Total Predictions', f"{total_user_predictions:,}", '📈 Active', 'All-time prediction records'],
-        ['Fraud Detected', f"{user_fraud_count:,} ({fraud_detection_rate:.1f}%)", '🚨 Alert', 'Fraud cases identified by AI model'],
-        ['Clean Cases', f"{user_not_fraud_count:,} ({success_rate:.1f}%)", '✅ Safe', 'Legitimate transactions verified'],
-        ['Detection Rate', f"{fraud_detection_rate:.1f}%", '🎯 Performance', 'AI model accuracy for fraud detection'],
-        ['Avg Processing Time', f"{avg_processing_time:.3f}s", '⚡ Speed', 'System response performance'],
-    ]
-    
-    if confidence_stats['avg_confidence']:
-        dashboard_summary_data.extend([
-            ['Avg Confidence Score', f"{confidence_stats['avg_confidence']:.1f}%", '🔒 Reliability', 'Model prediction confidence'],
-            ['Confidence Range', f"{confidence_stats['min_confidence']:.1f}% - {confidence_stats['max_confidence']:.1f}%", '📊 Distribution', 'Confidence score spread'],
-        ])
-    
-    if processing_stats['max_processing_time'] and processing_stats['min_processing_time']:
-        dashboard_summary_data.extend([
-            ['Processing Range', f"{processing_stats['min_processing_time']:.3f}s - {processing_stats['max_processing_time']:.3f}s", '📈 Variability', 'Response time consistency'],
-            ['System Performance', '⭐' * min(5, max(1, int(5 - avg_processing_time))), '🏆 Rating', 'Overall system performance score'],
-        ])
-    
-    dashboard_summary_table = Table(dashboard_summary_data, colWidths=[2.0*inch, 1.4*inch, 1.2*inch, 1.8*inch])
-    dashboard_summary_table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1e40af')),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
-        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('FONTSIZE', (0, 0), (-1, 0), 10),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('TOPPADDING', (0, 0), (-1, 0), 12),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#f8fafc')),
-        ('GRID', (0, 0), (-1, -1), 1.5, colors.HexColor('#cbd5e1')),
-        ('FONTSIZE', (0, 1), (-1, -1), 9),
-        ('BOTTOMPADDING', (0, 1), (-1, -1), 10),
-        ('TOPPADDING', (0, 1), (-1, -1), 10),
-        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#f1f5f9')]),
-    ]))
-    
-    story.append(dashboard_summary_table)
-    story.append(Spacer(1, 25))
-    
-    # Report Contents Overview
-    story.append(Paragraph("📋 What This Report Contains", styles['Heading2']))
-    story.append(Spacer(1, 15))
-    
-    report_contents_content = f"""
-    <b>🎯 Executive Summary:</b><br/>
-    • Key Performance Indicators and system metrics<br/>
-    • Fraud detection performance and accuracy rates<br/>
-    • Processing time analysis and system efficiency<br/>
-    • Confidence score distribution and model reliability<br/><br/>
-    
-    <b>📊 Performance Analytics:</b><br/>
-    • Detailed performance metrics with industry benchmarks<br/>
-    • System reliability and response time analysis<br/>
-    • Model accuracy and confidence level assessment<br/>
-    • Processing time range and consistency metrics<br/><br/>
-    
-    <b>📈 Trend Analysis:</b><br/>
-    • Weekly activity trends with visual charts<br/>
-    • Monthly prediction patterns and fraud rates<br/>
-    • Seasonal variations and peak activity periods<br/>
-    • Performance trends over time<br/><br/>
-    
-    <b>🔍 Detailed Predictions:</b><br/>
-    • Recent prediction records with complete details<br/>
-    • Risk level assessment and confidence scoring<br/>
-    • Processing time analysis for each prediction<br/>
-    • Input data summary and result analysis<br/><br/>
-    
-    <b>📤 Export Information:</b><br/>
-    • Data quality assessment and completeness metrics<br/>
-    • Export capabilities and format options<br/>
-    • Data readiness for analysis and reporting<br/>
-    • System features and capabilities overview<br/><br/>
-    
-    <b>📋 Risk Assessment:</b><br/>
-    • Risk level categorization (High, Medium, Low)<br/>
-    • Confidence-based risk assessment<br/>
-    • Recommendations for risk management<br/>
-    • Fraud case analysis and patterns<br/><br/>
-    
-    <b>🎨 Visual Analytics:</b><br/>
-    • Interactive charts and graphs<br/>
-    • Pie charts for case distribution<br/>
-    • Bar charts for weekly trends<br/>
-    • Performance visualization and metrics<br/><br/>
-    
-    <b>📊 Data Quality:</b><br/>
-    • 100% complete data with no missing fields<br/>
-    • Real-time data from PostgreSQL database<br/>
-    • Africa/Nairobi timezone accuracy<br/>
-    • Machine learning model validation
-    """
-    
-    story.append(Paragraph(report_contents_content, normal_style))
-    story.append(Spacer(1, 35))
-    
-    # Enhanced footer with comprehensive information
-    story.append(Paragraph("📋 Report Footer & Additional Information", styles['Heading2']))
-    story.append(Spacer(1, 15))
-    
-    footer_content = f"""
-    <b>🏢 Report Details:</b><br/>
-    • Generated by: Advanced Fraud Detection System v2.0<br/>
-    • Database: PostgreSQL with Real-time Analytics<br/>
-    • Timezone: Africa/Nairobi (EAT)<br/>
-    • Report ID: FDR_{request.user.id}_{now.strftime('%Y%m%d_%H%M%S')}<br/>
-    • Report Type: Comprehensive Analytics Report<br/>
-    • Data Source: User-specific prediction database<br/><br/>
-    
-    <b>📊 Report Contents:</b><br/>
-    • Executive Summary with Key Performance Indicators<br/>
-    • Visual Analytics with Enhanced Charts<br/>
-    • Performance Metrics and Benchmarks<br/>
-    • Weekly and Monthly Trend Analysis<br/>
-    • Detailed Prediction Records<br/>
-    • Risk Assessment and Recommendations<br/>
-    • Export Information and Data Readiness<br/>
-    • Data Quality Assessment and Validation<br/>
-    • Export Capabilities and System Features<br/>
-    • Complete Dashboard Overview and Metrics<br/><br/>
-    
-    <b>📈 Key Metrics Included:</b><br/>
-    • Total Predictions: {total_user_predictions:,} records<br/>
-    • Fraud Detection Rate: {fraud_detection_rate:.1f}%<br/>
-    • Average Processing Time: {avg_processing_time:.3f}s<br/>
-    • Data Completeness: 100%<br/>
-    • Export Readiness: Ready for all formats<br/><br/>
-    
-    <b>📞 Support Information:</b><br/>
-    • For technical support, contact: support@frauddetection.com<br/>
-    • For data inquiries, contact: data@frauddetection.com<br/>
-    • Documentation: https://docs.frauddetection.com<br/>
-    • System Status: https://status.frauddetection.com<br/><br/>
-    
-    <b>⚖️ Legal Notice:</b><br/>
-    This report contains confidential information. Distribution should be limited to authorized personnel only.
-    Data accuracy is based on machine learning predictions and should be used in conjunction with human judgment.
-    All timestamps are in Africa/Nairobi timezone (EAT) for local accuracy.
-    """
-    
-    story.append(Paragraph(footer_content, normal_style))
-    
-    # Build and return PDF
-    try:
+        story.append(Spacer(1, 30))
+        
+        if total_user_predictions == 0:
+            # Enhanced no data message
+            story.append(Paragraph("📊 No Prediction Data Available", styles['Heading2']))
+            story.append(Spacer(1, 20))
+            story.append(Paragraph(
+                "🔍 <b>No predictions found for your account.</b><br/><br/>"
+                "This could mean:<br/>"
+                "• You haven't made any predictions yet<br/>"
+                "• All predictions were made outside the reporting period<br/>"
+                "• There may be a temporary data access issue<br/><br/>"
+                "💡 <b>Getting Started:</b><br/>"
+                "Visit the prediction page to start analyzing insurance claims and build your fraud detection history.",
+                normal_style
+            ))
+            story.append(Spacer(1, 30))
+        
+        # Enhanced footer with comprehensive information
+        story.append(Paragraph("📋 Report Footer & Additional Information", styles['Heading2']))
+        story.append(Spacer(1, 15))
+        
+        footer_content = f"""
+        <b>🏢 Report Details:</b><br/>
+        • Generated by: Advanced Fraud Detection System v2.0<br/>
+        • Database: PostgreSQL with Real-time Analytics<br/>
+        • Timezone: Africa/Nairobi (EAT)<br/>
+        • Report ID: FDR_{request.user.id}_{now.strftime('%Y%m%d_%H%M%S')}<br/>
+        • Report Type: Comprehensive Analytics Report<br/>
+        • Data Source: User-specific prediction database<br/><br/>
+        
+        <b>📊 Report Contents:</b><br/>
+        • Executive Summary with Key Performance Indicators<br/>
+        • Performance Metrics and Benchmarks<br/>
+        • Detailed Prediction Records<br/>
+        • Risk Assessment and Recommendations<br/>
+        • Export Information and Data Readiness<br/>
+        • Data Quality Assessment and Validation<br/><br/>
+        
+        <b>📈 Key Metrics Included:</b><br/>
+        • Total Predictions: {total_user_predictions:,} records<br/>
+        • Fraud Detection Rate: {fraud_detection_rate:.1f}%<br/>
+        • Average Processing Time: {avg_processing_time:.3f}s<br/>
+        • Data Completeness: 100%<br/>
+        • Export Readiness: Ready for all formats<br/><br/>
+        
+        <b>📞 Support Information:</b><br/>
+        • For technical support, contact: support@frauddetection.com<br/>
+        • For data inquiries, contact: data@frauddetection.com<br/>
+        • Documentation: https://docs.frauddetection.com<br/>
+        • System Status: https://status.frauddetection.com
+        """
+        
+        story.append(Paragraph(footer_content, normal_style))
+        story.append(Spacer(1, 35))
+        
+        # Build the PDF
         doc.build(story)
         
         # Track PDF export activity
@@ -2569,11 +2059,137 @@ def export_pdf_report(request):
         )
         
         return response
+        
     except Exception as e:
-        print(f"❌ PDF generation error: {str(e)}")
-        messages.error(request, f'Error generating PDF report: {str(e)}')
-        return redirect('predict')
+        # If there's any error in PDF generation, try the simple fallback
+        try:
+            return create_simple_pdf_report(request)
+        except Exception as fallback_error:
+            # If both fail, redirect with error message
+            messages.error(request, f'PDF export failed: {str(e)}. Please use CSV export instead.')
+            return redirect('user_reports')
 
+
+def create_simple_pdf_report(request):
+    """Create a simple PDF report without complex charts as a fallback"""
+    from django.http import HttpResponse
+    from django.utils import timezone
+    import pytz
+    from django.db.models import Avg, Max, Min, Count
+    from datetime import datetime, timedelta
+    
+    try:
+        # Try to import basic reportlab libraries
+        from reportlab.lib.pagesizes import A4
+        from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+        from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+        from reportlab.lib.units import inch
+        from reportlab.lib import colors
+    except ImportError:
+        # If even basic reportlab is not available, raise error
+        raise ImportError("Basic reportlab libraries not available")
+    
+    # Set timezone to Africa/Nairobi
+    nairobi_tz = pytz.timezone('Africa/Nairobi')
+    now = timezone.now().astimezone(nairobi_tz)
+    
+    # Get user data
+    user_predictions = Prediction.objects.filter(user=request.user).order_by('-created_at')
+    total_user_predictions = user_predictions.count()
+    user_fraud_count = user_predictions.filter(result='Fraud').count()
+    user_not_fraud_count = user_predictions.filter(result='Not Fraud').count()
+    
+    # Calculate metrics
+    success_rate = (user_not_fraud_count / total_user_predictions * 100) if total_user_predictions > 0 else 0
+    fraud_detection_rate = (user_fraud_count / total_user_predictions * 100) if total_user_predictions > 0 else 0
+    
+    # Create HTTP response
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="simple_fraud_report_{request.user.username}_{now.strftime("%Y%m%d_%H%M%S")}_EAT.pdf"'
+    
+    # Create PDF document
+    doc = SimpleDocTemplate(response, pagesize=A4, rightMargin=1*inch, leftMargin=1*inch, topMargin=1*inch, bottomMargin=1*inch)
+    
+    # Get styles
+    styles = getSampleStyleSheet()
+    
+    # Story elements
+    story = []
+    
+    # Title
+    story.append(Paragraph("Fraud Detection Report", styles['Title']))
+    story.append(Spacer(1, 20))
+    
+    # Basic info
+    story.append(Paragraph(f"Generated for: {request.user.get_full_name() or request.user.username}", styles['Normal']))
+    story.append(Paragraph(f"Generated on: {now.strftime('%Y-%m-%d %H:%M:%S')} EAT", styles['Normal']))
+    story.append(Paragraph(f"Total Predictions: {total_user_predictions}", styles['Normal']))
+    story.append(Spacer(1, 20))
+    
+    if total_user_predictions > 0:
+        # Summary table
+        summary_data = [
+            ['Metric', 'Value'],
+            ['Total Predictions', str(total_user_predictions)],
+            ['Fraud Cases', f"{user_fraud_count} ({fraud_detection_rate:.1f}%)"],
+            ['Clean Cases', f"{user_not_fraud_count} ({success_rate:.1f}%)"],
+        ]
+        
+        summary_table = Table(summary_data, colWidths=[2*inch, 2*inch])
+        summary_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, 0), 12),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+            ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+            ('GRID', (0, 0), (-1, -1), 1, colors.black),
+        ]))
+        
+        story.append(summary_table)
+        story.append(Spacer(1, 20))
+        
+        # Recent predictions table
+        if user_predictions.exists():
+            story.append(Paragraph("Recent Predictions", styles['Heading2']))
+            story.append(Spacer(1, 15))
+            
+            table_data = [['Date', 'Result', 'Confidence']]
+            for prediction in user_predictions[:20]:  # Limit to 20 for simple report
+                created_at = prediction.created_at.astimezone(nairobi_tz)
+                confidence = f"{prediction.confidence_score:.1f}%" if prediction.confidence_score else 'N/A'
+                
+                table_data.append([
+                    created_at.strftime('%m/%d/%Y %H:%M'),
+                    prediction.result,
+                    confidence
+                ])
+            
+            predictions_table = Table(table_data, colWidths=[1.5*inch, 1.5*inch, 1*inch])
+            predictions_table.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+                ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+                ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                ('FONTSIZE', (0, 0), (-1, 0), 10),
+                ('GRID', (0, 0), (-1, -1), 1, colors.black),
+            ]))
+            
+            story.append(predictions_table)
+    
+    # Build PDF
+    doc.build(story)
+    
+    # Track activity
+    UserActivity.objects.create(
+        user=request.user,
+        activity_type='report_export',
+        description=f'Exported simple PDF report with {total_user_predictions} predictions',
+        ip_address=request.META.get('REMOTE_ADDR', 'Unknown')
+    )
+    
+    return response
 
 @login_required
 def export_csv_report(request):
@@ -2713,22 +2329,6 @@ def export_csv_report(request):
     )
     
     return response
-
-
-# Check if user is admin
-    is_admin = user.is_superuser or profile.user_level == 'admin'
-    
-    context = {
-        'form': form,
-        'profile': profile,
-        'is_admin': is_admin,
-        'user_total_predictions': user_total_predictions,
-        'user_fraud_predictions': user_fraud_predictions,
-        'user_non_fraud_predictions': user_non_fraud_predictions,
-    }
-    
-    return render(request, 'landing/unified_profile.html', context) 
-
 
 @login_required
 def reports_history_view(request):
