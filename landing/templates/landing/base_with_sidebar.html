@@ -11,6 +11,7 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        /* Mobile-first responsive design */
         * {
             margin: 0;
             padding: 0;
@@ -21,13 +22,42 @@
             font-family: 'Inter', sans-serif;
             background: #f8f9fa;
             overflow-x: hidden;
+            font-size: 14px; /* Mobile default */
+        }
+        
+        /* Tablet (768px+) */
+        @media (min-width: 768px) {
+            body {
+                font-size: 16px;
+            }
+        }
+        
+        /* Desktop (1024px+) */
+        @media (min-width: 1024px) {
+            body {
+                font-size: 18px;
+            }
+        }
+        
+        /* Ensure images scale down on small screens */
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        /* Prevent horizontal scrolling */
+        .main-content {
+            max-width: 100vw;
+            overflow-x: hidden;
         }
         
         .sidebar {
             transition: transform 0.3s ease-in-out;
             background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
             box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
-            overflow-y: auto; /* Make user sidebar scrollable */
+            overflow-y: auto;
+            z-index: 50;
         }
         
         .sidebar.collapsed {
@@ -36,18 +66,69 @@
         
         .main-content {
             transition: margin-left 0.3s ease-in-out;
+            width: 100%;
         }
         
         .main-content.expanded {
             margin-left: 0;
         }
         
+        /* Mobile-first sidebar behavior */
         @media (max-width: 768px) {
             .sidebar {
+                position: fixed;
                 transform: translateX(-100%);
+                width: 280px;
+                max-width: 90vw;
             }
+            
             .sidebar.mobile-open {
                 transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+            
+            /* Mobile overlay */
+            .sidebar-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 40;
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.3s ease;
+            }
+            
+            .sidebar-overlay.active {
+                opacity: 1;
+                visibility: visible;
+            }
+        }
+        
+        /* Desktop sidebar behavior */
+        @media (min-width: 769px) {
+            .sidebar {
+                position: fixed;
+                transform: translateX(0);
+                width: 256px;
+            }
+            
+            .main-content {
+                margin-left: 256px;
+            }
+            
+            .sidebar.collapsed {
+                transform: translateX(-100%);
+            }
+            
+            .main-content.expanded {
+                margin-left: 0;
             }
         }
         
@@ -316,6 +397,13 @@
             -webkit-text-fill-color: transparent;
         }
         
+        /* Mobile responsive page title */
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 1.5rem;
+            }
+        }
+        
         .notification-bell {
             position: relative;
             font-size: 1.3rem;
@@ -402,9 +490,58 @@
                 transform: rotate(14deg);
             }
         }
+        
+        /* Mobile responsive adjustments */
+        @media (max-width: 768px) {
+            .top-header {
+                padding: 1rem;
+            }
+            
+            .top-header .flex {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .top-header .flex > div:last-child {
+                align-self: stretch;
+                justify-content: space-between;
+            }
+            
+            .page-title {
+                font-size: 1.5rem;
+                line-height: 2rem;
+            }
+            
+            .text-gray-500 {
+                font-size: 0.875rem;
+            }
+        }
+        
+        /* Ensure content doesn't overflow on mobile */
+        .glass-effect {
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+        
+        /* Mobile responsive sidebar toggle */
+        @media (max-width: 768px) {
+            #sidebar-toggle {
+                position: fixed;
+                top: 1rem;
+                left: 1rem;
+                z-index: 60;
+                background: white;
+                border: 1px solid #e5e7eb;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
+        }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
+    <!-- Mobile Sidebar Overlay -->
+    <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleMobileSidebar()"></div>
+    
     <!-- Sidebar -->
     <div id="sidebar" class="sidebar fixed left-0 top-0 h-full w-64 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-white shadow-lg z-50">
         <!-- Sidebar Header -->
@@ -414,6 +551,10 @@
                     <i class="fas fa-shield-alt mr-3 text-2xl"></i>
                     FraudGuard
                 </h1>
+                <!-- Mobile close button -->
+                <button class="lg:hidden w-8 h-8 bg-red-500/20 hover:bg-red-500/30 text-red-300 hover:text-red-200 rounded-lg flex items-center justify-center transition-colors" onclick="toggleMobileSidebar()">
+                    <i class="fas fa-times text-sm"></i>
+                </button>
             </div>
             {% if user.is_authenticated %}
             <div class="mt-3 text-sm opacity-90">
@@ -577,7 +718,21 @@
     </div>
 
     <script>
-        // Sidebar toggle functionality
+        // Mobile sidebar toggle functionality
+        function toggleMobileSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            
+            if (sidebar.classList.contains('mobile-open')) {
+                sidebar.classList.remove('mobile-open');
+                overlay.classList.remove('active');
+            } else {
+                sidebar.classList.add('mobile-open');
+                overlay.classList.add('active');
+            }
+        }
+        
+        // Desktop sidebar toggle functionality
         const sidebar = document.getElementById('sidebar');
         const mainContent = document.getElementById('main-content');
         const sidebarToggle = document.getElementById('sidebar-toggle');
@@ -587,13 +742,15 @@
         }
 
         function toggleSidebar() {
-            sidebar.classList.toggle('collapsed');
-            mainContent.classList.toggle('expanded');
+            if (window.innerWidth > 768) {
+                // Desktop behavior
+                sidebar.classList.toggle('collapsed');
+                mainContent.classList.toggle('expanded');
+            } else {
+                // Mobile behavior
+                toggleMobileSidebar();
+            }
             updateToggleVisibility();
-        }
-
-        function toggleMobileSidebar() {
-            sidebar.classList.toggle('mobile-open');
         }
 
         // Event listeners
@@ -601,9 +758,26 @@
             sidebarToggle.addEventListener('click', toggleSidebar);
         }
 
+        // Close mobile sidebar when clicking outside
+        document.addEventListener('click', function(event) {
+            if (window.innerWidth <= 768) {
+                const sidebar = document.getElementById('sidebar');
+                const sidebarToggle = document.getElementById('sidebar-toggle');
+                
+                if (!sidebar.contains(event.target) && !sidebarToggle.contains(event.target)) {
+                    sidebar.classList.remove('mobile-open');
+                    document.getElementById('sidebar-overlay').classList.remove('active');
+                }
+            }
+        });
 
-
-
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768) {
+                sidebar.classList.remove('mobile-open');
+                document.getElementById('sidebar-overlay').classList.remove('active');
+            }
+        });
 
         // Enhanced function to update page description based on page title
         function updatePageDescription(pageTitle) {
@@ -659,22 +833,6 @@
             const currentActiveItem = document.querySelector('.sidebar-item.active');
             if (currentActiveItem) {
                 updateUserHeaderFromSidebar();
-            }
-        });
-
-        // Close mobile sidebar when clicking outside
-        document.addEventListener('click', function(event) {
-            if (window.innerWidth <= 768) {
-                if (!sidebar.contains(event.target)) {
-                    sidebar.classList.remove('mobile-open');
-                }
-            }
-        });
-
-        // Handle window resize
-        window.addEventListener('resize', function() {
-            if (window.innerWidth > 768) {
-                sidebar.classList.remove('mobile-open');
             }
         });
 

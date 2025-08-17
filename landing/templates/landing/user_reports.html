@@ -122,7 +122,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <p class="text-xl text-indigo-100 font-medium max-w-3xl mx-auto leading-relaxed">
                     Comprehensive analytics and insights from your prediction data with advanced export capabilities
                 </p>
-                <div class="mt-6 flex flex-wrap justify-center gap-4">
+                <!-- <div class="mt-6 flex flex-wrap justify-center gap-4">
                     <div class="bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 text-white text-sm font-medium">
                         <i class="fas fa-clock mr-2"></i>Real-time Data
                     </div>
@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 text-white text-sm font-medium">
                         <i class="fas fa-download mr-2"></i>Export Ready
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
 
@@ -185,11 +185,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="w-12 h-12 bg-gradient-to-br from-slate-500 to-slate-600 rounded-xl flex items-center justify-center mr-4 shadow-lg">
                     <i class="fas fa-download text-xl text-white"></i>
                 </div>
-                <h3 class="text-2xl font-black text-white">Export Comprehensive Reports</h3>
+                <h3 class="text-2xl font-black text-white">Export report</h3>
             </div>
             
             <!-- Export Information -->
-            <div class="mb-6 p-4 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
+            <!-- <div class="mb-6 p-4 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-white">
                     <div class="text-center">
                         <div class="text-2xl font-bold text-blue-300">{{ total_user_predictions }}</div>
@@ -204,18 +204,18 @@ document.addEventListener('DOMContentLoaded', function() {
                         <div class="text-sm text-slate-300">Avg Processing Time</div>
                     </div>
                 </div>
-            </div>
+            </div> -->
            
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full">
                 <!-- PDF Export - Enhanced with detailed information -->
                 <div class="bg-gradient-to-r from-rose-500/10 to-pink-600/10 rounded-xl p-6 border border-rose-400/30">
-                    <div class="text-center mb-4">
+                    <!-- <div class="text-center mb-4">
                         <i class="fas fa-file-pdf text-4xl text-rose-500 mb-3"></i>
                         <h4 class="text-lg font-bold text-white mb-2">PDF Report</h4>
-                        <p class="text-sm text-slate-300">Professional formatted report with charts and analytics</p>
-                    </div>
+                      
+                    </div> -->
                     
-                    <div class="space-y-2 mb-4 text-sm text-slate-300">
+                    <!-- <div class="space-y-2 mb-4 text-sm text-slate-300">
                         <div class="flex items-center">
                             <i class="fas fa-check text-green-400 mr-2"></i>
                             <span>Executive summary with key metrics</span>
@@ -232,15 +232,15 @@ document.addEventListener('DOMContentLoaded', function() {
                             <i class="fas fa-check text-green-400 mr-2"></i>
                             <span>Professional formatting</span>
                         </div>
-                    </div>
+                    </div> -->
                     
-                    <!-- PDF Export Status Indicator -->
+                    <!-- PDF Export Status Indicator
                     <div class="mb-4 p-3 bg-blue-500/10 border border-blue-400/30 rounded-lg">
                         <div class="flex items-center text-blue-300 text-sm">
                             <i class="fas fa-info-circle mr-2"></i>
                             <span>PDF export requires reportlab library. If unavailable, use CSV export instead.</span>
                         </div>
-                    </div>
+                    </div> -->
                     
                     <a href="{% url 'export_pdf' %}" class="group relative inline-flex items-center justify-center px-6 py-3 text-lg font-semibold text-white bg-gradient-to-r from-rose-500 to-pink-600 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-rose-400 border border-rose-400/30 w-full">
                         <span class="absolute inset-0 bg-gradient-to-r from-rose-600 to-pink-700 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200"></span>
@@ -253,31 +253,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 <!-- CSV Export - Enhanced with detailed information -->
                 <div class="bg-gradient-to-r from-blue-500/10 to-indigo-600/10 rounded-xl p-6 border border-blue-400/30">
-                    <div class="text-center mb-4">
-                        <i class="fas fa-file-csv text-4xl text-blue-500 mb-3"></i>
-                        <h4 class="text-lg font-bold text-white mb-2">CSV Data Export</h4>
-                        <p class="text-sm text-slate-300">Raw data for analysis in Excel, Google Sheets, or databases</p>
-                    </div>
-                    
-                    <div class="space-y-2 mb-4 text-sm text-slate-300">
-                        <div class="flex items-center">
-                            <i class="fas fa-check text-green-400 mr-2"></i>
-                            <span>Complete raw data export</span>
-                        </div>
-                        <div class="flex items-center">
-                            <i class="fas fa-check text-green-400 mr-2"></i>
-                            <span>Excel-compatible format</span>
-                        </div>
-                        <div class="flex items-center">
-                            <i class="fas fa-check text-green-400 mr-2"></i>
-                            <span>All prediction fields included</span>
-                        </div>
-                        <div class="flex items-center">
-                            <i class="fas fa-check text-green-400 mr-2"></i>
-                            <span>Ready for data analysis</span>
-                        </div>
-                    </div>
-                    
+                                        
                     <a href="{% url 'export_csv' %}" class="group relative inline-flex items-center justify-center px-6 py-3 text-lg font-semibold text-white bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-blue-400 border border-blue-400/30 w-full">
                         <span class="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-700 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200"></span>
                         <span class="relative flex items-center">
@@ -288,21 +264,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             </div>
             
-            <!-- Export Tips -->
-            <div class="mt-6 p-4 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10">
-                <h5 class="text-white font-semibold mb-2 flex items-center">
-                    <i class="fas fa-lightbulb text-yellow-400 mr-2"></i>
-                    Export Tips
-                </h5>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-slate-300">
-                    <div>
-                        <strong>PDF Reports:</strong> Perfect for presentations, audits, and sharing with stakeholders. Includes visual charts and professional formatting.
-                    </div>
-                    <div>
-                        <strong>CSV Data:</strong> Ideal for data analysis, custom reporting, and importing into other systems. Contains all raw prediction data.
-                    </div>
-                </div>
-            </div>
+        
         </div>
 
         <!-- Search and Filter Section -->

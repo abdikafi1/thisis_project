@@ -4,37 +4,29 @@
 {% block title %}New Prediction - Fraud Detection System{% endblock %}
 
 {% block content %}
-<div class="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 py-4 sm:py-6 lg:py-8">
-    <div class="max-w-6xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
-        <!-- Header -->
-        <div class="text-center mb-16 lg:mb-20">
-            <h1 class="text-6xl lg:text-7xl xl:text-8xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-6 lg:mb-8 page-title-dynamic">
+<div class="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 py-4 sm:py-6 lg:py-8 xl:py-10">
+    <div class="max-w-6xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 xl:px-10">
+        <!-- Header - Enhanced responsive design -->
+        <div class="text-center mb-8 sm:mb-12 md:mb-16 lg:mb-20 xl:mb-24">
+            <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4 sm:mb-6 lg:mb-8 xl:mb-10 page-title-dynamic leading-tight">
                 New Detection
             </h1>
-            <p class="text-2xl lg:text-3xl xl:text-4xl text-gray-600 max-w-4xl mx-auto">
+            <p class="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl 2xl:text-4xl text-gray-600 max-w-4xl mx-auto px-2 sm:px-4 leading-relaxed">
                 Enter claim details below to analyze potential fraud risk using our advanced AI model
             </p>
         </div>
 
-        <!-- Progress Bar -->
-        <div class="mb-12 lg:mb-16">
-            <div class="bg-gray-200 rounded-full h-4 lg:h-5 overflow-hidden">
-                <div id="progressBar" class="bg-gradient-to-r from-blue-500 to-purple-500 h-full transition-all duration-500 ease-out" style="width: 0%"></div>
-            </div>
-            <p class="text-lg lg:text-xl text-gray-500 mt-4 lg:mt-5 text-center" id="progressText">0% Complete</p>
-        </div>
-
-        <!-- Error Messages -->
+        <!-- Error Messages - Enhanced responsive design -->
         {% if errors %}
-        <div class="bg-red-50 border-l-4 border-red-400 p-6 lg:p-8 mb-12 lg:mb-16 rounded-xl">
-            <div class="flex items-center">
-                <div class="flex-shrink-0">
-                    <i class="fas fa-exclamation-triangle text-red-400 text-xl lg:text-2xl"></i>
+        <div class="bg-red-50 border-l-4 border-red-400 p-4 sm:p-6 lg:p-8 mb-8 sm:mb-12 lg:mb-16 rounded-xl">
+            <div class="flex flex-col sm:flex-row sm:items-start">
+                <div class="flex-shrink-0 mb-3 sm:mb-0">
+                    <i class="fas fa-exclamation-triangle text-red-400 text-xl sm:text-2xl lg:text-3xl"></i>
                 </div>
-                <div class="ml-4 lg:ml-6">
-                    <h3 class="text-lg lg:text-xl font-medium text-red-800">Please correct the following errors:</h3>
-                    <div class="mt-3 lg:mt-4 text-base lg:text-lg text-red-700">
-                        <ul class="list-disc pl-6 lg:pl-8 space-y-2 lg:space-y-3">
+                <div class="sm:ml-4 lg:ml-6 flex-1">
+                    <h3 class="text-base sm:text-lg lg:text-xl font-medium text-red-800 mb-2 sm:mb-3">Please correct the following errors:</h3>
+                    <div class="text-sm sm:text-base lg:text-lg text-red-700">
+                        <ul class="list-disc pl-4 sm:pl-6 lg:pl-8 space-y-1 sm:space-y-2 lg:space-y-3">
                             {% for error in errors %}
                             <li>{{ error }}</li>
                             {% endfor %}
@@ -45,238 +37,238 @@
         </div>
         {% endif %}
 
-        <!-- Prediction Form -->
-        <form method="post" id="predictionForm" class="bg-white rounded-3xl shadow-2xl p-8 lg:p-12 xl:p-16">
+        <!-- Prediction Form - Enhanced responsive design -->
+        <form method="post" id="predictionForm" class="bg-white rounded-2xl sm:rounded-3xl shadow-xl sm:shadow-2xl p-4 sm:p-6 lg:p-8 xl:p-12 2xl:p-16">
             {% csrf_token %}
             
-                                <!-- Personal Information Section -->
-            <div class="mb-16 lg:mb-20">
-                <div class="flex items-center mb-8 lg:mb-12">
-                    <div class="w-16 h-16 lg:w-20 lg:h-20 bg-blue-100 rounded-full flex items-center justify-center mr-6 lg:mr-8">
-                        <i class="fas fa-user text-blue-600 text-2xl lg:text-3xl"></i>
+            <!-- Personal Information Section - Enhanced responsive design -->
+            <div class="mb-8 sm:mb-12 md:mb-16 lg:mb-20 xl:mb-24">
+                <div class="flex flex-col sm:flex-row sm:items-center mb-6 sm:mb-8 lg:mb-12 gap-4 sm:gap-6 lg:gap-8">
+                    <div class="w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 xl:w-24 xl:h-24 bg-blue-100 rounded-full flex items-center justify-center mx-auto sm:mx-0">
+                        <i class="fas fa-user text-blue-600 text-lg sm:text-xl lg:text-2xl xl:text-3xl"></i>
                     </div>
-                    <h2 class="text-3xl lg:text-4xl xl:text-5xl font-bold text-gray-800">Personal Information</h2>
+                    <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-800 text-center sm:text-left">Personal Information</h2>
                 </div>
                 
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 xl:gap-12">
                     <!-- Age -->
                     <div class="form-group">
-                        <label for="{{ form.Age.id_for_label }}" class="block text-lg lg:text-xl font-semibold text-gray-700 mb-3 lg:mb-4">
+                        <label for="{{ form.Age.id_for_label }}" class="block text-base sm:text-lg lg:text-xl xl:text-2xl font-semibold text-gray-700 mb-2 sm:mb-3 lg:mb-4">
                             {{ form.Age.label }}
                         </label>
                         {{ form.Age }}
                         {% if form.Age.help_text %}
-                        <p class="text-base lg:text-lg text-gray-500 mt-2 lg:mt-3">{{ form.Age.help_text }}</p>
+                        <p class="text-sm sm:text-base lg:text-lg text-gray-500 mt-2 sm:mt-3">{{ form.Age.help_text }}</p>
                         {% endif %}
                         {% for error in form.Age.errors %}
-                        <p class="text-base lg:text-lg text-red-600 mt-2 lg:mt-3">{{ error }}</p>
+                        <p class="text-sm sm:text-base lg:text-lg text-red-600 mt-2 sm:mt-3">{{ error }}</p>
                         {% endfor %}
                     </div>
                     
                     <!-- Driver Rating -->
                     <div class="form-group">
-                        <label for="{{ form.DriverRating.id_for_label }}" class="block text-lg lg:text-xl font-semibold text-gray-700 mb-3 lg:mb-4">
+                        <label for="{{ form.DriverRating.id_for_label }}" class="block text-base sm:text-lg lg:text-xl xl:text-2xl font-semibold text-gray-700 mb-2 sm:mb-3 lg:mb-4">
                             {{ form.DriverRating.label }}
                         </label>
                         {{ form.DriverRating }}
-                         <p id="driverRatingInfo" class="text-base lg:text-lg text-gray-500 mt-2 lg:mt-3"></p>
+                         <p id="driverRatingInfo" class="text-sm sm:text-base lg:text-lg text-gray-500 mt-2 sm:mt-3"></p>
                         {% if form.DriverRating.help_text %}
-                        <p class="text-base lg:text-lg text-gray-500 mt-2 lg:mt-3">{{ form.DriverRating.help_text }}</p>
+                        <p class="text-sm sm:text-base lg:text-lg text-gray-500 mt-2 sm:mt-3">{{ form.DriverRating.help_text }}</p>
                         {% endif %}
                         {% for error in form.DriverRating.errors %}
-                        <p class="text-base lg:text-lg text-red-600 mt-2 lg:mt-3">{{ error }}</p>
+                        <p class="text-sm sm:text-base lg:text-lg text-red-600 mt-2 sm:mt-3">{{ error }}</p>
                         {% endfor %}
                     </div>
                 </div>
             </div>
 
-            <!-- Vehicle Information Section -->
-            <div class="mb-16 lg:mb-20">
-                <div class="flex items-center mb-8 lg:mb-12">
-                    <div class="w-16 h-16 lg:w-20 lg:h-20 bg-green-100 rounded-full flex items-center justify-center mr-6 lg:mr-8">
-                        <i class="fas fa-car text-green-600 text-2xl lg:text-3xl"></i>
+            <!-- Vehicle Information Section - Enhanced responsive design -->
+            <div class="mb-8 sm:mb-12 md:mb-16 lg:mb-20 xl:mb-24">
+                <div class="flex flex-col sm:flex-row sm:items-center mb-6 sm:mb-8 lg:mb-12 gap-4 sm:gap-6 lg:gap-8">
+                    <div class="w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 xl:w-24 xl:h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto sm:mx-0">
+                        <i class="fas fa-car text-green-600 text-lg sm:text-xl lg:text-2xl xl:text-3xl"></i>
                     </div>
-                    <h2 class="text-3xl lg:text-4xl xl:text-5xl font-bold text-gray-800">Vehicle Information</h2>
+                    <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-800 text-center sm:text-left">Vehicle Information</h2>
                 </div>
                 
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 xl:gap-12">
                     <!-- Vehicle Price -->
                     <div class="form-group">
-                        <label for="{{ form.VehiclePrice.id_for_label }}" class="block text-lg lg:text-xl font-semibold text-gray-700 mb-3 lg:mb-4">
+                        <label for="{{ form.VehiclePrice.id_for_label }}" class="block text-base sm:text-lg lg:text-xl xl:text-2xl font-semibold text-gray-700 mb-2 sm:mb-3 lg:mb-4">
                             {{ form.VehiclePrice.label }}
                         </label>
                         {{ form.VehiclePrice }}
                         {% for error in form.VehiclePrice.errors %}
-                        <p class="text-base lg:text-lg text-red-600 mt-2 lg:mt-3">{{ error }}</p>
+                        <p class="text-sm sm:text-base lg:text-lg text-red-600 mt-2 sm:mt-3">{{ error }}</p>
                         {% endfor %}
                     </div>
                     
                     <!-- Age of Vehicle -->
                     <div class="form-group">
-                        <label for="{{ form.AgeOfVehicle.id_for_label }}" class="block text-lg lg:text-xl font-semibold text-gray-700 mb-3 lg:mb-4">
+                        <label for="{{ form.AgeOfVehicle.id_for_label }}" class="block text-base sm:text-lg lg:text-xl xl:text-2xl font-semibold text-gray-700 mb-2 sm:mb-3 lg:mb-4">
                             {{ form.AgeOfVehicle.label }}
                         </label>
                         {{ form.AgeOfVehicle }}
                         {% for error in form.AgeOfVehicle.errors %}
-                        <p class="text-base lg:text-lg text-red-600 mt-2 lg:mt-3">{{ error }}</p>
+                        <p class="text-sm sm:text-base lg:text-lg text-red-600 mt-2 sm:mt-3">{{ error }}</p>
                         {% endfor %}
                     </div>
                     
                     <!-- Vehicle Category -->
-                    <div class="form-group">
-                        <label for="{{ form.VehicleCategory.id_for_label }}" class="block text-lg lg:text-xl font-semibold text-gray-700 mb-3 lg:mb-4">
+                    <div class="form-group sm:col-span-2 lg:col-span-1">
+                        <label for="{{ form.VehicleCategory.id_for_label }}" class="block text-base sm:text-lg lg:text-xl xl:text-2xl font-semibold text-gray-700 mb-2 sm:mb-3 lg:mb-4">
                             {{ form.VehicleCategory.label }}
                         </label>
                         {{ form.VehicleCategory }}
                         {% for error in form.VehicleCategory.errors %}
-                        <p class="text-base lg:text-lg text-red-600 mt-2 lg:mt-3">{{ error }}</p>
+                        <p class="text-sm sm:text-base lg:text-lg text-red-600 mt-2 sm:mt-3">{{ error }}</p>
                         {% endfor %}
                     </div>
                 </div>
             </div>
 
-            <!-- Accident Information Section -->
-            <div class="mb-16 lg:mb-20">
-                <div class="flex items-center mb-8 lg:mb-12">
-                    <div class="w-16 h-16 lg:w-20 lg:h-20 bg-red-100 rounded-full flex items-center justify-center mr-6 lg:mr-8">
-                        <i class="fas fa-exclamation-triangle text-red-600 text-2xl lg:text-3xl"></i>
+            <!-- Accident Information Section - Enhanced responsive design -->
+            <div class="mb-8 sm:mb-12 md:mb-16 lg:mb-20 xl:mb-24">
+                <div class="flex flex-col sm:flex-row sm:items-center mb-6 sm:mb-8 lg:mb-12 gap-4 sm:gap-6 lg:gap-8">
+                    <div class="w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 xl:w-24 xl:h-24 bg-red-100 rounded-full flex items-center justify-center mx-auto sm:mx-0">
+                        <i class="fas fa-exclamation-triangle text-red-600 text-lg sm:text-xl lg:text-2xl xl:text-3xl"></i>
                     </div>
-                    <h2 class="text-3xl lg:text-4xl xl:text-5xl font-bold text-gray-800">Accident Information</h2>
+                    <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-800 text-center sm:text-left">Accident Information</h2>
                 </div>
                 
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 sm:gap-4 lg:gap-6 xl:gap-8">
                     <!-- Days Policy Accident -->
                     <div class="form-group">
-                        <label for="{{ form.Days_Policy_Accident.id_for_label }}" class="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 sm:mb-2">
+                        <label for="{{ form.Days_Policy_Accident.id_for_label }}" class="block text-sm sm:text-base lg:text-lg font-semibold text-gray-700 mb-2 sm:mb-3">
                             {{ form.Days_Policy_Accident.label }}
                         </label>
                         {{ form.Days_Policy_Accident }}
                         {% for error in form.Days_Policy_Accident.errors %}
-                        <p class="text-xs sm:text-sm text-red-600 mt-1">{{ error }}</p>
+                        <p class="text-xs sm:text-sm lg:text-base text-red-600 mt-1 sm:mt-2">{{ error }}</p>
                         {% endfor %}
                     </div>
                     
                     <!-- Days Policy Claim -->
                     <div class="form-group">
-                        <label for="{{ form.Days_Policy_Claim.id_for_label }}" class="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 sm:mb-2">
+                        <label for="{{ form.Days_Policy_Claim.id_for_label }}" class="block text-sm sm:text-base lg:text-lg font-semibold text-gray-700 mb-2 sm:mb-3">
                             {{ form.Days_Policy_Claim.label }}
                         </label>
                         {{ form.Days_Policy_Claim }}
                         {% for error in form.Days_Policy_Claim.errors %}
-                        <p class="text-xs sm:text-sm text-red-600 mt-1">{{ error }}</p>
+                        <p class="text-xs sm:text-sm lg:text-base text-red-600 mt-1 sm:mt-2">{{ error }}</p>
                         {% endfor %}
                     </div>
                     
                     <!-- Past Number of Claims -->
                     <div class="form-group">
-                        <label for="{{ form.PastNumberOfClaims.id_for_label }}" class="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 sm:mb-2">
+                        <label for="{{ form.PastNumberOfClaims.id_for_label }}" class="block text-sm sm:text-base lg:text-lg font-semibold text-gray-700 mb-2 sm:mb-3">
                             {{ form.PastNumberOfClaims.label }}
                         </label>
                         {{ form.PastNumberOfClaims }}
                         {% for error in form.PastNumberOfClaims.errors %}
-                        <p class="text-xs sm:text-sm text-red-600 mt-1">{{ error }}</p>
+                        <p class="text-xs sm:text-sm lg:text-base text-red-600 mt-1 sm:mt-2">{{ error }}</p>
                         {% endfor %}
                     </div>
                     
                     <!-- Police Report Filed -->
                     <div class="form-group">
-                        <label for="{{ form.PoliceReportFiled.id_for_label }}" class="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 sm:mb-2">
+                        <label for="{{ form.PoliceReportFiled.id_for_label }}" class="block text-sm sm:text-base lg:text-lg font-semibold text-gray-700 mb-2 sm:mb-3">
                             {{ form.PoliceReportFiled.label }}
                         </label>
                         {{ form.PoliceReportFiled }}
                         {% for error in form.PoliceReportFiled.errors %}
-                        <p class="text-xs sm:text-sm text-red-600 mt-1">{{ error }}</p>
+                        <p class="text-xs sm:text-sm lg:text-base text-red-600 mt-1 sm:mt-2">{{ error }}</p>
                         {% endfor %}
                     </div>
                     
                     <!-- Witness Present -->
                     <div class="form-group">
-                        <label for="{{ form.WitnessPresent.id_for_label }}" class="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 sm:mb-2">
+                        <label for="{{ form.WitnessPresent.id_for_label }}" class="block text-sm sm:text-base lg:text-lg font-semibold text-gray-700 mb-2 sm:mb-3">
                             {{ form.WitnessPresent.label }}
                         </label>
                         {{ form.WitnessPresent }}
                         {% for error in form.WitnessPresent.errors %}
-                        <p class="text-xs sm:text-sm text-red-600 mt-1">{{ error }}</p>
+                        <p class="text-xs sm:text-sm lg:text-base text-red-600 mt-1 sm:mt-2">{{ error }}</p>
                         {% endfor %}
                     </div>
                     
                     <!-- Number of Suppliments -->
                     <div class="form-group">
-                        <label for="{{ form.NumberOfSuppliments.id_for_label }}" class="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 sm:mb-2">
+                        <label for="{{ form.NumberOfSuppliments.id_for_label }}" class="block text-sm sm:text-base lg:text-lg font-semibold text-gray-700 mb-2 sm:mb-3">
                             {{ form.NumberOfSuppliments.label }}
                         </label>
                         {{ form.NumberOfSuppliments }}
                         {% for error in form.NumberOfSuppliments.errors %}
-                        <p class="text-xs sm:text-sm text-red-600 mt-1">{{ error }}</p>
+                        <p class="text-xs sm:text-sm lg:text-base text-red-600 mt-1 sm:mt-2">{{ error }}</p>
                         {% endfor %}
                     </div>
                     
                     <!-- Address Change Claim -->
                     <div class="form-group">
-                        <label for="{{ form.AddressChange_Claim.id_for_label }}" class="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 sm:mb-2">
+                        <label for="{{ form.AddressChange_Claim.id_for_label }}" class="block text-sm sm:text-base lg:text-lg font-semibold text-gray-700 mb-2 sm:mb-3">
                             {{ form.AddressChange_Claim.label }}
                         </label>
                         {{ form.AddressChange_Claim }}
                         {% for error in form.AddressChange_Claim.errors %}
-                        <p class="text-xs sm:text-sm text-red-600 mt-1">{{ error }}</p>
+                        <p class="text-xs sm:text-sm lg:text-base text-red-600 mt-1 sm:mt-2">{{ error }}</p>
                         {% endfor %}
                     </div>
                     
                     <!-- Deductible -->
                     <div class="form-group">
-                        <label for="{{ form.Deductible.id_for_label }}" class="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 sm:mb-2">
+                        <label for="{{ form.Deductible.id_for_label }}" class="block text-sm sm:text-base lg:text-lg font-semibold text-gray-700 mb-2 sm:mb-3">
                             {{ form.Deductible.label }}
                         </label>
                         {{ form.Deductible }}
                         {% if form.Deductible.help_text %}
-                        <p class="text-xs sm:text-sm text-gray-500 mt-1">{{ form.Deductible.help_text }}</p>
+                        <p class="text-xs sm:text-sm lg:text-base text-gray-500 mt-1 sm:mt-2">{{ form.Deductible.help_text }}</p>
                         {% endif %}
                         {% for error in form.Deductible.errors %}
-                        <p class="text-xs sm:text-sm text-red-600 mt-1">{{ error }}</p>
+                        <p class="text-xs sm:text-sm lg:text-base text-red-600 mt-1 sm:mt-2">{{ error }}</p>
                         {% endfor %}
                     </div>
                     
                     <!-- Fault -->
                     <div class="form-group">
-                        <label for="{{ form.Fault.id_for_label }}" class="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 sm:mb-2">
+                        <label for="{{ form.Fault.id_for_label }}" class="block text-sm sm:text-base lg:text-lg font-semibold text-gray-700 mb-2 sm:mb-3">
                             {{ form.Fault.label }}
                         </label>
                         {{ form.Fault }}
                         {% for error in form.Fault.errors %}
-                        <p class="text-xs sm:text-sm text-red-600 mt-1">{{ error }}</p>
+                        <p class="text-xs sm:text-sm lg:text-base text-red-600 mt-1 sm:mt-2">{{ error }}</p>
                         {% endfor %}
                     </div>
                     
                     <!-- Accident Area -->
                     <div class="form-group">
-                        <label for="{{ form.AccidentArea.id_for_label }}" class="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 sm:mb-2">
+                        <label for="{{ form.AccidentArea.id_for_label }}" class="block text-sm sm:text-base lg:text-lg font-semibold text-gray-700 mb-2 sm:mb-3">
                             {{ form.AccidentArea.label }}
                         </label>
                         {{ form.AccidentArea }}
                         {% for error in form.AccidentArea.errors %}
-                        <p class="text-xs sm:text-sm text-red-600 mt-1">{{ error }}</p>
+                        <p class="text-xs sm:text-sm lg:text-base text-red-600 mt-1 sm:mt-2">{{ error }}</p>
                         {% endfor %}
                     </div>
                     
                     <!-- Base Policy -->
                     <div class="form-group">
-                        <label for="{{ form.BasePolicy.id_for_label }}" class="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 sm:mb-2">
+                        <label for="{{ form.BasePolicy.id_for_label }}" class="block text-sm sm:text-base lg:text-lg font-semibold text-gray-700 mb-2 sm:mb-3">
                             {{ form.BasePolicy.label }}
                         </label>
                         {{ form.BasePolicy }}
                         {% for error in form.BasePolicy.errors %}
-                        <p class="text-xs sm:text-sm text-red-600 mt-1">{{ error }}</p>
+                        <p class="text-xs sm:text-sm lg:text-base text-red-600 mt-1 sm:mt-2">{{ error }}</p>
                         {% endfor %}
                     </div>
                 </div>
             </div>
 
-            <!-- Submit Button -->
-            <div class="text-center pt-6 sm:pt-8">
-                <button type="submit" id="submitBtn" class="group relative inline-flex items-center justify-center w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg sm:rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-blue-300">
-                    <span class="absolute inset-0 bg-gradient-to-r from-blue-700 to-purple-700 rounded-lg sm:rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200"></span>
+            <!-- Submit Button - Enhanced responsive design -->
+            <div class="text-center pt-4 sm:pt-6 lg:pt-8 xl:pt-10">
+                <button type="submit" id="submitBtn" class="group relative inline-flex items-center justify-center w-full sm:w-auto px-4 sm:px-6 lg:px-8 xl:px-10 py-3 sm:py-4 lg:py-5 text-base sm:text-lg lg:text-xl font-semibold text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg sm:rounded-xl xl:rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-blue-300 min-h-[44px] sm:min-h-[48px] lg:min-h-[52px]">
+                    <span class="absolute inset-0 bg-gradient-to-r from-blue-700 to-purple-700 rounded-lg sm:rounded-xl xl:rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-200"></span>
                     <span class="relative flex items-center justify-center">
-                        <i class="fas fa-search mr-2 sm:mr-3"></i>
+                        <i class="fas fa-search mr-2 sm:mr-3 text-sm sm:text-base lg:text-lg"></i>
                         <span class="hidden sm:inline">Analyze for Fraud Detection</span>
                         <span class="sm:hidden">Analyze</span>
                     </span>
@@ -287,20 +279,62 @@
 </div>
 
 <style>
-    /* Custom form styling */
+    /* Enhanced responsive form styling */
     .form-group input,
     .form-group select {
-        @apply w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-sm sm:text-base;
+        @apply w-full px-3 sm:px-4 lg:px-5 py-2 sm:py-3 lg:py-4 border border-gray-300 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-sm sm:text-base lg:text-lg;
+        min-height: 44px; /* Mobile touch target */
+        font-size: 16px; /* Prevents zoom on iOS */
     }
     
     .form-group input:focus,
     .form-group select:focus {
-        @apply shadow-lg;
+        @apply shadow-lg transform -translate-y-1;
     }
     
     .form-group input.error,
     .form-group select.error {
         @apply border-red-500 focus:ring-red-500 focus:border-red-500;
+    }
+    
+    /* Enhanced responsive typography */
+    @media (max-width: 640px) {
+        .form-group label {
+            font-size: 0.875rem;
+            line-height: 1.25rem;
+        }
+        
+        .form-group input,
+        .form-group select {
+            font-size: 0.875rem;
+            padding: 0.75rem 1rem;
+        }
+    }
+    
+    @media (min-width: 641px) and (max-width: 1024px) {
+        .form-group label {
+            font-size: 1rem;
+            line-height: 1.5rem;
+        }
+        
+        .form-group input,
+        .form-group select {
+            font-size: 1rem;
+            padding: 0.875rem 1.25rem;
+        }
+    }
+    
+    @media (min-width: 1025px) {
+        .form-group label {
+            font-size: 1.125rem;
+            line-height: 1.75rem;
+        }
+        
+        .form-group input,
+        .form-group select {
+            font-size: 1.125rem;
+            padding: 1rem 1.5rem;
+        }
     }
     
     /* Loading state */
@@ -316,6 +350,380 @@
     
     .success-pulse {
         animation: successPulse 0.6s ease-in-out;
+    }
+    
+    /* Enhanced responsive spacing */
+    @media (max-width: 640px) {
+        .min-h-screen {
+            min-height: 100vh;
+        }
+        
+        .py-4 {
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+        }
+        
+        .mb-8 {
+            margin-bottom: 2rem;
+        }
+        
+        .mb-12 {
+            margin-bottom: 3rem;
+        }
+        
+        .mb-16 {
+            margin-bottom: 4rem;
+        }
+        
+        .mb-20 {
+            margin-bottom: 5rem;
+        }
+        
+        .gap-4 {
+            gap: 1rem;
+        }
+        
+        .gap-6 {
+            gap: 1.5rem;
+        }
+        
+        .gap-8 {
+            gap: 2rem;
+        }
+        
+        .p-4 {
+            padding: 1rem;
+        }
+        
+        .p-6 {
+            padding: 1.5rem;
+        }
+        
+        .p-8 {
+            padding: 2rem;
+        }
+        
+        .rounded-2xl {
+            border-radius: 1rem;
+        }
+        
+        .rounded-3xl {
+            border-radius: 1.5rem;
+        }
+    }
+    
+    @media (min-width: 641px) and (max-width: 1024px) {
+        .py-6 {
+            padding-top: 1.5rem;
+            padding-bottom: 1.5rem;
+        }
+        
+        .mb-12 {
+            margin-bottom: 3rem;
+        }
+        
+        .mb-16 {
+            margin-bottom: 4rem;
+        }
+        
+        .mb-20 {
+            margin-bottom: 5rem;
+        }
+        
+        .gap-6 {
+            gap: 1.5rem;
+        }
+        
+        .gap-8 {
+            gap: 2rem;
+        }
+        
+        .gap-12 {
+            gap: 3rem;
+        }
+        
+        .p-6 {
+            padding: 1.5rem;
+        }
+        
+        .p-8 {
+            padding: 2rem;
+        }
+        
+        .p-12 {
+            padding: 3rem;
+        }
+    }
+    
+    @media (min-width: 1025px) {
+        .py-8 {
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+        }
+        
+        .py-10 {
+            padding-top: 2.5rem;
+            padding-bottom: 2.5rem;
+        }
+        
+        .mb-16 {
+            margin-bottom: 4rem;
+        }
+        
+        .mb-20 {
+            margin-bottom: 5rem;
+        }
+        
+        .mb-24 {
+            margin-bottom: 6rem;
+        }
+        
+        .gap-8 {
+            gap: 2rem;
+        }
+        
+        .gap-12 {
+            gap: 3rem;
+        }
+        
+        .gap-16 {
+            gap: 4rem;
+        }
+        
+        .p-8 {
+            padding: 2rem;
+        }
+        
+        .p-12 {
+            padding: 3rem;
+        }
+        
+        .p-16 {
+            padding: 4rem;
+        }
+    }
+    
+    /* Enhanced mobile touch targets */
+    @media (max-width: 640px) {
+        button, 
+        input, 
+        select, 
+        a {
+            min-height: 44px;
+            min-width: 44px;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Mobile-friendly grid adjustments */
+        .grid {
+            gap: 1rem;
+        }
+        
+        /* Mobile-friendly button sizing */
+        #submitBtn {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1rem;
+        }
+        
+        /* Mobile-friendly form spacing */
+        .form-group label {
+            font-size: 0.875rem;
+            line-height: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-group input,
+        .form-group select {
+            padding: 0.75rem 1rem;
+            font-size: 0.875rem;
+        }
+        
+        /* Mobile-friendly section headers */
+        .text-2xl, .text-3xl, .text-4xl, .text-5xl, .text-6xl {
+            font-size: 1.5rem;
+            line-height: 2rem;
+        }
+        
+        /* Mobile-friendly description text */
+        .text-base, .text-lg, .text-xl, .text-2xl, .text-3xl, .text-4xl {
+            font-size: 1rem;
+            line-height: 1.5rem;
+        }
+    }
+    
+    /* Enhanced tablet layout */
+    @media (min-width: 641px) and (max-width: 1024px) {
+        .grid-cols-1.sm\:grid-cols-2 {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        
+        .form-group {
+            margin-bottom: 2rem;
+        }
+        
+        /* Tablet-friendly spacing */
+        .space-y-4 > * + * {
+            margin-top: 1.5rem;
+        }
+        
+        .space-y-6 > * + * {
+            margin-top: 2.25rem;
+        }
+    }
+    
+    /* Enhanced desktop layout */
+    @media (min-width: 1025px) {
+        .grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-3 {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+        
+        .form-group {
+            margin-bottom: 2.5rem;
+        }
+        
+        /* Desktop-friendly spacing */
+        .space-y-4 > * + * {
+            margin-top: 2rem;
+        }
+        
+        .space-y-6 > * + * {
+            margin-top: 3rem;
+        }
+    }
+    
+    /* Enhanced focus states for accessibility */
+    .form-group input:focus,
+    .form-group select:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1), 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Enhanced hover effects */
+    .form-group input:hover,
+    .form-group select:hover {
+        border-color: rgba(59, 130, 246, 0.5);
+        transform: translateY(-1px);
+        transition: all 0.2s ease;
+    }
+    
+    /* Enhanced button responsiveness */
+    #submitBtn {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    #submitBtn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    
+    #submitBtn:active {
+        transform: translateY(0);
+        transition: transform 0.1s ease;
+    }
+    
+    /* Enhanced form section headers */
+    .form-group h2 {
+        word-break: break-words;
+        hyphens: auto;
+    }
+    
+    /* Enhanced mobile form layout */
+    @media (max-width: 640px) {
+        .form-group {
+            padding: 0.5rem;
+        }
+        
+        .form-group input,
+        .form-group select {
+            font-size: 16px; /* Prevents zoom on iOS */
+        }
+        
+        /* Mobile-friendly section spacing */
+        .mb-8, .mb-12, .mb-16, .mb-20, .mb-24 {
+            margin-bottom: 2rem;
+        }
+        
+        /* Mobile-friendly header sizing */
+        .text-2xl, .text-3xl, .text-4xl, .text-5xl, .text-6xl {
+            font-size: 1.5rem;
+            line-height: 2rem;
+        }
+        
+        /* Mobile-friendly description text */
+        .text-base, .text-lg, .text-xl, .text-2xl, .text-3xl, .text-4xl {
+            font-size: 1rem;
+            line-height: 1.5rem;
+        }
+    }
+    
+    /* Enhanced tablet form layout */
+    @media (min-width: 641px) and (max-width: 1024px) {
+        .form-group {
+            padding: 0.75rem;
+        }
+        
+        /* Tablet-friendly section spacing */
+        .mb-8, .mb-12, .mb-16, .mb-20, .mb-24 {
+            margin-bottom: 3rem;
+        }
+        
+        /* Tablet-friendly header sizing */
+        .text-2xl {
+            font-size: 1.75rem;
+            line-height: 2.25rem;
+        }
+        
+        .text-3xl {
+            font-size: 2rem;
+            line-height: 2.5rem;
+        }
+        
+        .text-4xl {
+            font-size: 2.25rem;
+            line-height: 2.75rem;
+        }
+        
+        .text-5xl {
+            font-size: 2.5rem;
+            line-height: 3rem;
+        }
+        
+        .text-6xl {
+            font-size: 3rem;
+            line-height: 3.5rem;
+        }
+    }
+    
+    /* Enhanced desktop form layout */
+    @media (min-width: 1025px) {
+        .form-group {
+            padding: 1rem;
+        }
+        
+        /* Desktop-friendly section spacing */
+        .mb-8 {
+            margin-bottom: 2rem;
+        }
+        
+        .mb-12 {
+            margin-bottom: 3rem;
+        }
+        
+        .mb-16 {
+            margin-bottom: 4rem;
+        }
+        
+        .mb-20 {
+            margin-bottom: 5rem;
+        }
+        
+        .mb-24 {
+            margin-bottom: 6rem;
+        }
     }
 </style>
 
@@ -422,17 +830,20 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize progress - start at 0%
     updateProgress(true);
     
-    // Add smooth entrance animation
-    const sections = document.querySelectorAll('.mb-12');
+    // Add smooth entrance animation with responsive timing
+    const sections = document.querySelectorAll('.mb-8, .mb-12, .mb-16, .mb-20, .mb-24');
     sections.forEach((section, index) => {
         section.style.opacity = '0';
         section.style.transform = 'translateY(20px)';
         section.style.transition = 'all 0.6s ease';
         
+        // Responsive animation timing
+        const delay = window.innerWidth <= 640 ? index * 100 : index * 200;
+        
         setTimeout(() => {
             section.style.opacity = '1';
             section.style.transform = 'translateY(0)';
-        }, index * 200);
+        }, delay);
     });
 
     // Meaning helpers for all select fields
@@ -443,7 +854,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!infoEl) {
             infoEl = document.createElement('p');
             infoEl.id = config.id + '__info';
-            infoEl.className = 'text-xs text-gray-500 mt-1';
+            infoEl.className = 'text-xs sm:text-sm lg:text-base text-gray-500 mt-1 sm:mt-2';
             selectEl.insertAdjacentElement('afterend', infoEl);
         }
         const update = () => {
@@ -535,6 +946,44 @@ document.addEventListener('DOMContentLoaded', function() {
         const m = { '1':'High risk driver', '2':'Moderate risk driver', '3':'Low risk driver', '4':'Very safe driver' };
         return m[String((t||'').split(' ')[0])] || '';
     });
+    
+    // Enhanced mobile responsiveness
+    function handleMobileOptimizations() {
+        if (window.innerWidth <= 640) {
+            // Mobile-specific optimizations
+            const inputs = document.querySelectorAll('input, select');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    // Scroll to input on mobile with smooth behavior
+                    setTimeout(() => {
+                        this.scrollIntoView({ 
+                            behavior: 'smooth', 
+                            block: 'center',
+                            inline: 'nearest'
+                        });
+                    }, 300);
+                });
+            });
+            
+            // Add touch-friendly interactions
+            const touchElements = document.querySelectorAll('button, a, .cursor-pointer');
+            touchElements.forEach(element => {
+                element.addEventListener('touchstart', function() {
+                    this.style.transform = 'scale(0.95)';
+                });
+                
+                element.addEventListener('touchend', function() {
+                    this.style.transform = '';
+                });
+            });
+        }
+    }
+    
+    // Initialize mobile optimizations
+    handleMobileOptimizations();
+    
+    // Handle window resize
+    window.addEventListener('resize', handleMobileOptimizations);
 });
 </script>
 {% endblock %} 

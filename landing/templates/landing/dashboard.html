@@ -8,17 +8,17 @@
 {% block page_description %}Your fraud detection overview and analytics{% endblock %}
 
 {% block content %}
-<div class="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 py-8">
+        <div class="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 py-4 md:py-8">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Dashboard Header -->
         
-        <div class="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 backdrop-blur-xl rounded-3xl shadow-2xl p-8 md:p-12 mb-10 text-center relative overflow-hidden border border-blue-500/30">
+        <div class="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 backdrop-blur-xl rounded-3xl shadow-2xl p-6 md:p-8 lg:p-12 mb-6 md:mb-10 text-center relative overflow-hidden border border-blue-500/30">
             <div class="absolute inset-0 bg-gradient-to-r from-blue-600/20 via-indigo-600/20 to-purple-600/20"></div>
             <div class="relative z-10">
-                <h1 class="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-4 tracking-tight">
+                <h1 class="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black text-white mb-4 tracking-tight">
                     Welcome , {{ user.first_name|default:user.username }}!
                 </h1>
-                <p class="text-xl text-blue-100 font-medium max-w-3xl mx-auto leading-relaxed">
+                <p class="text-lg md:text-xl text-blue-100 font-medium max-w-3xl mx-auto leading-relaxed">
                     Your fraud detection dashboard overview
                 </p>
             </div>
@@ -26,63 +26,63 @@
 
         <!-- Analytics Section - Available to all users -->
         <!-- Analytics Section -->
-        <div class="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-8 mb-10 border border-white/30">
-            <div class="flex items-center mb-8">
-                <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center mr-4 shadow-lg">
-                    <i class="fas fa-chart-line text-xl text-white"></i>
+        <div class="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-6 md:p-8 mb-6 md:mb-10 border border-white/30">
+            <div class="flex items-center mb-6 md:mb-8">
+                <div class="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center mr-3 md:mr-4 shadow-lg">
+                    <i class="fas fa-chart-line text-lg md:text-xl text-white"></i>
                 </div>
-                <h3 class="text-2xl font-black text-gray-800">Analytics Overview</h3>
+                <h3 class="text-xl md:text-2xl font-black text-gray-800">Analytics Overview</h3>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
                 <!-- Total Predictions -->
-                <div class="group bg-white/90 rounded-2xl p-6 text-center border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
-                        <i class="fas fa-chart-bar text-lg text-white"></i>
+                <div class="group bg-white/90 rounded-2xl p-4 md:p-6 text-center border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                    <div class="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-3 md:mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-chart-bar text-base md:text-lg text-white"></i>
                     </div>
-                    <div class="text-2xl font-black text-gray-800 mb-2">
+                    <div class="text-xl md:text-2xl font-black text-gray-800 mb-2">
                         {{ total_predictions|default:"0" }}
                     </div>
-                    <div class="text-sm font-bold text-gray-600 uppercase tracking-wider">
+                    <div class="text-xs md:text-sm font-bold text-gray-600 uppercase tracking-wider">
                         Total Predictions
                     </div>
                 </div>
 
                 <!-- Fraud Count -->
-                <div class="group bg-white/90 rounded-2xl p-6 text-center border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                    <div class="w-12 h-12 bg-gradient-to-br from-red-500 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
-                        <i class="fas fa-exclamation-triangle text-lg text-white"></i>
+                <div class="group bg-white/90 rounded-2xl p-4 md:p-6 text-center border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                    <div class="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-red-500 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-3 md:mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-exclamation-triangle text-base md:text-lg text-white"></i>
                     </div>
-                    <div class="text-2xl font-black text-gray-800 mb-2">
+                    <div class="text-xl md:text-2xl font-black text-gray-800 mb-2">
                         {{ fraud_detected|default:"0" }}
                     </div>
-                    <div class="text-sm font-bold text-gray-600 uppercase tracking-wider">
+                    <div class="text-xs md:text-sm font-bold text-gray-600 uppercase tracking-wider">
                         Fraud Count
                     </div>
                 </div>
 
                 <!-- Non-Fraud Count -->
-                <div class="group bg-white/90 rounded-2xl p-6 text-center border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                    <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
-                        <i class="fas fa-check-circle text-lg text-white"></i>
+                <div class="group bg-white/90 rounded-2xl p-4 md:p-6 text-center border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                    <div class="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-3 md:mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-check-circle text-base md:text-lg text-white"></i>
                     </div>
-                    <div class="text-2xl font-black text-gray-800 mb-2">
+                    <div class="text-xl md:text-2xl font-black text-gray-800 mb-2">
                         {{ not_fraud_count|default:"0" }}
                     </div>
-                    <div class="text-sm font-bold text-gray-600 uppercase tracking-wider">
+                    <div class="text-xs md:text-sm font-bold text-gray-600 uppercase tracking-wider">
                         Non-Fraud Count
                     </div>
                 </div>
 
                 <!-- Model Accuracy -->
-                <div class="group bg-white/90 rounded-2xl p-6 text-center border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                    <div class="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
-                        <i class="fas fa-brain text-lg text-white"></i>
+                <div class="group bg-white/90 rounded-2xl p-4 md:p-6 text-center border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                    <div class="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full flex items-center justify-center mx-auto mb-3 md:mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-brain text-base md:text-lg text-white"></i>
                     </div>
-                    <div class="text-2xl font-black text-gray-800 mb-2">
+                    <div class="text-xl md:text-2xl font-black text-gray-800 mb-2">
                         72%
                     </div>
-                    <div class="text-sm font-bold text-gray-600 uppercase tracking-wider">
+                    <div class="text-xs md:text-sm font-bold text-gray-600 uppercase tracking-wider">
                         Model Accuracy
                     </div>
                 </div>
@@ -91,15 +91,15 @@
             <!-- Additional Analytics Row -->
             
         </div>
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 mb-6 md:mb-10">
             <!-- Fraud Cases -->
-            <div class="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-8 border border-white/30 hover:shadow-3xl hover:-translate-y-2 transition-all duration-500">
-                <div class="flex items-center justify-between mb-8 pb-4 border-b-2 border-red-100">
+            <div class="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-6 md:p-8 border border-white/30 hover:shadow-3xl hover:-translate-y-2 transition-all duration-500">
+                <div class="flex items-center justify-between mb-6 md:mb-8 pb-4 border-b-2 border-red-100">
                     <div class="flex items-center">
-                        <div class="w-12 h-12 bg-gradient-to-br from-red-500 to-pink-600 rounded-xl flex items-center justify-center mr-4 shadow-lg">
-                            <i class="fas fa-exclamation-triangle text-xl text-white"></i>
+                        <div class="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-red-500 to-pink-600 rounded-xl flex items-center justify-center mr-3 md:mr-4 shadow-lg">
+                            <i class="fas fa-exclamation-triangle text-lg md:text-xl text-white"></i>
                         </div>
-                        <h3 class="text-2xl font-black text-gray-800">Recent Fraud Cases</h3>
+                        <h3 class="text-xl md:text-2xl font-black text-gray-800">Recent Fraud Cases</h3>
                     </div>
                     <span class="text-sm font-bold text-gray-500 bg-red-50 px-3 py-1 rounded-full">
                         {{ fraud_cases.count }} cases
@@ -109,38 +109,38 @@
                 {% if fraud_cases %}
                     <div class="space-y-4">
                         {% for case in fraud_cases %}
-                        <div class="group flex items-center p-4 rounded-2xl hover:bg-red-50 hover:shadow-lg transition-all duration-300 cursor-pointer">
-                            <div class="w-12 h-12 bg-gradient-to-br from-red-500 to-pink-600 rounded-full flex items-center justify-center mr-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                        <div class="group flex items-center p-3 md:p-4 rounded-2xl hover:bg-red-50 hover:shadow-lg transition-all duration-300 cursor-pointer">
+                            <div class="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-red-500 to-pink-600 rounded-full flex items-center justify-center mr-3 md:mr-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
                                 <i class="fas fa-exclamation-triangle text-white"></i>
                             </div>
                             <div class="flex-1">
-                                <div class="font-bold text-gray-800 mb-1">Fraud Case #{{ case.id }}</div>
+                                <div class="text-sm md:text-base font-bold text-gray-800 mb-1">Fraud Case #{{ case.id }}</div>
                                 <div class="text-xs text-gray-500 font-medium">{{ case.created_at|timesince }} ago</div>
                             </div>
                         </div>
                         {% endfor %}
                     </div>
                 {% else %}
-                    <div class="text-center py-12">
-                        <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <i class="fas fa-shield-check text-3xl text-green-600"></i>
+                    <div class="text-center py-8 md:py-12">
+                        <div class="w-16 h-16 md:w-20 md:h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3 md:mb-4">
+                            <i class="fas fa-shield-check text-2xl md:text-3xl text-green-600"></i>
                         </div>
-                        <h3 class="text-xl font-bold text-gray-800 mb-2">No Fraud Cases</h3>
-                        <p class="text-gray-600">Great! No fraud detected recently.</p>
+                        <h3 class="text-lg md:text-xl font-bold text-gray-800 mb-2">No Fraud Cases</h3>
+                        <p class="text-sm md:text-base text-gray-600">Great! No fraud detected recently.</p>
                     </div>
                 {% endif %}
             </div>
 
             <!-- Non-Fraud Cases -->
-            <div class="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-8 border border-white/30 hover:shadow-3xl hover:-translate-y-2 transition-all duration-500">
-                <div class="flex items-center justify-between mb-8 pb-4 border-b-2 border-green-100">
+            <div class="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-6 md:p-8 border border-white/30 hover:shadow-3xl hover:-translate-y-2 transition-all duration-500">
+                <div class="flex items-center justify-between mb-6 md:mb-8 pb-4 border-b-2 border-green-100">
                     <div class="flex items-center">
-                        <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center mr-4 shadow-lg">
-                            <i class="fas fa-check-circle text-xl text-white"></i>
+                        <div class="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center mr-3 md:mr-4 shadow-lg">
+                            <i class="fas fa-check-circle text-lg md:text-xl text-white"></i>
                         </div>
-                        <h3 class="text-2xl font-black text-gray-800">Recent Non-Fraud Cases</h3>
+                        <h3 class="text-xl md:text-2xl font-black text-gray-800">Recent Non-Fraud Cases</h3>
                     </div>
-                    <span class="text-sm font-bold text-gray-500 bg-green-50 px-3 py-1 rounded-full">
+                    <span class="text-xs md:text-sm font-bold text-gray-500 bg-green-50 px-2 md:px-3 py-1 rounded-full">
                         {{ non_fraud_cases.count }} cases
                     </span>
                 </div>
@@ -148,24 +148,24 @@
                 {% if non_fraud_cases %}
                     <div class="space-y-4">
                         {% for case in non_fraud_cases %}
-                        <div class="group flex items-center p-4 rounded-2xl hover:bg-green-50 hover:shadow-lg transition-all duration-300 cursor-pointer">
-                            <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center mr-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                        <div class="group flex items-center p-3 md:p-4 rounded-2xl hover:bg-green-50 hover:shadow-lg transition-all duration-300 cursor-pointer">
+                            <div class="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center mr-3 md:mr-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
                                 <i class="fas fa-check-circle text-white"></i>
                             </div>
                             <div class="flex-1">
-                                <div class="font-bold text-gray-800 mb-1">Non-Fraud Case #{{ case.id }}</div>
+                                <div class="text-sm md:text-base font-bold text-gray-800 mb-1">Non-Fraud Case #{{ case.id }}</div>
                                 <div class="text-xs text-gray-500 font-medium">{{ case.created_at|timesince }} ago</div>
                             </div>
                         </div>
                         {% endfor %}
                     </div>
                 {% else %}
-                    <div class="text-center py-12">
-                        <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <i class="fas fa-inbox text-3xl text-gray-600"></i>
+                    <div class="text-center py-8 md:py-12">
+                        <div class="w-16 h-16 md:w-20 md:h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3 md:mb-4">
+                            <i class="fas fa-inbox text-2xl md:text-3xl text-gray-600"></i>
                         </div>
-                        <h3 class="text-xl font-bold text-gray-800 mb-2">No Non-Fraud Cases</h3>
-                        <p class="text-gray-600">No non-fraud cases found recently.</p>
+                        <h3 class="text-lg md:text-xl font-bold text-gray-800 mb-2">No Non-Fraud Cases</h3>
+                        <p class="text-sm md:text-base text-gray-600">No non-fraud cases found recently.</p>
                     </div>
                 {% endif %}
             </div>
@@ -175,42 +175,42 @@
         
 
         <!-- Quick Actions -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-            <a href="{% url 'predict' %}" class="group bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-8 text-center border border-white/30 hover:shadow-3xl hover:-translate-y-2 transition-all duration-500 cursor-pointer no-underline">
-                <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300">
-                    <i class="fas fa-search text-2xl text-white"></i>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6 md:mb-10">
+            <a href="{% url 'predict' %}" class="group bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-6 md:p-8 text-center border border-white/30 hover:shadow-3xl hover:-translate-y-2 transition-all duration-500 cursor-pointer no-underline">
+                <div class="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 md:mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <i class="fas fa-search text-lg md:text-2xl text-white"></i>
                 </div>
-                <div class="text-xl font-black text-gray-800 mb-3">New Prediction</div>
-                <div class="text-gray-600 leading-relaxed">
+                <div class="text-lg md:text-xl font-black text-gray-800 mb-2 md:mb-3">New Prediction</div>
+                <div class="text-sm md:text-base text-gray-600 leading-relaxed">
                     Analyze a new case for potential fraud detection with our advanced AI model
                 </div>
             </a>
 
-            <a href="{% url 'user_reports' %}" class="group bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-8 text-center border border-white/30 hover:shadow-3xl hover:-translate-y-2 transition-all duration-500 cursor-pointer no-underline">
-                <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300">
-                    <i class="fas fa-chart-line text-2xl text-white"></i>
+            <a href="{% url 'user_reports' %}" class="group bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-6 md:p-8 text-center border border-white/30 hover:shadow-3xl hover:-translate-y-2 transition-all duration-500 cursor-pointer no-underline">
+                <div class="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 md:mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <i class="fas fa-chart-line text-lg md:text-2xl text-white"></i>
                 </div>
-                <div class="text-xl font-black text-gray-800 mb-3">Generate Reports</div>
-                <div class="text-gray-600 leading-relaxed">
+                <div class="text-lg md:text-xl font-black text-gray-800 mb-2 md:mb-3">Generate Reports</div>
+                <div class="text-sm md:text-base text-gray-600 leading-relaxed">
                     Create comprehensive reports from your prediction data and insights
                 </div>
             </a>
         </div>
 
         <!-- Recent Activity -->
-        <div class="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-8 border border-white/30">
-            <div class="flex items-center mb-8">
-                <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center mr-4 shadow-lg">
-                    <i class="fas fa-activity text-xl text-white"></i>
+        <div class="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-6 md:p-8 border border-white/30">
+            <div class="flex items-center mb-6 md:mb-8">
+                <div class="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center mr-3 md:mr-4 shadow-lg">
+                    <i class="fas fa-activity text-lg md:text-xl text-white"></i>
                 </div>
-                <h3 class="text-2xl font-black text-gray-800">Recent Activity</h3>
+                <h3 class="text-xl md:text-2xl font-black text-gray-800">Recent Activity</h3>
             </div>
             
             {% if recent_predictions %}
                 <div class="space-y-4">
                     {% for prediction in recent_predictions %}
-                    <div class="group flex items-center p-4 rounded-2xl hover:bg-blue-50 hover:shadow-lg transition-all duration-300 cursor-pointer">
-                        <div class="w-12 h-12 {% if prediction.result == 'Fraud' %}bg-gradient-to-br from-red-500 to-pink-600{% else %}bg-gradient-to-br from-green-500 to-emerald-600{% endif %} rounded-full flex items-center justify-center mr-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <div class="group flex items-center p-3 md:p-4 rounded-2xl hover:bg-blue-50 hover:shadow-lg transition-all duration-300 cursor-pointer">
+                        <div class="w-10 h-10 md:w-12 md:h-12 {% if prediction.result == 'Fraud' %}bg-gradient-to-br from-red-500 to-pink-600{% else %}bg-gradient-to-br from-green-500 to-emerald-600{% endif %} rounded-full flex items-center justify-center mr-3 md:mr-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
                             {% if prediction.result == 'Fraud' %}
                                 <i class="fas fa-exclamation-triangle text-white"></i>
                             {% else %}
@@ -218,24 +218,24 @@
                             {% endif %}
                         </div>
                         <div class="flex-1">
-                            <div class="font-bold text-gray-800 mb-1">
+                            <div class="text-sm md:text-base font-bold text-gray-800 mb-1">
                                 Prediction #{{ prediction.id }} - 
-                                <span class="inline-block px-3 py-1 rounded-full text-xs font-bold text-white {% if prediction.result == 'Fraud' %}bg-gradient-to-r from-red-500 to-pink-600{% else %}bg-gradient-to-r from-green-500 to-emerald-600{% endif %} shadow-lg">
+                                <span class="inline-block px-2 md:px-3 py-1 rounded-full text-xs font-bold text-white {% if prediction.result == 'Fraud' %}bg-gradient-to-r from-red-500 to-pink-600{% else %}bg-gradient-to-r from-green-500 to-emerald-600{% endif %} shadow-lg">
                                     {% if prediction.result == 'Fraud' %}Fraud Detected{% else %}Clean{% endif %}
                                 </span>
                             </div>
-                            <div class="text-sm text-gray-600 font-medium">{{ prediction.created_at|timesince }} ago</div>
+                            <div class="text-xs md:text-sm text-gray-600 font-medium">{{ prediction.created_at|timesince }} ago</div>
                         </div>
                     </div>
                     {% endfor %}
                 </div>
             {% else %}
-                <div class="text-center py-12">
-                    <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-inbox text-3xl text-gray-600"></i>
+                <div class="text-center py-8 md:py-12">
+                    <div class="w-16 h-16 md:w-20 md:h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3 md:mb-4">
+                        <i class="fas fa-inbox text-2xl md:text-3xl text-gray-600"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-gray-800 mb-2">No Recent Activity</h3>
-                    <p class="text-gray-600">Start by making your first prediction to see activity here!</p>
+                    <h3 class="text-lg md:text-xl font-bold text-gray-800 mb-2">No Recent Activity</h3>
+                    <p class="text-sm md:text-base text-gray-600">Start by making your first prediction to see activity here!</p>
                 </div>
             {% endif %}
         </div>
