@@ -468,6 +468,82 @@
         .nav-item-hover:hover .nav-icon {
             transform: scale(1.1) rotate(5deg);
         }
+        
+        /* Mobile Header Styling for Admin */
+        .mobile-header {
+            padding: 1rem !important;
+        }
+        
+        .mobile-header .flex {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        
+        .mobile-header .flex > div:last-child {
+            align-self: stretch;
+            justify-content: space-between;
+        }
+        
+        .mobile-header h1 {
+            font-size: 1.5rem !important;
+            line-height: 2rem !important;
+        }
+        
+        .mobile-header p {
+            font-size: 0.875rem !important;
+        }
+        
+        .mobile-menu-btn-active {
+            position: fixed !important;
+            top: 1rem !important;
+            left: 1rem !important;
+            z-index: 50 !important;
+            display: block !important;
+        }
+        
+        /* Desktop Header Styling for Admin */
+        .admin-header:not(.mobile-header) {
+            padding: 1.5rem 2rem !important;
+        }
+        
+        .admin-header:not(.mobile-header) .flex {
+            flex-direction: row;
+            align-items: center;
+            gap: 0;
+        }
+        
+        .admin-header:not(.mobile-header) h1 {
+            font-size: 1.875rem !important;
+            line-height: 2.25rem !important;
+        }
+        
+        .admin-header:not(.mobile-header) p {
+            font-size: 1rem !important;
+        }
+        
+        /* PC Containment Styles for Admin */
+        .pc-container {
+            max-width: 1366px;
+            margin: 0 auto;
+            min-height: 768px;
+            overflow: hidden;
+        }
+        
+        /* Responsive adjustments for PC container */
+        @media (max-width: 1366px) {
+            .pc-container {
+                max-width: 100%;
+                margin: 0 1rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .pc-container {
+                margin: 0 0.5rem;
+                min-height: auto;
+            }
+        }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
@@ -707,7 +783,10 @@
                     
                     <!-- Page Content -->
                     <div class="space-y-6">
-                        {% block content %}{% endblock %}
+                        <!-- PC Containment Wrapper -->
+                        <div class="pc-container">
+                            {% block content %}{% endblock %}
+                        </div>
                     </div>
                 </div>
             </main>
@@ -715,6 +794,71 @@
     </div>
 
     <script>
+        // Mobile Header Implementation Logic
+        let isMobileHeader = false;
+        let currentScreenWidth = window.innerWidth;
+        
+        // Function to check if screen width is mobile
+        function isMobileScreen() {
+            return window.innerWidth < 768;
+        }
+        
+        // Function to show mobile header
+        function showMobileHeader() {
+            if (!isMobileHeader) {
+                console.log('📱 Switching to Mobile Header (Admin)');
+                isMobileHeader = true;
+                
+                // Update header layout for mobile
+                const adminHeader = document.querySelector('.admin-header');
+                if (adminHeader) {
+                    adminHeader.classList.add('mobile-header');
+                }
+                
+                // Ensure mobile menu button is visible
+                const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+                if (mobileMenuBtn) {
+                    mobileMenuBtn.classList.add('mobile-menu-btn-active');
+                    mobileMenuBtn.classList.remove('hidden');
+                }
+            }
+        }
+        
+        // Function to show desktop header
+        function showDesktopHeader() {
+            if (isMobileHeader) {
+                console.log('🖥️ Switching to Desktop Header (Admin)');
+                isMobileHeader = false;
+                
+                // Update header layout for desktop
+                const adminHeader = document.querySelector('.admin-header');
+                if (adminHeader) {
+                    adminHeader.classList.remove('mobile-header');
+                }
+                
+                // Ensure mobile menu button is properly styled for desktop
+                const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+                if (mobileMenuBtn) {
+                    mobileMenuBtn.classList.remove('mobile-menu-btn-active');
+                }
+            }
+        }
+        
+        // Function to update header based on screen width
+        function updateHeaderForScreenSize() {
+            const newScreenWidth = window.innerWidth;
+            
+            if (newScreenWidth !== currentScreenWidth) {
+                currentScreenWidth = newScreenWidth;
+                
+                if (isMobileScreen()) {
+                    showMobileHeader();
+                } else {
+                    showDesktopHeader();
+                }
+            }
+        }
+        
         // Mobile sidebar toggle functionality
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
@@ -748,8 +892,25 @@
             }
         });
         
-        // Admin section sidebar functionality
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            updateHeaderForScreenSize(); // Call the new function
+            if (window.innerWidth > 1024) {
+                sidebar.classList.remove('sidebar-open');
+                document.getElementById('sidebar-overlay').classList.remove('active');
+                document.body.classList.remove('sidebar-open');
+            }
+        });
+        
+        // Initialize mobile header logic on page load
         document.addEventListener('DOMContentLoaded', function() {
+            // Initialize header based on current screen size
+            if (isMobileScreen()) {
+                showMobileHeader();
+            } else {
+                showDesktopHeader();
+            }
+            
             const navItems = document.querySelectorAll('.nav-item-hover');
             navItems.forEach((item, index) => {
                 item.style.opacity = '0';
