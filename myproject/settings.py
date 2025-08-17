@@ -93,7 +93,6 @@ database_url = os.getenv("DATABASE_URL")
 
 if database_url:
     # Production mode: Use Neon database (works both locally and in production)
-<<<<<<< HEAD
     try:
         tmpPostgres = urlparse(database_url)
         
@@ -105,25 +104,8 @@ if database_url:
                 'PASSWORD': tmpPostgres.password if tmpPostgres.password else '',
                 'HOST': tmpPostgres.hostname if tmpPostgres.hostname else '',
                 'PORT': tmpPostgres.port if tmpPostgres.port else 5432,
-                'CONN_MAX_AGE': 60,  # Connection pooling
-                'OPTIONS': {
-                    'sslmode': 'require',
-                    'connect_timeout': 10,
-                }
+                'OPTIONS': dict(parse_qsl(tmpPostgres.query)) if tmpPostgres.query else {},
             }
-=======
-    tmpPostgres = urlparse(database_url)
-    
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': tmpPostgres.path.replace('/', '') if tmpPostgres.path else 'neondb',
-            'USER': tmpPostgres.username if tmpPostgres.username else '',
-            'PASSWORD': tmpPostgres.password if tmpPostgres.password else '',
-            'HOST': tmpPostgres.hostname if tmpPostgres.hostname else '',
-            'PORT': tmpPostgres.port if tmpPostgres.port else 5432,
-            'OPTIONS': dict(parse_qsl(tmpPostgres.query)) if tmpPostgres.query else {},
->>>>>>> 47ee12f1a4331109d9c1d0ae9f4df6842a3fe784
         }
         print(f"✅ Connected to Neon database: {tmpPostgres.hostname}")
     except Exception as e:
@@ -132,13 +114,6 @@ if database_url:
         print("💡 Make sure your .env file contains the correct DATABASE_URL")
         raise Exception(f"PostgreSQL connection failed: {e}")
 else:
-<<<<<<< HEAD
-    # No DATABASE_URL provided - force PostgreSQL usage
-    print("💥 DATABASE_URL not found!")
-    print("💡 You must set DATABASE_URL in your .env file to use PostgreSQL")
-    print("💡 Example: DATABASE_URL=postgresql://user:pass@host:port/db")
-    raise Exception("DATABASE_URL environment variable is required for PostgreSQL")
-=======
     # Local development: Use local PostgreSQL or fallback to SQLite
     try:
         import psycopg2
@@ -161,7 +136,6 @@ else:
                 'NAME': BASE_DIR / 'db.sqlite3',
             }
         }
->>>>>>> 47ee12f1a4331109d9c1d0ae9f4df6842a3fe784
 
 
 # Password validation
