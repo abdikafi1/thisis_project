@@ -37,13 +37,25 @@
                 </div>
                 
                 <div>
+                    <label class="block text-sm font-medium text-gray-700">Test Key:</label>
+                    <p class="text-sm text-gray-900 bg-gray-50 p-2 rounded">{{ session_data.test_key|default:"None" }}</p>
+                </div>
+                
+                <div>
                     <label class="block text-sm font-medium text-gray-700">All Session Keys:</label>
                     <p class="text-sm text-gray-900 bg-gray-50 p-2 rounded">{{ session_data.all_session_keys|join:", " }}</p>
                 </div>
             </div>
             
             <div class="mt-6 pt-6 border-t border-gray-200">
-                <a href="{% url 'forgot_password' %}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                <form method="POST" class="inline">
+                    {% csrf_token %}
+                    <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700">
+                        Test Set Session
+                    </button>
+                </form>
+                
+                <a href="{% url 'forgot_password' %}" class="ml-3 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
                     Test Forgot Password
                 </a>
                 

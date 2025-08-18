@@ -396,10 +396,27 @@ class UserProfileForm(forms.ModelForm):
         model = UserProfile
         fields = ['phone_number', 'company', 'position']
         widgets = {
-            'phone_number': forms.TextInput(attrs={'class': 'form-control'}),
-            'company': forms.TextInput(attrs={'class': 'form-control'}),
-            'position': forms.TextInput(attrs={'class': 'form-control'}),
+            'phone_number': forms.TextInput(attrs={
+                'class': 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none transition',
+                'placeholder': 'Enter phone number'
+            }),
+            'company': forms.TextInput(attrs={
+                'class': 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none transition',
+                'placeholder': 'Enter company name'
+            }),
+            'position': forms.TextInput(attrs={
+                'class': 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none transition',
+                'placeholder': 'Enter your position'
+            }),
         }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Set initial values from the instance if it exists
+        if self.instance and self.instance.pk:
+            self.fields['phone_number'].initial = self.instance.phone_number
+            self.fields['company'].initial = self.instance.company
+            self.fields['position'].initial = self.instance.position
 
 class AdminUserManagementForm(forms.ModelForm):
     class Meta:

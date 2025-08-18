@@ -147,14 +147,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="text-xs sm:text-sm opacity-75 mt-1 sm:mt-2">{{ fraud_detection_rate }}% of total</div>
             </div>
 
-            <!-- Fraud Detection Rate - Soft green theme for success/positive -->
+            <!-- Total Safe Transactions - Soft green theme for success/positive -->
             <div class="group bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl sm:rounded-3xl shadow-xl p-4 sm:p-6 lg:p-8 text-center text-white hover:shadow-2xl hover:-translate-y-1 sm:hover:-translate-y-2 transition-all duration-500 cursor-pointer border border-emerald-400/30">
                 <div class="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 lg:mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300">
-                    <i class="fas fa-percentage text-lg sm:text-xl lg:text-2xl text-white"></i>
+                    <i class="fas fa-shield-check text-lg sm:text-xl lg:text-2xl text-white"></i>
                 </div>
-                <div class="text-2xl sm:text-3xl lg:text-4xl font-black mb-1 sm:mb-2">{{ fraud_detection_rate }}%</div>
-                <div class="text-sm sm:text-base lg:text-lg font-bold uppercase tracking-wider opacity-90">Detection Rate</div>
-                <div class="text-xs sm:text-sm opacity-75 mt-1 sm:mt-2">AI model accuracy</div>
+                <div class="text-2xl sm:text-3xl lg:text-4xl font-black mb-1 sm:mb-2">{{ user_not_fraud_count }}</div>
+                <div class="text-sm sm:text-base lg:text-lg font-bold uppercase tracking-wider opacity-90">Total Safe Transactions</div>
+                <div class="text-xs sm:text-sm opacity-75 mt-1 sm:mt-2">Clean cases detected</div>
             </div>
 
             <!-- Processing Time - Soft orange theme for performance metrics -->
@@ -300,49 +300,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </form>
         </div>
 
-        <!-- Performance Metrics - Enhanced with comprehensive analytics -->
-        <div class="bg-gradient-to-r from-teal-500 via-cyan-600 to-blue-600 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-2xl p-4 sm:p-6 lg:p-8 mb-6 sm:mb-8 lg:mb-10 border border-teal-400/30">
-            <div class="flex items-center mb-4 sm:mb-6">
-                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-teal-400 to-teal-500 rounded-xl flex items-center justify-center mr-3 sm:mr-4 shadow-lg">
-                    <i class="fas fa-chart-line text-lg sm:text-xl text-white"></i>
-                </div>
-                <h3 class="text-xl sm:text-2xl font-black text-white">Performance Analytics</h3>
-            </div>
-            
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
-                <!-- Model Accuracy -->
-                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-white/20 text-center performance-metric">
-                    <div class="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
-                        <i class="fas fa-brain text-lg sm:text-xl lg:text-2xl text-white"></i>
-                    </div>
-                    <div class="text-2xl sm:text-3xl font-black text-white mb-1 sm:mb-2">72%</div>
-                    <div class="text-teal-100 font-semibold text-sm sm:text-base">Model Accuracy</div>
-                    <div class="text-teal-200 text-xs sm:text-sm mt-1">AI Performance</div>
-                </div>
-                
-                <!-- Response Time -->
-                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-white/20 text-center performance-metric">
-                    <div class="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
-                        <i class="fas fa-bolt text-lg sm:text-xl lg:text-2xl text-white"></i>
-                    </div>
-                    <div class="text-2xl sm:text-3xl font-black text-white mb-1 sm:mb-2">{{ avg_response_time }}s</div>
-                    <div class="text-teal-100 font-semibold text-sm sm:text-base">Avg Response</div>
-                    <div class="text-teal-200 text-xs sm:text-sm mt-1">Range: {{ min_processing_time }}s - {{ max_processing_time }}s</div>
-                </div>
-                
-                <!-- Success Rate -->
-                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-white/20 text-center">
-                    <div class="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
-                        <i class="fas fa-check-circle text-lg sm:text-xl lg:text-2xl text-white"></i>
-                    </div>
-                    <div class="text-2xl sm:text-3xl font-black text-white mb-1 sm:mb-2">{{ success_rate }}%</div>
-                    <div class="text-teal-100 font-semibold text-sm sm:text-base">Success Rate</div>
-                    <div class="text-teal-200 text-xs sm:text-sm mt-1">Confidence: {{ avg_confidence }}%</div>
-                </div>
-            </div>
-            
-       
-        </div>
+
 
         <!-- Latest Predictions - Enhanced display -->
         <div class="bg-white rounded-2xl shadow-xl p-4 sm:p-6 lg:p-8 border border-gray-100">

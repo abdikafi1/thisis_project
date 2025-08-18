@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
@@ -17,6 +18,21 @@ from datetime import timedelta
 import pytz
 import time
 import secrets
+
+def cleanup_expired_tokens():
+    """Clean up expired password reset tokens from the database"""
+    try:
+        expired_count = PasswordResetToken.objects.filter(
+            expires_at__lt=timezone.now()
+        ).delete()[0]
+        
+        if expired_count > 0:
+            print(f"🧹 Cleaned up {expired_count} expired password reset tokens")
+        
+        return expired_count
+    except Exception as e:
+        print(f"❌ Error cleaning up expired tokens: {e}")
+        return 0
 
 MODEL_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'ml_model')
 MODEL_PATH = os.path.join(MODEL_DIR, 'model.pkl')
@@ -949,7 +965,9 @@ def logout_view(request):
     return redirect('login')
 
 def forgot_password_view(request):
-    """Handle forgot password request - Simple POST backend without tokens"""
+    """Handle forgot password request using database tokens"""
+    # Clean up expired tokens first
+    cleanup_expired_tokens()
     
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -965,38 +983,47 @@ def forgot_password_view(request):
                 messages.error(request, 'Please provide either username or email.')
                 return render(request, 'landing/forgot_password.html')
             
-            # Store user info in session for password reset
-            request.session['reset_user_id'] = user.id
-            request.session['reset_username'] = user.username
-            request.session['reset_time'] = time.time()
+            # Rate limiting: Check if user has requested too many resets recently
+            from django.utils import timezone
+            recent_tokens = PasswordResetToken.objects.filter(
+                user=user,
+                created_at__gte=timezone.now() - timezone.timedelta(hours=1)
+            ).count()
             
-            # Set session expiry to 1 hour
-            request.session.set_expiry(3600)  # 1 hour in seconds
+            if recent_tokens >= 3:  # Max 3 requests per hour
+                messages.error(request, 'Too many password reset requests. Please wait at least 1 hour before trying again.')
+                return render(request, 'landing/forgot_password.html')
             
-            # Debug: Print session data
-            print(f"DEBUG: Forgot password - Stored session data:")
-            print(f"   reset_user_id: {request.session.get('reset_user_id')}")
-            print(f"   reset_username: {request.session.get('reset_username')}")
-            print(f"   reset_time: {request.session.get('reset_time')}")
-            print(f"   Session keys: {list(request.session.keys())}")
+            # Clean up any existing tokens for this user
+            PasswordResetToken.objects.filter(user=user).delete()
             
-            # Force session save
-            request.session.save()
+            # Generate a more robust reset token
+            import hashlib
             
-            # Debug: Test session immediately after setting
-            print(f"DEBUG: After session.save() - Testing session data:")
-            print(f"   reset_user_id: {request.session.get('reset_user_id')}")
-            print(f"   reset_username: {request.session.get('reset_username')}")
-            print(f"   reset_time: {request.session.get('reset_time')}")
+            # Create a more secure token with user-specific data
+            token_data = f"{user.username}{user.email}{user.date_joined}{secrets.token_hex(8)}"
+            reset_token = hashlib.sha256(token_data.encode()).hexdigest()[:32]
             
-            messages.success(request, f'Password reset initiated for user: {user.username}. You can now reset your password.')
+            # Store token in database with expiration (24 hours)
+            expires_at = timezone.now() + timezone.timedelta(hours=24)
             
-            # TEMPORARY: Render reset password page directly to test session
-            # return redirect('reset_password', username=user.username)
-            return render(request, 'landing/reset_password.html', {
-                'username': user.username,
-                'test_mode': True
-            })
+            PasswordResetToken.objects.create(
+                user=user,
+                token=reset_token,
+                expires_at=expires_at
+            )
+            
+            # Debug: Print token data to console
+            print(f"🔐 Password reset token stored in database for user {user.username}:")
+            print(f"   Token: {reset_token}")
+            print(f"   Expires at: {expires_at}")
+            print(f"   User ID: {user.id}")
+            print(f"   User email: {user.email}")
+            
+            messages.success(request, f'Password reset initiated for user: {user.username}. Please check your email for the reset link.')
+            # Redirect to reset page with token in query string to avoid any context loss
+            reset_url = f"{reverse('reset_password', kwargs={'username': user.username})}?token={reset_token}"
+            return redirect(reset_url)
             
         except User.DoesNotExist:
             messages.error(request, 'User not found. Please check your username or email.')
@@ -1006,99 +1033,134 @@ def forgot_password_view(request):
     return render(request, 'landing/forgot_password.html')
 
 def reset_password_view(request, username):
-    """Handle password reset - Simple session-based without tokens"""
+    """Handle password reset using database tokens"""
+    # Clean up expired tokens first
+    cleanup_expired_tokens()
     
     if request.method == 'POST':
         new_password = request.POST.get('new_password')
         confirm_password = request.POST.get('confirm_password')
+        # Prefer token from POST, but fall back to query param
+        reset_token = request.POST.get('reset_token') or request.GET.get('token')
         
-        # Validate session data
-        reset_user_id = request.session.get('reset_user_id')
-        reset_username = request.session.get('reset_username')
-        reset_time = request.session.get('reset_time')
-        
-        # Debug: Print session data
-        print(f"DEBUG: POST request for {username}")
-        print(f"DEBUG: Session reset_user_id: {reset_user_id}")
-        print(f"DEBUG: Session reset_username: {reset_username}")
-        print(f"DEBUG: Session reset_time: {reset_time}")
-        
-        if not reset_user_id or not reset_username:
-            messages.error(request, 'Invalid reset session. Please request a new password reset.')
-            return redirect('forgot_password')
-        
-        # Check if session has expired (1 hour)
-        if reset_time and (time.time() - reset_time) > 3600:
-            # Clear expired session data
-            del request.session['reset_user_id']
-            del request.session['reset_username']
-            del request.session['reset_time']
-            messages.error(request, 'Reset session has expired. Please request a new password reset.')
-            return redirect('forgot_password')
+        print(f"🔍 POST request - Password reset attempt for user: {username}")
+        print(f"🔍 Token from form: {request.POST.get('reset_token')}")
+        print(f"🔍 Token from URL: {request.GET.get('token')}")
+        print(f"🔍 Final token used: {reset_token}")
         
         try:
-            # Get user by ID from session (more secure)
-            user = User.objects.get(id=reset_user_id)
+            # Get user and validate token from database
+            user = User.objects.get(username=username)
+            print(f"✅ User found: {user.username}")
+            
+            # Find the valid token for this user
+            try:
+                token_obj = PasswordResetToken.objects.get(
+                    user=user,
+                    token=reset_token,
+                    is_used=False
+                )
+                print(f"✅ Valid token found: {token_obj.token}")
+            except PasswordResetToken.DoesNotExist:
+                print(f"❌ Token not found in database: {reset_token}")
+                messages.error(request, 'Invalid reset token. Please check your reset link and try again.')
+                return redirect('forgot_password')
+            
+            # Check if token has expired
+            if token_obj.is_expired:
+                print(f"❌ Token expired: {token_obj.expires_at}")
+                token_obj.is_used = True
+                token_obj.save()
+                messages.error(request, 'Reset token has expired. Please request a new password reset.')
+                return redirect('forgot_password')
             
             # Validate new password
             if new_password != confirm_password:
+                print(f"❌ Passwords don't match")
                 messages.error(request, 'Passwords do not match.')
-                return render(request, 'landing/reset_password.html', {'username': username})
+                return render(request, 'landing/reset_password.html', {'username': username, 'reset_token': reset_token})
             
             if len(new_password) < 8:
+                print(f"❌ Password too short: {len(new_password)}")
                 messages.error(request, 'Password must be at least 8 characters long.')
-                return render(request, 'landing/reset_password.html', {'username': username})
+                return render(request, 'landing/reset_password.html', {'username': username, 'reset_token': reset_token})
             
-            # Update password
-            user.set_password(new_password)
-            user.save()
+            # Update password with transaction handling
+            from django.db import transaction
+            with transaction.atomic():
+                user.set_password(new_password)
+                user.save()
+                
+                # Mark token as used
+                token_obj.is_used = True
+                token_obj.save()
+                
+                print(f"✅ Password updated successfully for user {username}")
+                print(f"✅ Token marked as used: {token_obj.token}")
             
-            # Clear session data only after successful password update
-            del request.session['reset_user_id']
-            del request.session['reset_username']
-            del request.session['reset_time']
-            
-            # Set success message and render success page
-            context = {
-                'username': username,
-                'success_message': 'Password updated successfully! You can now login with your new password.',
-                'show_success': True
-            }
-            return render(request, 'landing/reset_password.html', context)
+            # Redirect to success page instead of rendering the same template
+            messages.success(request, 'Password updated successfully! You can now login with your new password.')
+            return redirect('login')
             
         except User.DoesNotExist:
+            print(f"❌ User not found: {username}")
             messages.error(request, 'User not found.')
             return redirect('forgot_password')
         except Exception as e:
+            print(f"❌ Error updating password: {e}")
             messages.error(request, f'An error occurred while updating password: {str(e)}. Please try again.')
-            return render(request, 'landing/reset_password.html', {'username': username})
+            return render(request, 'landing/reset_password.html', {'username': username, 'reset_token': reset_token})
     
     # GET request - show reset form
-    # Validate session data
-    reset_user_id = request.session.get('reset_user_id')
-    reset_username = request.session.get('reset_username')
-    reset_time = request.session.get('reset_time')
+    try:
+        # Get user and find valid token from database
+        user = User.objects.get(username=username)
+        
+        # Prefer explicit token from query string if provided
+        token_from_query = request.GET.get('token')
+        if token_from_query:
+            token_obj = PasswordResetToken.objects.filter(
+                user=user,
+                token=token_from_query,
+                is_used=False
+            ).first()
+        else:
+            # Fall back to the most recent valid token
+            token_obj = PasswordResetToken.objects.filter(
+                user=user,
+                is_used=False
+            ).order_by('-created_at').first()
+        
+        if not token_obj or token_obj.is_expired:
+            messages.error(request, 'Reset token not found or expired. Please request a new password reset.')
+            return redirect('forgot_password')
     
-    # Debug: Print session data
-    print(f"DEBUG: GET request for {username}")
-    print(f"DEBUG: Session reset_user_id: {reset_user_id}")
-    print(f"DEBUG: Session reset_username: {reset_username}")
-    print(f"DEBUG: Session reset_time: {reset_time}")
-    
-    if not reset_user_id or not reset_username:
-        messages.error(request, 'Invalid reset session. Please request a new password reset.')
+        # Debug: Print token data to console
+        print(f"🔍 Reset password view - Database token for user {username}:")
+        print(f"   Token: {token_obj.token}")
+        print(f"   Created: {token_obj.created_at}")
+        print(f"   Expires: {token_obj.expires_at}")
+        print(f"   Is expired: {token_obj.is_expired}")
+        print(f"   Template context - username: {username}")
+        print(f"   Template context - reset_token: {token_obj.token}")
+        
+        context = {
+            'username': username, 
+            'reset_token': token_obj.token
+        }
+        
+        print(f"🔍 Final context being sent to template: {context}")
+        
+        return render(request, 'landing/reset_password.html', context)
+        
+    except Exception as e:
+        print(f"❌ Error retrieving token: {e}")
+        messages.error(request, 'Reset token not found. Please request a new password reset.')
         return redirect('forgot_password')
     
-    # Check if session has expired
-    if reset_time and (time.time() - reset_time) > 3600:
-        # Clear expired session data
-        del request.session['reset_user_id']
-        del request.session['reset_username']
-        del request.session['reset_time']
-        messages.error(request, 'Reset session has expired. Please request a new password reset.')
+    except User.DoesNotExist:
+        messages.error(request, 'User not found.')
         return redirect('forgot_password')
-    
-    return render(request, 'landing/reset_password.html', {'username': username})
 
 @login_required
 @track_activity('settings_change', lambda req, *args, **kwargs: "Updated user profile")
@@ -1740,6 +1802,17 @@ def export_pdf_report(request):
         from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
         from reportlab.lib.units import inch
         from reportlab.lib import colors
+        
+        # Import chart libraries for PDF
+        try:
+            from reportlab.graphics.shapes import Drawing, String
+            from reportlab.graphics.charts.barcharts import VerticalBarChart
+            from reportlab.graphics.charts.piecharts import Pie
+            from reportlab.graphics.charts.legends import Legend
+            CHARTS_AVAILABLE = True
+        except ImportError:
+            CHARTS_AVAILABLE = False
+            print("Chart libraries not available, will create text-based charts")
 
     except ImportError as e:
         # If reportlab is not available, try to create a simple PDF
@@ -1978,7 +2051,109 @@ def export_pdf_report(request):
             story.append(exec_summary_table)
             story.append(Spacer(1, 35))
             
-            # Recent Predictions Section - Simplified table
+            # Add Charts Section - Bar Chart and Pie Chart
+            if CHARTS_AVAILABLE and total_user_predictions > 0:
+                story.append(Paragraph("📊 Data Visualization Charts", styles['Heading2']))
+                story.append(Spacer(1, 25))
+                
+                # Create Bar Chart - Basic Statistics Comparison
+                story.append(Paragraph("📈 Bar Chart - Transaction Statistics", styles['Heading3']))
+                story.append(Spacer(1, 15))
+                
+                # Bar chart data from backend
+                bar_chart = VerticalBarChart()
+                bar_chart.width = 6*inch
+                bar_chart.height = 3*inch
+                bar_chart.data = [[total_user_predictions, user_fraud_count, user_not_fraud_count]]
+                bar_chart.categoryAxis.categoryNames = ['Total', 'Fraud', 'Safe']
+                bar_chart.valueAxis.valueMin = 0
+                bar_chart.valueAxis.valueMax = max(total_user_predictions, user_fraud_count, user_not_fraud_count) * 1.2
+                bar_chart.valueAxis.valueStep = max(1, max(total_user_predictions, user_fraud_count, user_not_fraud_count) // 5)
+                bar_chart.bars[0].fillColor = colors.HexColor('#3b82f6')  # Blue for total
+                bar_chart.bars[1].fillColor = colors.HexColor('#ef4444')  # Red for fraud
+                bar_chart.bars[2].fillColor = colors.HexColor('#10b981')  # Green for safe
+                
+                # Create drawing for bar chart
+                bar_drawing = Drawing(6*inch, 3.5*inch)
+                bar_drawing.add(bar_chart)
+                
+                # Add title to bar chart
+                title = String(3*inch, 3.2*inch, 'Transaction Counts', fontSize=12, textAnchor='middle')
+                bar_drawing.add(title)
+                
+                story.append(bar_drawing)
+                story.append(Spacer(1, 25))
+                
+                # Create Pie Chart - Fraud vs Safe Distribution
+                story.append(Paragraph("🥧 Pie Chart - Fraud vs Safe Distribution", styles['Heading3']))
+                story.append(Spacer(1, 15))
+                
+                # Pie chart data from backend
+                pie_chart = Pie()
+                pie_chart.width = 4*inch
+                pie_chart.height = 4*inch
+                pie_chart.x = 2*inch
+                pie_chart.y = 0
+                
+                if total_user_predictions > 0:
+                    pie_chart.data = [user_fraud_count, user_not_fraud_count]
+                    pie_chart.labels = [f'Fraud ({fraud_detection_rate:.1f}%)', f'Safe ({success_rate:.1f}%)']
+                    pie_chart.slices.strokeWidth = 2
+                    pie_chart.slices.strokeColor = colors.white
+                    pie_chart.slices[0].fillColor = colors.HexColor('#ef4444')  # Red for fraud
+                    pie_chart.slices[1].fillColor = colors.HexColor('#10b981')  # Green for safe
+                else:
+                    pie_chart.data = [1]
+                    pie_chart.labels = ['No Data']
+                    pie_chart.slices[0].fillColor = colors.HexColor('#6b7280')  # Gray for no data
+                
+                # Create drawing for pie chart
+                pie_drawing = Drawing(4*inch, 4.5*inch)
+                pie_drawing.add(pie_chart)
+                
+                # Add title to pie chart
+                pie_title = String(2*inch, 4.2*inch, 'Transaction Distribution', fontSize=12, textAnchor='middle')
+                pie_drawing.add(pie_title)
+                
+                story.append(pie_drawing)
+                story.append(Spacer(1, 35))
+                
+            else:
+                # Fallback: Text-based chart representation when charts not available
+                story.append(Paragraph("📊 Data Summary (Charts Not Available)", styles['Heading2']))
+                story.append(Spacer(1, 25))
+                
+                chart_summary_data = [
+                    ['Chart Type', 'Data Representation'],
+                    ['Bar Chart', f'Total: {total_user_predictions} | Fraud: {user_fraud_count} | Safe: {user_not_fraud_count}'],
+                    ['Pie Chart', f'Fraud: {fraud_detection_rate:.1f}% | Safe: {success_rate:.1f}%'],
+                ]
+                
+                chart_summary_table = Table(chart_summary_data, colWidths=[2.0*inch, 4.0*inch])
+                chart_summary_table.setStyle(TableStyle([
+                    ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#7c3aed')),
+                    ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+                    ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+                    ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                    ('FONTSIZE', (0, 0), (-1, 0), 10),
+                    ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+                    ('TOPPADDING', (0, 0), (-1, 0), 12),
+                    ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#f3f4f6')),
+                    ('GRID', (0, 0), (-1, -1), 1, colors.HexColor('#d1d5db')),
+                    ('FONTSIZE', (0, 1), (-1, -1), 9),
+                    ('BOTTOMPADDING', (0, 1), (-1, -1), 8),
+                    ('TOPPADDING', (0, 1), (-1, -1), 8),
+                    ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                ]))
+                
+                story.append(chart_summary_table)
+                story.append(Spacer(1, 35))
+            
+
+            
+
+            
+            # Recent Predictions Section - Enhanced table with more information
             story.append(Paragraph("🔍 Recent Predictions Analysis", styles['Heading2']))
             story.append(Spacer(1, 25))
             
@@ -2523,10 +2698,19 @@ def reports_history_view(request):
 
 def debug_session_view(request):
     """Debug view to check session data"""
+    if request.method == 'POST':
+        # Test setting session data
+        test_value = f"test_{int(time.time())}"
+        request.session['test_key'] = test_value
+        request.session.modified = True
+        request.session.save()
+        print(f"DEBUG: Set test session key: {test_value}")
+    
     session_data = {
         'reset_user_id': request.session.get('reset_user_id'),
         'reset_username': request.session.get('reset_username'),
         'reset_time': request.session.get('reset_time'),
+        'test_key': request.session.get('test_key'),
         'all_session_keys': list(request.session.keys()),
         'session_id': request.session.session_key,
     }
